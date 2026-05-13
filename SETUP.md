@@ -16,49 +16,20 @@ git clone https://github.com/your-org/openbook.git
 cd openbook
 ```
 
-### 2. Install dependencies
+### 2. Install and start
 
 ```bash
 npm install
-```
-
-### 3. Configure environment
-
-Copy the example environment file and edit it:
-
-```bash
-cp .env.example .env
-```
-
-Set these values in `.env`:
-
-```env
-DATABASE_URL="file:./dev.db"
-SETUP_KEY="your-secret-setup-key"
-```
-
-- `DATABASE_URL`: Path to your SQLite database file. The default works for local development.
-- `SETUP_KEY`: A secret key required to create the first admin account. Choose something random and secure. Share it only with people who should be able to create admin accounts.
-
-### 4. Run database migrations
-
-```bash
-npx prisma migrate dev
-```
-
-This creates the SQLite database and applies all schema migrations.
-
-### 5. Start the development server
-
-```bash
 npm run dev
 ```
 
-Visit `http://localhost:3000/admin/register` to create your admin account using the setup key.
+That's it. `npm install` generates the Prisma client, and `npm run dev` automatically creates the SQLite database, applies all migrations, and starts the server.
+
+Visit `http://localhost:3000/admin/register` to create your admin account. The first person to register becomes the admin — no setup key or `.env` file required. After the first admin account exists, registration is locked unless an admin is logged in.
 
 ## First-Time Setup
 
-1. Go to `/admin/register` and create an admin account (requires your `SETUP_KEY`).
+1. Go to `/admin/register` and create an admin account (the first account becomes admin automatically).
 2. After logging in, go to `/admin/setup` to configure your town (name, slug, color, contact email).
 3. Go to `/admin/upload` to upload your budget CSV or Excel files.
 4. Map columns and confirm. Your portal is now live at `/{your-town-slug}`.
@@ -69,7 +40,7 @@ Visit `http://localhost:3000/admin/register` to create your admin account using 
 
 1. Fork this repository
 2. Import the project in Vercel
-3. Set environment variables (`DATABASE_URL`, `SETUP_KEY`)
+3. Set `DATABASE_URL` if using a non-default database path
 4. Deploy
 
 Note: SQLite works for single-instance deployments. For Vercel, the database file must be in a persistent storage location. Consider using Vercel's Blob storage or switching to PostgreSQL for production.
@@ -96,10 +67,9 @@ For municipal deployments, we recommend a `.gov` subdomain:
 
 ## Environment Variables
 
-| Variable      | Required | Description                                    |
-|---------------|----------|------------------------------------------------|
-| DATABASE_URL  | Yes      | SQLite database file path                      |
-| SETUP_KEY     | Yes      | Secret key for creating admin accounts         |
+| Variable      | Required | Description                                                        |
+|---------------|----------|--------------------------------------------------------------------|
+| DATABASE_URL  | No       | SQLite database file path (defaults to `file:./dev.db` if not set) |
 
 ## Seeding Sample Data
 
@@ -113,8 +83,6 @@ This loads the sample CSV files from `sample-data/` into the database.
 
 ## Troubleshooting
 
-**"Invalid setup key" when registering**: Make sure `SETUP_KEY` is set in your `.env` file and matches what you enter in the registration form.
-
-**Database errors**: Try deleting `dev.db` and running `npx prisma migrate dev` again. This resets the database.
+**Database errors**: Try deleting `dev.db` and running `npm run dev` again. The database will be recreated automatically from the migrations.
 
 **Port conflicts**: Use `npm run dev -- --port 3001` to run on a different port.

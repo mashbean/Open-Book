@@ -49,27 +49,14 @@ export default function DocsPage() {
                   </pre>
                 </li>
                 <li>
-                  <strong>Configure environment</strong>
-                  <pre className="mt-1 bg-gray-50 rounded-lg p-3 text-sm overflow-x-auto">
-                    <code>cp .env.example .env</code>
-                  </pre>
-                  <p className="mt-1 text-sm text-gray-500">
-                    Set <code className="bg-gray-100 px-1 rounded">DATABASE_URL</code> and{" "}
-                    <code className="bg-gray-100 px-1 rounded">SETUP_KEY</code> in your{" "}
-                    <code className="bg-gray-100 px-1 rounded">.env</code> file.
-                  </p>
-                </li>
-                <li>
-                  <strong>Run database migrations</strong>
-                  <pre className="mt-1 bg-gray-50 rounded-lg p-3 text-sm overflow-x-auto">
-                    <code>npx prisma migrate dev</code>
-                  </pre>
-                </li>
-                <li>
                   <strong>Start the development server</strong>
                   <pre className="mt-1 bg-gray-50 rounded-lg p-3 text-sm overflow-x-auto">
                     <code>npm run dev</code>
                   </pre>
+                  <p className="mt-1 text-sm text-gray-500">
+                    The database is created and migrations are applied automatically.
+                    No <code className="bg-gray-100 px-1 rounded">.env</code> file is required for local development.
+                  </p>
                 </li>
               </ol>
             </div>
@@ -78,8 +65,8 @@ export default function DocsPage() {
               <h2 className="text-lg font-medium mt-8 mb-3">First-Time Setup</h2>
               <ol className="list-decimal list-inside text-gray-600 space-y-2">
                 <li>
-                  Visit <code className="bg-gray-100 px-1 rounded">/admin/register</code> and
-                  create an admin account using your setup key.
+                  Visit <code className="bg-gray-100 px-1 rounded">/admin/register</code> to
+                  create an admin account. The first person to register becomes the admin.
                 </li>
                 <li>
                   Configure your town at{" "}
@@ -108,13 +95,8 @@ export default function DocsPage() {
                   <tbody>
                     <tr className="border-t border-gray-200">
                       <td className="px-4 py-2"><code>DATABASE_URL</code></td>
-                      <td className="px-4 py-2">Yes</td>
-                      <td className="px-4 py-2 text-gray-600">SQLite database file path</td>
-                    </tr>
-                    <tr className="border-t border-gray-200">
-                      <td className="px-4 py-2"><code>SETUP_KEY</code></td>
-                      <td className="px-4 py-2">Yes</td>
-                      <td className="px-4 py-2 text-gray-600">Secret key for creating admin accounts</td>
+                      <td className="px-4 py-2">No</td>
+                      <td className="px-4 py-2 text-gray-600">SQLite database file path (defaults to <code>file:./dev.db</code>)</td>
                     </tr>
                   </tbody>
                 </table>

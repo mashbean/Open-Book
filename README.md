@@ -23,32 +23,16 @@ Town administrators upload budget data (CSV or Excel), customize portal branding
 - Node.js 18+ (20 LTS recommended)
 - npm 9+
 
-### 1. Install and configure
+### 1. Install and start
 
 ```bash
 npm install
-cp .env.example .env
+npm run dev
 ```
 
-Edit `.env` and add a setup key (used once to register the first admin account):
+That's it. `npm install` generates the Prisma client, and `npm run dev` automatically creates the SQLite database and applies all migrations before starting the server. No `.env` file is required for local development — `DATABASE_URL` defaults to `file:./dev.db`.
 
-```
-DATABASE_URL="file:./dev.db"
-SETUP_KEY="pick-any-secret-string"
-```
-
-### 2. Initialize the database
-
-```bash
-npx prisma migrate dev
-```
-
-If the database ever falls out of sync with the schema (e.g. after pulling new migrations), you can reset and re-run:
-
-```bash
-npx prisma migrate reset
-npx prisma generate
-```
+Open [http://localhost:3000](http://localhost:3000).
 
 Optionally seed sample data so the portal isn't empty on first boot:
 
@@ -56,21 +40,13 @@ Optionally seed sample data so the portal isn't empty on first boot:
 npm run seed
 ```
 
-### 3. Start the dev server
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000).
-
 ## Setting Up Your Portal
 
 Once the dev server is running, walk through the admin flow in order. Each step is a tab in the admin header.
 
 ### 1. Create an admin account
 
-Visit `/admin/register` and use the `SETUP_KEY` from your `.env` to create the first admin user. After that, sign in at `/admin/login`.
+Visit `/admin/register` to create the first admin account — the first person to register automatically becomes the admin. After that, registration is locked unless an admin is logged in. Sign in at `/admin/login`.
 
 ### 2. Configure your town (Settings tab)
 
@@ -119,7 +95,7 @@ Once data is uploaded, several optional features make the portal more useful for
 - **Tooltips** (`/admin/tooltips`) — hover-text explanations attached to budget categories or line items. A `?` icon appears next to any category or line item that has a tooltip on the public portal. It is generally recommended that these tooltips contain short, non-essential information.
 - **Links** (`/admin/links`) — supporting external links (e.g. town meeting warrants, audit reports) that show on the portal.
 - **PDFs** (`/admin/documents`) — uploadable PDF documents (annual reports, fee schedules, etc.).
-- **Questions** (`/admin/questions`) — resident inbox. Residents submit questions via the portal's "Ask a Question" form; you reply from this tab.
+- **FAQs** (`/admin/faqs`) — manage frequently asked questions that appear on the public portal's FAQ tab.
 - **Requests** (`/admin/requests`) — review and approve capital expenditure requests that staff submit via `/staff`.
 - **Transfer** (`/admin/transfer`) — export/import town data for moving between environments.
 
@@ -136,7 +112,7 @@ The admin header has a **Preview** link that opens your public portal (`/[townSl
 - Capital project listings with funding sources
 - Searchable line-item tables with CSV export
 - Printable budget book generation
-- "Ask a Question" form routed to the town's finance office
+- FAQ page with expandable answers and direct email link to the town's finance office
 - Supporting documents and external links
 - Plain-language tooltips on budget items
 
@@ -170,8 +146,7 @@ The admin header has a **Preview** link that opens your public portal (`/[townSl
 
 | Variable       | Required | Description                                                            |
 | -------------- | -------- | ---------------------------------------------------------------------- |
-| `DATABASE_URL` | Yes      | SQLite database file path (e.g. `file:./dev.db`)                       |
-| `SETUP_KEY`    | Yes      | Secret string used once at `/admin/register` to create the first admin |
+| `DATABASE_URL` | No       | SQLite database file path (defaults to `file:./dev.db` if not set)     |
 
 ## Project Structure
 
@@ -197,7 +172,7 @@ prisma/
 
 ## Troubleshooting
 
-**"Dev login failed" or 500 errors after pulling changes** — usually the local DB is out of sync with the schema. Run `npx prisma migrate reset` and `npx prisma generate`, then restart the dev server so the regenerated Prisma client is picked up.
+**"Dev login failed" or 500 errors after pulling changes** — usually the local DB is out of sync with the schema. Delete `dev.db` and run `npm run dev` again — the database will be recreated automatically from the migrations.
 
 **0 rows after uploading** — check that the column you expect to be the dollar amount is mapped to **Fiscal Year Amount**, with the **Fiscal Year** field filled in. Without those, rows can't be produced.
 

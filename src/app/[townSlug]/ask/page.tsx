@@ -10,10 +10,15 @@ export default async function FaqPage({
   const town = await prisma.town.findUnique({ where: { slug: townSlug } });
   if (!town) return notFound();
 
-  const faqs = await prisma.faqEntry.findMany({
-    where: { townId: town.id },
-    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-  });
+  let faqs: { id: string; question: string; answer: string; sortOrder: number }[] = [];
+  try {
+    faqs = await prisma.faqEntry.findMany({
+      where: { townId: town.id },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+    });
+  } catch {
+    // Table may not exist if migration hasn't been applied yet
+  }
 
   const subject = encodeURIComponent(`Question about ${town.name}'s budget`);
   const body = encodeURIComponent(
