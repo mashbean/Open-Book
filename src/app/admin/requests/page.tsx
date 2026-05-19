@@ -68,14 +68,22 @@ export default function AdminRequestsPage() {
   }, []);
 
   const formatCurrency = (amount: number) =>
-    new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
+    new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(amount);
 
   const formatDate = (date: string) =>
-    new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(new Date(date));
+    new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }).format(new Date(date));
 
   const statusStyles: Record<string, string> = {
     submitted: "bg-blue-100 text-blue-800",
     under_review: "bg-yellow-100 text-yellow-800",
+    recommended: "bg-purple-100 text-purple-800",
     approved: "bg-green-100 text-green-800",
     denied: "bg-red-100 text-red-800",
   };
@@ -83,6 +91,7 @@ export default function AdminRequestsPage() {
   const statusLabels: Record<string, string> = {
     submitted: "Submitted",
     under_review: "Under Review",
+    recommended: "Recommended",
     approved: "Approved",
     denied: "Denied",
   };
@@ -94,7 +103,10 @@ export default function AdminRequestsPage() {
       const res = await fetch(`/api/capital-requests/${requestId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus, adminNotes: notes || undefined }),
+        body: JSON.stringify({
+          status: newStatus,
+          adminNotes: notes || undefined,
+        }),
       });
 
       if (res.ok) {
@@ -114,9 +126,10 @@ export default function AdminRequestsPage() {
     }
   };
 
-  const filteredRequests = filterStatus === "all"
-    ? requests
-    : requests.filter((r) => r.status === filterStatus);
+  const filteredRequests =
+    filterStatus === "all"
+      ? requests
+      : requests.filter((r) => r.status === filterStatus);
 
   if (loading) {
     return <p className="text-gray-500">Loading...</p>;
@@ -125,15 +138,21 @@ export default function AdminRequestsPage() {
   if (!town) {
     return (
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight mb-4">Capital Requests</h1>
-        <p className="text-gray-500">No town configured. Set up a town first.</p>
+        <h1 className="text-2xl font-semibold tracking-tight mb-4">
+          Capital Requests
+        </h1>
+        <p className="text-gray-500">
+          No town configured. Set up a town first.
+        </p>
       </div>
     );
   }
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold tracking-tight">Capital Requests</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">
+        Capital Requests
+      </h1>
       <p className="text-gray-500 mt-1 mb-4">
         Review and manage staff capital expenditure requests for {town.name}.
       </p>
@@ -141,9 +160,9 @@ export default function AdminRequestsPage() {
       <div className="mb-6">
         <HelpBox variant="info">
           <p>
-            Capital requests are submitted by staff members for review. You can approve,
-            deny, or mark requests as under review. Add notes to communicate decisions
-            back to staff.
+            Capital requests are submitted by staff members for review. You can
+            approve, recommend, deny, or mark requests as under review. Add
+            notes to communicate decisions back to staff.
           </p>
         </HelpBox>
       </div>
@@ -151,7 +170,14 @@ export default function AdminRequestsPage() {
       {/* Status Filter */}
       <div className="flex items-center gap-2 mb-4">
         <span className="text-sm text-gray-500">Filter:</span>
-        {["all", "submitted", "under_review", "approved", "denied"].map((s) => (
+        {[
+          "all",
+          "submitted",
+          "under_review",
+          "recommended",
+          "approved",
+          "denied",
+        ].map((s) => (
           <button
             key={s}
             onClick={() => setFilterStatus(s)}
@@ -161,7 +187,11 @@ export default function AdminRequestsPage() {
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
-            {s === "all" ? `All (${requests.length})` : `${statusLabels[s]} (${requests.filter((r) => r.status === s).length})`}
+            {s === "all"
+              ? `All (${requests.length})`
+              : `${statusLabels[s]} (${
+                  requests.filter((r) => r.status === s).length
+                })`}
           </button>
         ))}
       </div>
@@ -191,14 +221,26 @@ export default function AdminRequestsPage() {
             {filteredRequests.map((req) => (
               <div key={req.id}>
                 <button
-                  onClick={() => setExpandedId(expandedId === req.id ? null : req.id)}
+                  onClick={() =>
+                    setExpandedId(expandedId === req.id ? null : req.id)
+                  }
                   className="w-full grid grid-cols-12 gap-2 px-4 py-3 text-left hover:bg-gray-50 transition-colors items-center"
                 >
-                  <div className="col-span-2 text-sm text-gray-900 truncate">{req.department}</div>
-                  <div className="col-span-3 text-sm text-gray-900 truncate">{req.purpose}</div>
-                  <div className="col-span-2 text-sm font-medium text-gray-900">{formatCurrency(req.amount)}</div>
-                  <div className="col-span-2 text-sm text-gray-600 truncate">{req.staffUser.name}</div>
-                  <div className="col-span-1 text-xs text-gray-500">{formatDate(req.createdAt)}</div>
+                  <div className="col-span-2 text-sm text-gray-900 truncate">
+                    {req.department}
+                  </div>
+                  <div className="col-span-3 text-sm text-gray-900 truncate">
+                    {req.purpose}
+                  </div>
+                  <div className="col-span-2 text-sm font-medium text-gray-900">
+                    {formatCurrency(req.amount)}
+                  </div>
+                  <div className="col-span-2 text-sm text-gray-600 truncate">
+                    {req.staffUser.name}
+                  </div>
+                  <div className="col-span-1 text-xs text-gray-500">
+                    {formatDate(req.createdAt)}
+                  </div>
                   <div className="col-span-2">
                     <span
                       className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
@@ -216,7 +258,9 @@ export default function AdminRequestsPage() {
                       <div>
                         <p className="text-gray-500 text-xs">Staff Member</p>
                         <p className="font-medium">{req.staffUser.name}</p>
-                        <p className="text-xs text-gray-400">{req.staffUser.email}</p>
+                        <p className="text-xs text-gray-400">
+                          {req.staffUser.email}
+                        </p>
                       </div>
                       <div>
                         <p className="text-gray-500 text-xs">Fiscal Year</p>
@@ -224,7 +268,9 @@ export default function AdminRequestsPage() {
                       </div>
                       {req.fundingSource && (
                         <div>
-                          <p className="text-gray-500 text-xs">Funding Source</p>
+                          <p className="text-gray-500 text-xs">
+                            Funding Source
+                          </p>
                           <p className="font-medium">{req.fundingSource}</p>
                         </div>
                       )}
@@ -232,15 +278,23 @@ export default function AdminRequestsPage() {
 
                     {req.description && (
                       <div className="mb-3">
-                        <p className="text-xs text-gray-500 mb-1">Description</p>
-                        <p className="text-sm text-gray-700">{req.description}</p>
+                        <p className="text-xs text-gray-500 mb-1">
+                          Description
+                        </p>
+                        <p className="text-sm text-gray-700">
+                          {req.description}
+                        </p>
                       </div>
                     )}
 
                     {req.justification && (
                       <div className="mb-3">
-                        <p className="text-xs text-gray-500 mb-1">Justification</p>
-                        <p className="text-sm text-gray-700">{req.justification}</p>
+                        <p className="text-xs text-gray-500 mb-1">
+                          Justification
+                        </p>
+                        <p className="text-sm text-gray-700">
+                          {req.justification}
+                        </p>
                       </div>
                     )}
 
@@ -252,7 +306,10 @@ export default function AdminRequestsPage() {
                       <textarea
                         value={adminNotes[req.id] ?? req.adminNotes ?? ""}
                         onChange={(e) =>
-                          setAdminNotes((prev) => ({ ...prev, [req.id]: e.target.value }))
+                          setAdminNotes((prev) => ({
+                            ...prev,
+                            [req.id]: e.target.value,
+                          }))
                         }
                         rows={2}
                         placeholder="Add notes about this request..."
@@ -262,11 +319,24 @@ export default function AdminRequestsPage() {
                       <div className="flex items-center gap-2">
                         {req.status !== "approved" && (
                           <button
-                            onClick={() => handleStatusUpdate(req.id, "approved")}
+                            onClick={() =>
+                              handleStatusUpdate(req.id, "approved")
+                            }
                             disabled={updating === req.id}
                             className="px-3 py-1.5 bg-green-600 text-white rounded-md text-xs font-medium hover:bg-green-700 disabled:opacity-50 transition-colors"
                           >
                             Approve
+                          </button>
+                        )}
+                        {req.status !== "recommended" && (
+                          <button
+                            onClick={() =>
+                              handleStatusUpdate(req.id, "recommended")
+                            }
+                            disabled={updating === req.id}
+                            className="px-3 py-1.5 bg-purple-600 text-white rounded-md text-xs font-medium hover:bg-purple-700 disabled:opacity-50 transition-colors"
+                          >
+                            Recommend
                           </button>
                         )}
                         {req.status !== "denied" && (
@@ -280,7 +350,9 @@ export default function AdminRequestsPage() {
                         )}
                         {req.status !== "under_review" && (
                           <button
-                            onClick={() => handleStatusUpdate(req.id, "under_review")}
+                            onClick={() =>
+                              handleStatusUpdate(req.id, "under_review")
+                            }
                             disabled={updating === req.id}
                             className="px-3 py-1.5 bg-yellow-500 text-white rounded-md text-xs font-medium hover:bg-yellow-600 disabled:opacity-50 transition-colors"
                           >
@@ -288,7 +360,9 @@ export default function AdminRequestsPage() {
                           </button>
                         )}
                         {updating === req.id && (
-                          <span className="text-xs text-gray-400">Updating...</span>
+                          <span className="text-xs text-gray-400">
+                            Updating...
+                          </span>
                         )}
                       </div>
                     </div>

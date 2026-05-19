@@ -506,7 +506,9 @@ export default function UploadPage() {
             <div>
               <p className="text-sm font-medium text-gray-700 mb-2">
                 Uploads work best when a row represents a different category or
-                line amount, rather than a specific year. Your file should look
+                line amount, rather than a specific year. Additionally, make
+                sure that you delete any extraneous cells, like totals, title,
+                or header cells. or Your file should look fairly plain,
                 something like this:
               </p>
               <div className="overflow-x-auto border border-gray-200 rounded-lg">
@@ -814,21 +816,35 @@ export default function UploadPage() {
           )}
 
           {saveResult && saveResult.rowsCreated === 0 && (
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-5" role="alert" aria-live="assertive">
+            <div
+              className="bg-amber-50 border border-amber-200 rounded-lg p-5"
+              role="alert"
+              aria-live="assertive"
+            >
               <h3 className="text-sm font-semibold text-amber-800 mb-2">
                 0 rows were saved
               </h3>
               <p className="text-sm text-amber-700 mb-3">
-                The file was processed but no usable data rows were produced. Common causes:
+                The file was processed but no usable data rows were produced.
+                Common causes:
               </p>
               <ul className="list-disc list-inside text-sm text-amber-700 space-y-1 mb-4">
-                <li>Amount columns contain text or symbols that couldn&apos;t be parsed as numbers</li>
-                <li>The columns mapped as &quot;Fiscal Year Amount&quot; are missing a fiscal year label</li>
+                <li>
+                  Amount columns contain text or symbols that couldn&apos;t be
+                  parsed as numbers
+                </li>
+                <li>
+                  The columns mapped as &quot;Fiscal Year Amount&quot; are
+                  missing a fiscal year label
+                </li>
                 <li>All data rows were empty below the header row</li>
-                <li>The header row was duplicated or included in the data range</li>
+                <li>
+                  The header row was duplicated or included in the data range
+                </li>
               </ul>
               <p className="text-sm text-amber-700 mb-3">
-                Check the preview above and verify your column mappings match the actual data. You can start over and re-upload.
+                Check the preview above and verify your column mappings match
+                the actual data. You can start over and re-upload.
               </p>
               <button
                 onClick={() => {
@@ -849,7 +865,11 @@ export default function UploadPage() {
           <div className="flex items-center gap-4">
             <button
               onClick={handleConfirmMapping}
-              disabled={saving || mappingErrors.length > 0 || (saveResult !== null && saveResult.rowsCreated === 0)}
+              disabled={
+                saving ||
+                mappingErrors.length > 0 ||
+                (saveResult !== null && saveResult.rowsCreated === 0)
+              }
               title={
                 mappingErrors.length > 0
                   ? "Fix the missing required mappings above first"

@@ -67,7 +67,10 @@ export default function BudgetTable({
   useEffect(() => {
     if (!yearMenuOpen) return;
     function handleClickOutside(e: MouseEvent) {
-      if (yearMenuRef.current && !yearMenuRef.current.contains(e.target as Node)) {
+      if (
+        yearMenuRef.current &&
+        !yearMenuRef.current.contains(e.target as Node)
+      ) {
         setYearMenuOpen(false);
       }
     }
@@ -84,8 +87,20 @@ export default function BudgetTable({
     ? allYears.filter((y) => selectedYears.includes(y))
     : [];
 
+  // Percent change is always computed from the two most recent years of data,
+  // regardless of which years are toggled in the selector.
+  const showPctChange = !!yearColumns && allYears.length >= 2;
+  const priorYear = showPctChange ? allYears[allYears.length - 2] : "";
+  const recentYear = showPctChange ? allYears[allYears.length - 1] : "";
+
   const effectiveHeaders = yearColumns
-    ? [...headers, ...visibleYears.map((y) => `FY${y}`)]
+    ? [
+        ...headers,
+        ...visibleYears.map((y) => `FY${y}`),
+        ...(showPctChange
+          ? [`% Change FY${priorYear} to FY${recentYear}`]
+          : []),
+      ]
     : headers;
 
   const effectiveRows = useMemo(() => {
@@ -96,12 +111,34 @@ export default function BudgetTable({
         const i = allYears.indexOf(y);
         return r.cells[staticHeaderCount + i] ?? null;
       });
-      return { ...r, cells: [...staticCells, ...yearCells] };
+      let pctCells: (string | number | null)[] = [];
+      if (showPctChange) {
+        const prior = r.cells[staticHeaderCount + (allYears.length - 2)];
+        const recent = r.cells[staticHeaderCount + (allYears.length - 1)];
+        if (
+          typeof prior !== "number" ||
+          typeof recent !== "number" ||
+          prior === 0
+        ) {
+          pctCells = ["—"];
+        } else {
+          const pct = ((recent - prior) / prior) * 100;
+          const sign = pct > 0 ? "+" : "";
+          pctCells = [`${sign}${pct.toFixed(1)}%`];
+        }
+      }
+      return { ...r, cells: [...staticCells, ...yearCells, ...pctCells] };
     });
     // visibleYears identity is recomputed each render, so we depend on its
     // stable string form (selectedYears) instead.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rows, yearColumns, selectedYears.join("|"), allYears.join("|"), staticHeaderCount]);
+  }, [
+    rows,
+    yearColumns,
+    selectedYears.join("|"),
+    allYears.join("|"),
+    staticHeaderCount,
+  ]);
 
   const filtered = useMemo(() => {
     if (!query) return effectiveRows;
@@ -110,9 +147,7 @@ export default function BudgetTable({
       (r) =>
         r.isGroup ||
         r.isSubtotal ||
-        r.cells.some(
-          (c) => c != null && c.toString().toLowerCase().includes(q)
-        )
+        r.cells.some((c) => c != null && c.toString().toLowerCase().includes(q))
     );
   }, [effectiveRows, query]);
 
@@ -142,7 +177,8 @@ export default function BudgetTable({
               />
               {query && (
                 <p className="text-xs text-gray-400 mt-1.5">
-                  {filtered.filter((r) => !r.isGroup && !r.isSubtotal).length} results
+                  {filtered.filter((r) => !r.isGroup && !r.isSubtotal).length}{" "}
+                  results
                 </p>
               )}
             </div>
@@ -163,8 +199,19 @@ export default function BudgetTable({
                 <span className="text-gray-400 text-xs">
                   {selectedYears.length} selected
                 </span>
-                <svg className="w-3 h-3 text-gray-400" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                  <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <svg
+                  className="w-3 h-3 text-gray-400"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M3 4.5L6 7.5L9 4.5"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
               </button>
               {yearMenuOpen && (
@@ -208,7 +255,11 @@ export default function BudgetTable({
         )}
 
         <div ref={scrollRef} className="overflow-x-auto">
-          <table className="w-full text-sm" style={{ minWidth: "600px" }} role="table">
+          <table
+            className="w-full text-sm"
+            style={{ minWidth: "600px" }}
+            role="table"
+          >
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50/80">
                 {effectiveHeaders.map((h, i) => (
@@ -216,7 +267,9 @@ export default function BudgetTable({
                     key={h}
                     scope="col"
                     className={`px-4 py-2.5 text-left text-xs font-semibold font-display uppercase tracking-wide text-gray-500 ${
-                      i > 0 && i < effectiveHeaders.length ? "hidden sm:table-cell" : ""
+                      i > 0 && i < effectiveHeaders.length
+                        ? "hidden sm:table-cell"
+                        : ""
                     }`}
                     style={i > 1 ? { minWidth: "100px" } : undefined}
                   >
@@ -257,9 +310,13 @@ export default function BudgetTable({
                             ? "text-right tabular-nums"
                             : ""
                         } ${
-                          cell !== null && typeof cell === "string" && cell.startsWith("+")
+                          cell !== null &&
+                          typeof cell === "string" &&
+                          cell.startsWith("+")
                             ? "text-emerald-600"
-                            : cell !== null && typeof cell === "string" && cell.startsWith("-")
+                            : cell !== null &&
+                              typeof cell === "string" &&
+                              cell.startsWith("-")
                             ? "text-red-600"
                             : ""
                         }`}
@@ -274,14 +331,23 @@ export default function BudgetTable({
                       >
                         <span className="inline-flex items-center gap-0.5">
                           {typeof cell === "number" ? (
-                            <span className="tabular-nums">{formatCurrency(cell)}</span>
+                            <span className="tabular-nums">
+                              {formatCurrency(cell)}
+                            </span>
                           ) : (
-                            <span className={`${row.depth && i === 0 ? "text-gray-600" : ""}`}>
+                            <span
+                              className={`${
+                                row.depth && i === 0 ? "text-gray-600" : ""
+                              }`}
+                            >
                               {cell ?? ""}
                             </span>
                           )}
                           {i === 0 && groupTooltip && (
-                            <TooltipIcon text={groupTooltip} label={firstCell} />
+                            <TooltipIcon
+                              text={groupTooltip}
+                              label={firstCell}
+                            />
                           )}
                           {i === 0 && itemTooltip && (
                             <TooltipIcon text={itemTooltip} label={firstCell} />
@@ -299,7 +365,9 @@ export default function BudgetTable({
                     colSpan={effectiveHeaders.length}
                     className="px-4 py-8 text-center text-gray-400 text-sm"
                   >
-                    {query ? "No items match your search." : "No data available."}
+                    {query
+                      ? "No items match your search."
+                      : "No data available."}
                   </td>
                 </tr>
               )}
