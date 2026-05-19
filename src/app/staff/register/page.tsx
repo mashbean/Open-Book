@@ -67,16 +67,20 @@ export default function StaffRegisterPage() {
 
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email
+              Government Email
             </label>
             <input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="name@townname.gov"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
               required
             />
+            <p className="text-xs text-gray-400 mt-1">
+              Must be a .gov email address.
+            </p>
           </div>
 
           <div>

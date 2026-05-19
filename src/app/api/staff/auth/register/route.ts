@@ -25,6 +25,14 @@ export async function POST(request: Request) {
       );
     }
 
+    const emailDomain = email.split("@")[1]?.toLowerCase();
+    if (!emailDomain || !emailDomain.endsWith(".gov")) {
+      return NextResponse.json(
+        { error: "Staff accounts require a .gov email address" },
+        { status: 400 }
+      );
+    }
+
     // Look up town by slug
     const town = await prisma.town.findUnique({ where: { slug: townSlug } });
     if (!town) {
