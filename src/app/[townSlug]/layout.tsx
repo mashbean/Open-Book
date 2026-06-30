@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import PortalHeader from "@/components/portal/PortalHeader";
 
@@ -12,7 +13,12 @@ export default async function TownLayout({
   const { townSlug } = await params;
   const town = await prisma.town.findUnique({ where: { slug: townSlug } });
 
-  if (!town || !town.published) return notFound();
+  if (!town) return notFound();
+
+  if (!town.published) {
+    const user = await getCurrentUser();
+    if (!user) return notFound();
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
