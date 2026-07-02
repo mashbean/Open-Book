@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 interface InviteInfo {
@@ -12,7 +12,6 @@ interface InviteInfo {
 }
 
 export default function JoinPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
@@ -69,7 +68,7 @@ export default function JoinPage() {
       }
 
       setSuccess(true);
-      setTimeout(() => router.push("/staff"), 2000);
+      setTimeout(() => window.location.assign("/staff"), 2000);
     } catch {
       setError("Something went wrong");
     } finally {

@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import HelpBox from "@/components/admin/HelpBox";
 import DevLoginButtons from "@/components/dev/DevLoginButtons";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -31,7 +29,7 @@ export default function LoginPage() {
         return;
       }
 
-      router.push("/admin/setup");
+      window.location.assign("/admin/setup");
     } catch {
       setError("Something went wrong");
     } finally {

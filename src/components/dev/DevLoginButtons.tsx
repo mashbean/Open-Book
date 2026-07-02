@@ -1,10 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function DevLoginButtons() {
-  const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState("");
 
@@ -24,7 +22,7 @@ export default function DevLoginButtons() {
         setError(data.error || "Dev login failed");
         return;
       }
-      router.push(data.redirect);
+      window.location.assign(data.redirect);
     } catch {
       setError("Dev login failed");
     } finally {
