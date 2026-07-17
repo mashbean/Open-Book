@@ -4,7 +4,7 @@ OpenBook is a municipal budget transparency portal. Each town deploys its own in
 
 ## Prerequisites
 
-- Node.js 20 LTS or later
+- Node.js 20.19 or later; Node.js 22 LTS recommended
 - npm 9+
 - A Postgres database connection string
 

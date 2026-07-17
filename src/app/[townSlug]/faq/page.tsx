@@ -20,19 +20,19 @@ export default async function FaqPage({
     // Table may not exist if migration hasn't been applied yet
   }
 
-  const subject = encodeURIComponent(`Question about ${town.name}'s budget`);
+  const subject = encodeURIComponent(`關於${town.name}預算的問題`);
   const body = encodeURIComponent(
-    `Hi,\n\nI have a question about ${town.name}'s budget:\n\n[Your question here]\n\nThank you`
+    `您好，\n\n我想詢問${town.name}預算資料\n\n[請在這裡填寫問題]\n\n謝謝`
   );
 
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight">
-          Frequently Asked Questions
+          常見問題
         </h1>
         <p className="text-gray-600 mt-1">
-          Answers to common questions about {town.name}&apos;s budget.
+          說明{town.name}預算資料的定義、範圍與限制。
         </p>
       </div>
 
@@ -68,7 +68,7 @@ export default async function FaqPage({
       ) : (
         <div className="bg-white border border-gray-200 rounded-lg p-6 text-center">
           <p className="text-sm text-gray-600">
-            No FAQs have been published yet. Check back soon.
+            目前尚未發布常見問題。
           </p>
         </div>
       )}
@@ -76,8 +76,7 @@ export default async function FaqPage({
       {town.contactEmail && (
         <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-5">
           <p className="text-sm text-blue-900 leading-relaxed mb-3">
-            <strong>Don&apos;t see your question?</strong> Reach out to{" "}
-            {town.name}&apos;s finance office directly.
+            <strong>還有其他問題嗎？</strong> 可直接聯絡{town.name}財政或主計單位。
           </p>
           <a
             href={`mailto:${town.contactEmail}?subject=${subject}&body=${body}`}
@@ -93,7 +92,7 @@ export default async function FaqPage({
               <path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z" />
               <path d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z" />
             </svg>
-            Email {town.contactEmail}
+            寄信至 {town.contactEmail}
           </a>
         </div>
       )}

@@ -42,9 +42,8 @@ export default async function TownLayout({
             </p>
           )}
           <p className="text-xs text-gray-500">
-            Town of {town.name} |{" "}
-            Powered by{" "}
-            <span className="font-display font-medium">OpenBook</span>
+            {town.name}開放預算 |{" "}
+            <span className="font-display font-medium">OpenBook 民間概念驗證</span>
             {town.contactEmail && (
               <>
                 {" | "}

@@ -1,5 +1,11 @@
 # Budget Data Format Guide
 
+## 臺灣政府資料欄位
+
+上傳工具可自動辨識常見的正體中文欄名，包括 `年度`、`主管機關`、`歲出性質`、`歲入來源`、`科目`、`款`、`項`、`金額`、`用途` 與 `資金來源`。長表格式可直接使用 `年度` 與 `金額` 欄，`115年度預算`、`114年度決算` 等寬表欄名也會辨識為年度金額。
+
+臺北市概念驗證的標準化資料位於 `sample-data/taipei-*.csv`，產製方式與官方來源記錄在 `docs/taiwan-data-scope.md`。
+
 OpenBook accepts budget data in CSV (.csv) or Excel (.xlsx) format. This guide describes the expected column structure for each data category.
 
 ## General Rules

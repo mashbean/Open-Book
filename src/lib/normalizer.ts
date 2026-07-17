@@ -92,7 +92,7 @@ function findAmountColumn(
   const mapped = new Set(fieldMap.values());
   for (const key of Object.keys(row)) {
     if (mapped.has(key)) continue;
-    if (/amount/i.test(key) || /budget/i.test(key) || /actual/i.test(key)) {
+    if (/amount/i.test(key) || /budget/i.test(key) || /actual/i.test(key) || /金額|預算|決算/.test(key)) {
       return key;
     }
   }

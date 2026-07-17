@@ -2,11 +2,11 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 
 const CATEGORY_LABELS: Record<string, string> = {
-  budget: "Budget Documents",
-  meeting: "Meeting Minutes",
-  report: "Reports",
-  press: "Press Releases",
-  other: "Other Documents",
+  budget: "預算原始資料",
+  meeting: "會議紀錄",
+  report: "統計與執行資料",
+  press: "新聞資料",
+  other: "其他資料",
 };
 
 const CATEGORY_ORDER = ["budget", "meeting", "report", "press", "other"];
@@ -65,23 +65,20 @@ export default async function DocumentsPage({
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">
-          Documents & Resources
+          資料來源
         </h1>
         <p className="text-gray-600 mt-1">
-          Supporting documents, reports, and links for {town.name}
+          核對{town.name}預算數字的官方資料與說明
         </p>
       </div>
 
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
         <p className="text-sm text-blue-800 leading-relaxed">
-          <strong>Source documents and references.</strong>{" "}
-          This page collects the original budget documents, meeting
-          minutes, press releases, and other materials that support
-          the data you see on this portal. PDFs can be downloaded
-          directly; links open in a new tab. If you&apos;re looking for
-          a document that isn&apos;t here, use the{" "}
-          <a href={`/${townSlug}/faq`} className="underline font-medium">FAQ</a>{" "}
-          form to let us know.
+          <strong>每個數字都應該回得到原始資料。</strong>{" "}
+          本頁集中列出網站使用的官方資料集。連結會在新分頁開啟，
+          可用來核對資料欄位、發布機關、更新時間與授權條款。
+          資料可回答到什麼程度，請見{" "}
+          <a href={`/${townSlug}/faq`} className="underline font-medium">常見問題</a>。
         </p>
       </div>
 
@@ -101,10 +98,9 @@ export default async function DocumentsPage({
               d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
             />
           </svg>
-          <p className="mt-4 text-gray-600">No documents available yet.</p>
+          <p className="mt-4 text-gray-600">目前尚未加入資料來源。</p>
           <p className="text-sm text-gray-500 mt-1">
-            Check back later for budget documents, meeting minutes, and other
-            resources.
+            請稍後再回來查看預算文件與統計資料。
           </p>
         </div>
       )}

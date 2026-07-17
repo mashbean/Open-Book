@@ -6,7 +6,7 @@ import {
   buildRevenueSummaryTiles,
   detectCurrentAndPreviousYear,
 } from "@/lib/aggregator";
-import { formatCurrency } from "@/lib/format";
+import { formatCurrency, formatFiscalYear } from "@/lib/format";
 import SummaryTiles from "@/components/portal/SummaryTiles";
 import PieChart from "@/components/portal/PieChart";
 import BarChart from "@/components/portal/BarChart";
@@ -56,7 +56,7 @@ export default async function RevenuesPage({
   const byCategory = toChartData(groupAndSum(current, "category1"));
 
   const years = allYears.length > 0 ? allYears : [currentYear];
-  const categories = [...new Set(current.map((r) => r.category1 || "Other"))];
+  const categories = [...new Set(current.map((r) => r.category1 || "其他"))];
   const trendSeries = categories.slice(0, 8).map((cat) => ({
     label: cat,
     data: years.map((y) =>
@@ -91,7 +91,7 @@ export default async function RevenuesPage({
     const catMap = new Map<string, number>();
     const lineMap = new Map<string, number>();
     for (const row of yearRows) {
-      const cat = row.category1 || "Other";
+      const cat = row.category1 || "其他";
       const lineKey = `${cat}|${row.lineItem || row.category2 || ""}`;
       catMap.set(cat, (catMap.get(cat) || 0) + row.amount);
       lineMap.set(lineKey, (lineMap.get(lineKey) || 0) + row.amount);
@@ -104,7 +104,7 @@ export default async function RevenuesPage({
   const catGroups = new Map<string, typeof current>();
 
   for (const row of current) {
-    const cat = row.category1 || "Other";
+    const cat = row.category1 || "其他";
     if (!catGroups.has(cat)) catGroups.set(cat, []);
     catGroups.get(cat)!.push(row);
   }
@@ -133,18 +133,18 @@ export default async function RevenuesPage({
   }
 
   const exportData = current.map((r) => {
-    const cat = r.category1 || "Other";
+    const cat = r.category1 || "其他";
     const lineKey = `${cat}|${r.lineItem || r.category2 || ""}`;
     const yearCols: Record<string, string> = {};
     for (const y of tableYears) {
-      yearCols[`FY${y}`] = formatCurrency(
+      yearCols[formatFiscalYear(y)] = formatCurrency(
         lineTotalsByYear.get(y)?.get(lineKey) || 0
       );
     }
     return {
-      Category: r.category1 || "",
-      Subcategory: r.category2 || "",
-      Description: r.lineItem || "",
+      歲入來源: r.category1 || "",
+      歲入性質: r.category2 || "",
+      科目: r.lineItem || "",
       ...yearCols,
     };
   });
@@ -153,8 +153,8 @@ export default async function RevenuesPage({
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Revenues</h1>
-          <p className="text-gray-600 mt-1">Yearly revenue by source</p>
+          <h1 className="text-2xl font-semibold tracking-tight">歲入</h1>
+          <p className="text-gray-600 mt-1">依來源與科目查看年度收入預算</p>
         </div>
         <ExportButton
           data={exportData}
@@ -164,14 +164,12 @@ export default async function RevenuesPage({
 
       <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
         <p className="text-sm text-emerald-800 leading-relaxed">
-          <strong>What are revenues?</strong> Revenue is the money the town
-          collects to pay for services. The largest source is usually property
-          taxes. State aid (Chapter 70 for schools, unrestricted government aid)
-          is the second largest. Local receipts include things like motor
-          vehicle excise tax, permits, and fees.
+          <strong>歲入是政府為提供公共服務而取得的收入。</strong>{" "}
+          主要來源包括各項稅課、中央統籌分配與補助、規費及財產收入。
+          本頁同時納入經常門與資本門
           {hasPriorYear
-            ? " The summary tiles above show totals and how revenue changed from last year."
-            : " The summary tiles above show totals and the top revenue source."}
+            ? "，並顯示與上年度預算的變化。"
+            : "。"}
         </p>
       </div>
 
@@ -180,19 +178,19 @@ export default async function RevenuesPage({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <PieChart
           data={byCategory}
-          title={`FY${currentYear} Revenue by Category`}
+          title={`${formatFiscalYear(currentYear)}歲入來源`}
           townColor={town.primaryColor}
         />
         <BarChart
-          categories={years.map((y) => `FY${y}`)}
+          categories={years.map(formatFiscalYear)}
           series={trendSeries}
-          title="Revenue Trend"
+          title="歲入來源年度比較"
           stacked
         />
       </div>
 
       <BudgetTable
-        headers={["Description"]}
+        headers={["歲入來源／科目"]}
         rows={tableRows}
         categoryTooltips={categoryTooltips}
         lineItemTooltips={lineItemTooltips}
