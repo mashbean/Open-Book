@@ -89,52 +89,65 @@ function renderOverview() {
   const balance = revenueTotal - expenseTotal;
   const expenseChange = comparison(expenseTotal, sum(previousExpenses));
 
-  document.querySelector("#hero-year").textContent = state.year;
+  ["#hero-year", "#glance-year", "#glance-chart-year", "#investment-year", "#capital-feature-year"].forEach((selector) => {
+    document.querySelector(selector).textContent = state.year;
+  });
   document.querySelector("#overview-stats").innerHTML = [
-    statCard("歲出預算總額", formatCompact(expenseTotal), expenseChange.detail),
-    statCard("歲入預算總額", formatCompact(revenueTotal), comparison(revenueTotal, sum(previousRevenues)).detail),
-    statCard("資本門預算", formatCompact(capitalTotal), `${percentage(capitalTotal, expenseTotal)} 的歲出預算`),
-    statCard("歲入減歲出", formatCompact(balance), balance >= 0 ? "歲入預算高於歲出" : "歲出預算高於歲入", balance >= 0 ? "down" : "up"),
+    statCard("年度歲出", formatCompact(expenseTotal), expenseChange.detail),
+    statCard("年度歲入", formatCompact(revenueTotal), comparison(revenueTotal, sum(previousRevenues)).detail),
+    statCard("資本投資", formatCompact(capitalTotal), `占歲出 ${percentage(capitalTotal, expenseTotal)}`),
+    statCard("歲出分類筆數", `${expenses.length} 筆`, `${groupSum(expenses, "agency").length} 個主管機關`),
   ].join("");
 
-  const expenseTypes = groupSum(expenses, "type");
-  const recurrent = expenseTypes.find(([name]) => name === "經常門")?.[1] || 0;
-  const recurrentRate = expenseTotal > 0 ? (recurrent / expenseTotal) * 100 : 0;
-  document.querySelector("#expense-donut").style.background =
-    `conic-gradient(var(--green) 0 ${recurrentRate}%, var(--amber) ${recurrentRate}% 100%)`;
-  document.querySelector("#expense-donut").setAttribute(
-    "aria-label",
-    `經常門占 ${recurrentRate.toFixed(1)}%，資本門占 ${(100 - recurrentRate).toFixed(1)}%`,
-  );
-  document.querySelector("#donut-total").textContent = formatCompact(expenseTotal);
-  document.querySelector("#expense-legend").innerHTML = expenseTypes
+  const agencies = groupSum(expenses, "agency").slice(0, 7);
+  const agencyMax = agencies[0]?.[1] || 1;
+  const agencyColors = ["#d4a853", "#78a57c", "#4d8060", "#2f6946", "#26573b", "#204a34", "#173c29"];
+  document.querySelector("#hero-budget-bars").innerHTML = agencies
     .map(
-      ([name, amount], index) => `<div class="legend-item">
-        <i class="legend-dot" style="background:${index === 0 ? "var(--green)" : "var(--amber)"}"></i>
-        <span>${escapeHtml(name)} · ${percentage(amount, expenseTotal)}</span>
-        <strong>${escapeHtml(formatCompact(amount))}</strong>
-      </div>`,
+      ([name, amount], index) => `<i title="${escapeHtml(name)} ${escapeHtml(formatCompact(amount))}" style="width:${(amount / expenseTotal) * 100}%;background:${agencyColors[index]}"></i>`,
     )
     .join("");
-
-  const agencies = groupSum(expenses, "agency").slice(0, 8);
-  const agencyMax = agencies[0]?.[1] || 1;
+  document.querySelector("#investment-total").textContent = formatCompact(expenseTotal);
+  document.querySelector("#investment-summary").textContent = `${agencies[0]?.[0] || "最大主管機關"}是目前最大的歲出主管機關，占年度歲出 ${percentage(agencies[0]?.[1] || 0, expenseTotal)}。`;
   document.querySelector("#agency-bars").innerHTML = agencies
     .map(
-      ([name, amount]) => `<div class="bar-row">
-        <span class="bar-name" title="${escapeHtml(name)}">${escapeHtml(name)}</span>
-        <div class="bar-track"><div class="bar-fill" style="width:${(amount / agencyMax) * 100}%"></div></div>
-        <span class="bar-value">${escapeHtml(formatCompact(amount))}</span>
+      ([name, amount], index) => `<div class="ranking-row">
+        <span>${String(index + 1).padStart(2, "0")}</span>
+        <strong>${escapeHtml(name)}</strong>
+        <span class="ranking-value">${escapeHtml(formatCompact(amount))} · ${percentage(amount, expenseTotal)}</span>
+        <div class="ranking-meter"><i style="width:${(amount / agencyMax) * 100}%"></i></div>
       </div>`,
     )
     .join("");
 
-  document.querySelector("#revenue-overview").innerHTML = groupSum(revenues, "category")
-    .slice(0, 8)
+  const revenueGroups = groupSum(revenues, "category");
+  document.querySelector("#balance-revenue-total").textContent = formatCompact(revenueTotal);
+  document.querySelector("#balance-expense-total").textContent = formatCompact(expenseTotal);
+  document.querySelector("#balance-value").textContent = formatCompact(Math.abs(balance));
+  document.querySelector("#balance-copy").textContent = balance >= 0 ? "歲入預算高於歲出預算" : "歲出預算高於歲入預算";
+  document.querySelector("#revenue-overview").innerHTML = revenueGroups
+    .slice(0, 4)
     .map(
-      ([name, amount]) => `<div class="category-card"><span>${escapeHtml(name)}</span><strong>${escapeHtml(formatCompact(amount))}</strong><small>${percentage(amount, revenueTotal)}</small></div>`,
+      ([name, amount]) => `<div class="balance-item"><span>${escapeHtml(name)}</span><b>${escapeHtml(formatCompact(amount))}</b></div>`,
     )
     .join("");
+  document.querySelector("#balance-expense-list").innerHTML = agencies
+    .slice(0, 4)
+    .map(([name, amount]) => `<div class="balance-item"><span>${escapeHtml(name)}</span><b>${escapeHtml(formatCompact(amount))}</b></div>`)
+    .join("");
+
+  const capitalAgencies = groupSum(capital, "agency").slice(0, 4);
+  document.querySelector("#capital-highlight-total").textContent = formatCompact(capitalTotal);
+  document.querySelector("#capital-highlight-list").innerHTML = capitalAgencies
+    .map(([name, amount]) => `<div class="capital-highlight-card"><span>${escapeHtml(name)}</span><strong>${escapeHtml(formatCompact(amount))}</strong></div>`)
+    .join("");
+
+  document.querySelector("#summary-strip").innerHTML = [
+    ["年度歲出", formatCompact(expenseTotal)],
+    ["年度歲入", formatCompact(revenueTotal)],
+    ["預算年度", `民國 ${state.year} 年`],
+    ["主管機關", `${groupSum(expenses, "agency").length} 個`],
+  ].map(([label, value]) => `<div class="summary-item"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join("");
 }
 
 function renderExpenseView() {
