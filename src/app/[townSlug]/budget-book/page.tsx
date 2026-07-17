@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { groupAndSum, detectCurrentAndPreviousYear } from "@/lib/aggregator";
-import { formatCurrency, abbreviateCurrency } from "@/lib/format";
+import { formatCurrency, abbreviateCurrency, formatFiscalYear } from "@/lib/format";
 import PrintButton from "@/components/portal/PrintButton";
 
 export default async function BudgetBookPage({
@@ -51,8 +51,8 @@ export default async function BudgetBookPage({
 
   const expFnGroups = new Map<string, Map<string, typeof currentExpenses>>();
   for (const row of currentExpenses) {
-    const fn = row.functionArea || "Other";
-    const dept = row.department || "Other";
+    const fn = row.functionArea || "其他";
+    const dept = row.department || "其他";
     if (!expFnGroups.has(fn)) expFnGroups.set(fn, new Map());
     const deptMap = expFnGroups.get(fn)!;
     if (!deptMap.has(dept)) deptMap.set(dept, []);
@@ -61,7 +61,7 @@ export default async function BudgetBookPage({
 
   const revCatGroups = new Map<string, typeof currentRevenues>();
   for (const row of currentRevenues) {
-    const cat = row.category1 || "Other";
+    const cat = row.category1 || "其他";
     if (!revCatGroups.has(cat)) revCatGroups.set(cat, []);
     revCatGroups.get(cat)!.push(row);
   }
@@ -72,10 +72,10 @@ export default async function BudgetBookPage({
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <p className="text-sm font-medium text-gray-800">
-              {town.name} Budget Book
+              {town.name}預算書
             </p>
             <p className="text-xs text-gray-500 mt-0.5">
-              This is a printable version of the full budget.
+              這是依本網站資料產生的列印版本。
             </p>
           </div>
           <PrintButton />
@@ -94,13 +94,13 @@ export default async function BudgetBookPage({
             />
           )}
           <h1 className="text-4xl font-bold tracking-tight" style={{ color: town.primaryColor }}>
-            Town of {town.name}
+            {town.name}
           </h1>
           <p className="text-xl text-gray-600 mt-2">
-            FY{currentYear} Budget Book
+            {formatFiscalYear(currentYear)}開放預算書
           </p>
           <p className="text-sm text-gray-500 mt-4">
-            Generated {new Date().toLocaleDateString("en-US", {
+            產生日期 {new Date().toLocaleDateString("zh-TW", {
               year: "numeric", month: "long", day: "numeric",
             })}
           </p>
@@ -109,19 +109,19 @@ export default async function BudgetBookPage({
         {/* Executive Summary */}
         <section className="mb-12">
           <h2 className="text-2xl font-semibold mb-4 pb-2 border-b-2" style={{ borderColor: town.primaryColor }}>
-            Executive Summary
+            預算摘要
           </h2>
           <div className="grid grid-cols-3 gap-6 mt-6">
             <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <p className="text-sm text-gray-500">Total Expenses</p>
+              <p className="text-sm text-gray-500">歲出預算</p>
               <p className="text-2xl font-bold mt-1">{abbreviateCurrency(totalExpenses)}</p>
             </div>
             <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <p className="text-sm text-gray-500">Total Revenue</p>
+              <p className="text-sm text-gray-500">歲入預算</p>
               <p className="text-2xl font-bold mt-1">{abbreviateCurrency(totalRevenues)}</p>
             </div>
             <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <p className="text-sm text-gray-500">Capital Projects</p>
+              <p className="text-sm text-gray-500">資本門</p>
               <p className="text-2xl font-bold mt-1">{abbreviateCurrency(totalCapital)}</p>
             </div>
           </div>
@@ -130,14 +130,14 @@ export default async function BudgetBookPage({
         {/* Expenses by Function */}
         <section className="mb-12 page-break">
           <h2 className="text-2xl font-semibold mb-4 pb-2 border-b-2" style={{ borderColor: town.primaryColor }}>
-            Expenses Summary by Function
+            歲出性質摘要
           </h2>
           <table className="w-full text-sm mt-4">
             <thead>
               <tr className="border-b-2 border-gray-300">
-                <th scope="col" className="text-left py-2 font-semibold">Function Area</th>
-                <th scope="col" className="text-right py-2 font-semibold">FY{currentYear} Budget</th>
-                <th scope="col" className="text-right py-2 font-semibold">% of Total</th>
+                <th scope="col" className="text-left py-2 font-semibold">歲出性質</th>
+                <th scope="col" className="text-right py-2 font-semibold">{formatFiscalYear(currentYear)}預算</th>
+                <th scope="col" className="text-right py-2 font-semibold">占比</th>
               </tr>
             </thead>
             <tbody>
@@ -153,7 +153,7 @@ export default async function BudgetBookPage({
                   </tr>
                 ))}
               <tr className="border-t-2 border-gray-300 font-bold">
-                <td className="py-2">Total</td>
+                <td className="py-2">合計</td>
                 <td className="py-2 text-right tabular-nums">{formatCurrency(totalExpenses)}</td>
                 <td className="py-2 text-right">100%</td>
               </tr>
@@ -164,7 +164,7 @@ export default async function BudgetBookPage({
         {/* Detailed Expenses */}
         <section className="mb-12 page-break">
           <h2 className="text-2xl font-semibold mb-4 pb-2 border-b-2" style={{ borderColor: town.primaryColor }}>
-            Detailed Expense Budget
+            歲出明細
           </h2>
           {[...expFnGroups.entries()].map(([fn, deptMap]) => {
             const fnTotal = [...deptMap.values()].flat().reduce((s, r) => s + r.amount, 0);
@@ -205,14 +205,14 @@ export default async function BudgetBookPage({
         {/* Revenue Summary */}
         <section className="mb-12 page-break">
           <h2 className="text-2xl font-semibold mb-4 pb-2 border-b-2" style={{ borderColor: town.primaryColor }}>
-            Revenue Summary
+            歲入來源摘要
           </h2>
           <table className="w-full text-sm mt-4">
             <thead>
               <tr className="border-b-2 border-gray-300">
-                <th scope="col" className="text-left py-2 font-semibold">Category</th>
-                <th scope="col" className="text-right py-2 font-semibold">FY{revYears.currentYear} Budget</th>
-                <th scope="col" className="text-right py-2 font-semibold">% of Total</th>
+                <th scope="col" className="text-left py-2 font-semibold">歲入來源</th>
+                <th scope="col" className="text-right py-2 font-semibold">{formatFiscalYear(revYears.currentYear)}預算</th>
+                <th scope="col" className="text-right py-2 font-semibold">占比</th>
               </tr>
             </thead>
             <tbody>
@@ -228,7 +228,7 @@ export default async function BudgetBookPage({
                   </tr>
                 ))}
               <tr className="border-t-2 border-gray-300 font-bold">
-                <td className="py-2">Total</td>
+                <td className="py-2">合計</td>
                 <td className="py-2 text-right tabular-nums">{formatCurrency(totalRevenues)}</td>
                 <td className="py-2 text-right">100%</td>
               </tr>
@@ -239,7 +239,7 @@ export default async function BudgetBookPage({
         {/* Detailed Revenues */}
         <section className="mb-12">
           <h2 className="text-2xl font-semibold mb-4 pb-2 border-b-2" style={{ borderColor: town.primaryColor }}>
-            Detailed Revenue Budget
+            歲入明細
           </h2>
           {[...revCatGroups.entries()].map(([cat, rows]) => {
             const catTotal = rows.reduce((s, r) => s + r.amount, 0);
@@ -271,28 +271,28 @@ export default async function BudgetBookPage({
         {currentCapital.length > 0 && (
           <section className="mb-12 page-break">
             <h2 className="text-2xl font-semibold mb-4 pb-2 border-b-2" style={{ borderColor: town.primaryColor }}>
-              Capital Projects — FY{currentYear}
+              {formatFiscalYear(currentYear)}資本門主管機關彙總
             </h2>
             <table className="w-full text-sm mt-4">
               <thead>
                 <tr className="border-b-2 border-gray-300">
-                  <th scope="col" className="text-left py-2 font-semibold">Department</th>
-                  <th scope="col" className="text-left py-2 font-semibold">Purpose</th>
-                  <th scope="col" className="text-right py-2 font-semibold">Amount</th>
-                  <th scope="col" className="text-left py-2 font-semibold">Funding Source</th>
+                  <th scope="col" className="text-left py-2 font-semibold">主管機關</th>
+                  <th scope="col" className="text-left py-2 font-semibold">資料層級</th>
+                  <th scope="col" className="text-right py-2 font-semibold">金額</th>
+                  <th scope="col" className="text-left py-2 font-semibold">資料來源</th>
                 </tr>
               </thead>
               <tbody>
                 {currentCapital.map((row) => (
                   <tr key={row.id} className="border-b border-gray-100">
-                    <td className="py-2 font-medium">{row.department || "Other"}</td>
+                    <td className="py-2 font-medium">{row.department || "其他"}</td>
                     <td className="py-2">{row.purpose || "—"}</td>
                     <td className="py-2 text-right tabular-nums">{formatCurrency(row.amount)}</td>
                     <td className="py-2">{row.fundingSource || "—"}</td>
                   </tr>
                 ))}
                 <tr className="border-t-2 border-gray-300 font-bold">
-                  <td className="py-2" colSpan={2}>Total Capital</td>
+                  <td className="py-2" colSpan={2}>資本門合計</td>
                   <td className="py-2 text-right tabular-nums">{formatCurrency(totalCapital)}</td>
                   <td></td>
                 </tr>
@@ -303,10 +303,10 @@ export default async function BudgetBookPage({
 
         {/* Footer */}
         <footer className="text-center text-xs text-gray-500 mt-16 pt-8 border-t border-gray-200">
-          <p>Town of {town.name} — FY{currentYear} Budget Book</p>
-          <p className="mt-1">Generated by OpenBook</p>
+          <p>{town.name} {formatFiscalYear(currentYear)}開放預算書</p>
+          <p className="mt-1">由 OpenBook 民間概念驗證產生</p>
           {town.contactEmail && (
-            <p className="mt-1">Contact: {town.contactEmail}</p>
+            <p className="mt-1">聯絡信箱 {town.contactEmail}</p>
           )}
         </footer>
       </div>

@@ -6,7 +6,7 @@ import {
   buildExpenseSummaryTiles,
   detectCurrentAndPreviousYear,
 } from "@/lib/aggregator";
-import { formatCurrency } from "@/lib/format";
+import { formatCurrency, formatFiscalYear } from "@/lib/format";
 import SummaryTiles from "@/components/portal/SummaryTiles";
 import PieChart from "@/components/portal/PieChart";
 import BarChart from "@/components/portal/BarChart";
@@ -59,7 +59,7 @@ export default async function ExpensesPage({
   const byFunction = toChartData(groupAndSum(current, "functionArea"));
 
   const years = allYears.length > 0 ? allYears : [currentYear];
-  const functions = [...new Set(current.map((r) => r.functionArea || "Other"))];
+  const functions = [...new Set(current.map((r) => r.functionArea || "其他"))];
   const trendSeries = functions.slice(0, 8).map((fn) => ({
     label: fn,
     data: years.map((y) =>
@@ -101,8 +101,8 @@ export default async function ExpensesPage({
     const deptMap = new Map<string, number>();
     const lineMap = new Map<string, number>();
     for (const row of yearRows) {
-      const fn = row.functionArea || "Other";
-      const dept = row.department || "Other";
+      const fn = row.functionArea || "其他";
+      const dept = row.department || "其他";
       const lineKey = `${fn}|${dept}|${row.objectCode || ""}|${
         row.lineItem || ""
       }`;
@@ -122,7 +122,7 @@ export default async function ExpensesPage({
   const functionGroups = new Map<string, typeof current>();
 
   for (const row of current) {
-    const fn = row.functionArea || "Other";
+    const fn = row.functionArea || "其他";
     if (!functionGroups.has(fn)) functionGroups.set(fn, []);
     functionGroups.get(fn)!.push(row);
   }
@@ -141,7 +141,7 @@ export default async function ExpensesPage({
     // Group by department
     const deptGroups = new Map<string, typeof fnRows>();
     for (const row of fnRows) {
-      const dept = row.department || "Other";
+      const dept = row.department || "其他";
       if (!deptGroups.has(dept)) deptGroups.set(dept, []);
       deptGroups.get(dept)!.push(row);
     }
@@ -180,20 +180,20 @@ export default async function ExpensesPage({
   }
 
   const exportData = current.map((r) => {
-    const lineKey = `${r.functionArea || "Other"}|${r.department || "Other"}|${
+    const lineKey = `${r.functionArea || "其他"}|${r.department || "其他"}|${
       r.objectCode || ""
     }|${r.lineItem || ""}`;
     const yearCols: Record<string, string> = {};
     for (const y of tableYears) {
-      yearCols[`FY${y}`] = formatCurrency(
+      yearCols[formatFiscalYear(y)] = formatCurrency(
         lineTotalsByYear.get(y)?.get(lineKey) || 0
       );
     }
     return {
-      Function: r.functionArea || "",
-      Department: r.department || "",
-      "Line Item": r.lineItem || "",
-      Account: r.objectCode || "",
+      歲出性質: r.functionArea || "",
+      主管機關: r.department || "",
+      科目: r.lineItem || "",
+      款: r.objectCode || "",
       ...yearCols,
     };
   });
@@ -202,8 +202,8 @@ export default async function ExpensesPage({
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Expenses</h1>
-          <p className="text-gray-600 mt-1">Yearly departmental spending</p>
+          <h1 className="text-2xl font-semibold tracking-tight">歲出</h1>
+          <p className="text-gray-600 mt-1">依歲出性質與主管機關查看年度預算</p>
         </div>
         <ExportButton
           data={exportData}
@@ -213,17 +213,16 @@ export default async function ExpensesPage({
 
       <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
         <p className="text-sm text-amber-800 leading-relaxed">
-          <strong>How to read this page:</strong> The summary tiles show the big
-          picture — total spending
+          <strong>怎麼閱讀這一頁</strong> 上方摘要呈現歲出總額、最大類型
           {hasPriorYear
-            ? ", the largest area, and how it changed from last year"
-            : " and the largest area"}
-          . The charts below break spending down visually. Scroll further to see
-          every line item in a searchable table. Look for the{" "}
+            ? "與相較上年度的變化。"
+            : "。"}
+          圖表將預算分成經常門與資本門，表格則可往下查到各主管機關。
+          找到{" "}
           <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-gray-300 text-gray-600 text-[10px] font-bold">
             ?
           </span>{" "}
-          icon next to items — hover or tap it for a plain-language explanation.
+          圖示時，可用滑鼠停留或點按查看白話說明。
         </p>
       </div>
 
@@ -232,19 +231,19 @@ export default async function ExpensesPage({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <PieChart
           data={byFunction}
-          title={`FY${currentYear} Expenses by Function`}
+          title={`${formatFiscalYear(currentYear)}歲出性質`}
           townColor={town.primaryColor}
         />
         <BarChart
-          categories={years.map((y) => `FY${y}`)}
+          categories={years.map(formatFiscalYear)}
           series={trendSeries}
-          title="Expense Trend by Function"
+          title="歲出性質年度比較"
           stacked
         />
       </div>
 
       <BudgetTable
-        headers={["Description", "Account"]}
+        headers={["主管機關／科目", "款"]}
         rows={tableRows}
         categoryTooltips={categoryTooltips}
         lineItemTooltips={lineItemTooltips}

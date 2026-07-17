@@ -11,13 +11,13 @@ interface PortalHeaderProps {
 }
 
 const NAV_ITEMS = [
-  { label: "Overview", path: "" },
-  { label: "Expenses", path: "/expenses" },
-  { label: "Revenues", path: "/revenues" },
-  { label: "Capital", path: "/capital" },
-  { label: "Documents", path: "/documents" },
-  { label: "Budget Book", path: "/budget-book" },
-  { label: "FAQ", path: "/faq" },
+  { label: "總覽", path: "" },
+  { label: "歲出", path: "/expenses" },
+  { label: "歲入", path: "/revenues" },
+  { label: "資本門", path: "/capital" },
+  { label: "資料來源", path: "/documents" },
+  { label: "預算書", path: "/budget-book" },
+  { label: "常見問題", path: "/faq" },
 ];
 
 export default function PortalHeader({
@@ -45,7 +45,7 @@ export default function PortalHeader({
           <Link
             href={`/${townSlug}`}
             className="flex items-center gap-2.5 font-display font-semibold text-lg shrink-0"
-            aria-label={`OpenBook ${townName} home`}
+            aria-label={`${townName} OpenBook 首頁`}
           >
             {logoUrl && (
               // eslint-disable-next-line @next/next/no-img-element -- Logos can be local uploads or arbitrary municipal URLs.
@@ -56,12 +56,12 @@ export default function PortalHeader({
               />
             )}
             <span className="tracking-tight">{townName}</span>
-            <span className="text-white/50 font-normal text-sm hidden sm:inline">OpenBook</span>
+            <span className="text-white/55 font-normal text-sm hidden sm:inline">開放預算</span>
           </Link>
 
           <nav
             className="hidden md:flex items-center gap-0.5"
-            aria-label="Main navigation"
+            aria-label="主要導覽"
           >
             {NAV_ITEMS.map((item) => (
               <Link
@@ -83,7 +83,7 @@ export default function PortalHeader({
 
       <nav
         className="md:hidden border-t border-white/15 px-4 py-1.5 flex gap-0.5 overflow-x-auto"
-        aria-label="Main navigation"
+        aria-label="主要導覽"
       >
         {NAV_ITEMS.map((item) => (
           <Link

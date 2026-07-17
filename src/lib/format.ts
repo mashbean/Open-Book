@@ -1,18 +1,22 @@
 export function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
+  return `NT$${new Intl.NumberFormat("zh-TW", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(value);
+  }).format(value)}`;
 }
 
 export function abbreviateCurrency(value: number): string {
   const abs = Math.abs(value);
-  if (abs >= 1_000_000_000) return `$${(value / 1_000_000_000).toFixed(1)}B`;
-  if (abs >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`;
-  if (abs >= 1_000) return `$${(value / 1_000).toFixed(0)}K`;
-  return `$${value}`;
+  const compact = (amount: number, suffix: string) =>
+    `${new Intl.NumberFormat("zh-TW", { maximumFractionDigits: 1 }).format(amount)} ${suffix}`;
+  if (abs >= 1_000_000_000_000) return compact(value / 1_000_000_000_000, "兆元");
+  if (abs >= 100_000_000) return compact(value / 100_000_000, "億元");
+  if (abs >= 10_000) return compact(value / 10_000, "萬元");
+  return formatCurrency(value);
+}
+
+export function formatFiscalYear(year: string): string {
+  return /^\d{2,3}$/.test(year) ? `${year} 年度` : `FY${year}`;
 }
 
 export function calculateChange(

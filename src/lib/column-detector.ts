@@ -7,19 +7,19 @@ interface DetectionRule {
 
 const FIELD_RULES: Record<string, DetectionRule> = {
   department: {
-    patterns: [/^dept$/i, /department/i, /division/i, /dept\s*code/i, /dept\s*name/i],
+    patterns: [/^dept$/i, /department/i, /division/i, /dept\s*code/i, /dept\s*name/i, /主管機關/, /機關名稱/, /局處/],
     priority: 1,
   },
   lineItem: {
-    patterns: [/description/i, /line\s*item/i, /account\s*desc/i, /detail/i, /^name$/i],
+    patterns: [/description/i, /line\s*item/i, /account\s*desc/i, /detail/i, /^name$/i, /^科目$/, /^名稱$/, /^項目$/],
     priority: 2,
   },
   objectCode: {
-    patterns: [/object\s*code/i, /obj\s*code/i, /account\s*(number|#|no)/i, /^account$/i],
+    patterns: [/object\s*code/i, /obj\s*code/i, /account\s*(number|#|no)/i, /^account$/i, /^款$/, /^項$/, /科目代碼/],
     priority: 3,
   },
   functionArea: {
-    patterns: [/function/i, /func/i, /^program$/i],
+    patterns: [/function/i, /func/i, /^program$/i, /歲出性質/, /政事別/],
     priority: 4,
   },
   fundCode: {
@@ -31,24 +31,28 @@ const FIELD_RULES: Record<string, DetectionRule> = {
     priority: 6,
   },
   category1: {
-    patterns: [/rev.*cat.*1/i, /^category$/i, /^source$/i, /^type$/i, /revenue\s*type/i],
+    patterns: [/rev.*cat.*1/i, /^category$/i, /^source$/i, /^type$/i, /revenue\s*type/i, /歲入來源/, /來源別/],
     priority: 7,
   },
   category2: {
-    patterns: [/rev.*cat.*2/i, /sub.*cat/i],
+    patterns: [/rev.*cat.*2/i, /sub.*cat/i, /歲入性質/],
     priority: 8,
   },
   purpose: {
-    patterns: [/^purpose$/i, /^project$/i, /project\s*name/i],
+    patterns: [/^purpose$/i, /^project$/i, /project\s*name/i, /^用途$/, /計畫名稱/],
     priority: 9,
   },
   fundingSource: {
-    patterns: [/funding\s*source/i, /fund.*source/i],
+    patterns: [/funding\s*source/i, /fund.*source/i, /資金來源/],
     priority: 10,
   },
   fiscalYear: {
-    patterns: [/^fiscal\s*year$/i, /^fy$/i, /^year$/i],
+    patterns: [/^fiscal\s*year$/i, /^fy$/i, /^year$/i, /^年度$/, /^統計期$/],
     priority: 11,
+  },
+  amount: {
+    patterns: [/^amount$/i, /^金額$/, /預算金額/, /決算金額/],
+    priority: 12,
   },
 };
 
@@ -56,6 +60,7 @@ const FY_AMOUNT_PATTERN =
   /(?:fy\s*)?(\d{2,4})\s*(actual|budget|approp|request|recommended|adopted|estimate)/i;
 
 const FY_ONLY_PATTERN = /^(?:fy\s*)?(\d{4})$/i;
+const ROC_FY_AMOUNT_PATTERN = /(\d{2,3})\s*年度?\s*(預算|決算|實現)/;
 
 function matchField(header: string): { field: string; confidence: number } | null {
   for (const [field, rule] of Object.entries(FIELD_RULES)) {
@@ -79,6 +84,15 @@ function matchFYAmount(
     const amountType =
       type === "actual" ? "actual" : type === "budget" || type === "approp" || type === "adopted" ? "budget" : type;
     return { fiscalYear: year, amountType, confidence: 0.95 };
+  }
+
+  const rocMatch = header.match(ROC_FY_AMOUNT_PATTERN);
+  if (rocMatch) {
+    return {
+      fiscalYear: rocMatch[1],
+      amountType: rocMatch[2] === "預算" ? "budget" : "actual",
+      confidence: 0.95,
+    };
   }
 
   const fyOnly = header.match(FY_ONLY_PATTERN);
@@ -131,17 +145,18 @@ export function detectColumns(headers: string[]): DetectedMapping[] {
 }
 
 export const TARGET_FIELDS = [
-  { value: "department", label: "Department" },
-  { value: "lineItem", label: "Line Item / Description" },
-  { value: "objectCode", label: "Account / Object Code" },
-  { value: "functionArea", label: "Function Area" },
-  { value: "fundCode", label: "Fund Code" },
-  { value: "fundName", label: "Fund Name" },
-  { value: "category1", label: "Category" },
-  { value: "category2", label: "Subcategory" },
-  { value: "purpose", label: "Purpose / Project" },
-  { value: "fundingSource", label: "Funding Source" },
-  { value: "fiscalYear", label: "Fiscal Year" },
-  { value: "fyAmount", label: "Fiscal Year Amount" },
-  { value: "skip", label: "Skip this column" },
+  { value: "department", label: "主管機關" },
+  { value: "lineItem", label: "科目／說明" },
+  { value: "objectCode", label: "款項／科目代碼" },
+  { value: "functionArea", label: "歲出性質／政事別" },
+  { value: "fundCode", label: "基金代碼" },
+  { value: "fundName", label: "基金名稱" },
+  { value: "category1", label: "歲入來源" },
+  { value: "category2", label: "歲入次分類" },
+  { value: "purpose", label: "用途／計畫" },
+  { value: "fundingSource", label: "資金來源" },
+  { value: "fiscalYear", label: "年度" },
+  { value: "amount", label: "金額" },
+  { value: "fyAmount", label: "年度金額" },
+  { value: "skip", label: "略過此欄" },
 ];

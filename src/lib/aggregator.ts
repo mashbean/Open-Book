@@ -8,7 +8,7 @@ export function groupAndSum(
 ): Record<string, number> {
   const groups: Record<string, number> = {};
   for (const row of rows) {
-    const key = (row[groupField] as string) || "Other";
+    const key = (row[groupField] as string) || "其他";
     groups[key] = (groups[key] || 0) + row.amount;
   }
   return groups;
@@ -32,10 +32,10 @@ export function buildExpenseSummaryTiles(
   const topFunction = Object.entries(byFunction).sort((a, b) => b[1] - a[1])[0];
 
   const tiles: SummaryTile[] = [
-    { label: "Total Budget", value: abbreviateCurrency(currentTotal) },
+    { label: "歲出預算總額", value: abbreviateCurrency(currentTotal) },
     {
-      label: "Largest Area",
-      value: topFunction ? topFunction[0] : "N/A",
+      label: "最大歲出性質",
+      value: topFunction ? topFunction[0] : "無資料",
     },
   ];
 
@@ -44,13 +44,13 @@ export function buildExpenseSummaryTiles(
     const change = calculateChange(previousTotal, currentTotal);
     tiles.push(
       {
-        label: "$ Change from Last Year",
+        label: "較上年度增減",
         value: formatCurrency(change.absolute),
         change: formatPercent(change.percent),
         changeType: change.absolute >= 0 ? "positive" : "negative",
       },
       {
-        label: "% Change from Last Year",
+        label: "較上年度增減率",
         value: formatPercent(change.percent),
         changeType: change.percent >= 0 ? "positive" : "negative",
       }
@@ -70,8 +70,8 @@ export function buildRevenueSummaryTiles(
   const topCat = Object.entries(byCat).sort((a, b) => b[1] - a[1])[0];
 
   const tiles: SummaryTile[] = [
-    { label: "Total Revenue", value: abbreviateCurrency(currentTotal) },
-    { label: "Top Source", value: topCat ? topCat[0] : "N/A" },
+    { label: "歲入預算總額", value: abbreviateCurrency(currentTotal) },
+    { label: "最大歲入來源", value: topCat ? topCat[0] : "無資料" },
   ];
 
   if (previousRows.length > 0) {
@@ -79,12 +79,12 @@ export function buildRevenueSummaryTiles(
     const change = calculateChange(previousTotal, currentTotal);
     tiles.push(
       {
-        label: "$ Change",
+        label: "較上年度增減",
         value: formatCurrency(change.absolute),
         changeType: change.absolute >= 0 ? "positive" : "negative",
       },
       {
-        label: "% Change",
+        label: "較上年度增減率",
         value: formatPercent(change.percent),
         changeType: change.percent >= 0 ? "positive" : "negative",
       }

@@ -37,7 +37,7 @@ export default function ExportButton({ data, filename }: ExportButtonProps) {
     <button
       onClick={handleExport}
       className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-display font-medium border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-100 active:scale-[0.98]"
-      aria-label={`Export ${filename} as CSV`}
+      aria-label={`下載 ${filename} CSV`}
     >
       <svg
         className="w-3.5 h-3.5"
@@ -53,7 +53,7 @@ export default function ExportButton({ data, filename }: ExportButtonProps) {
           d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
         />
       </svg>
-      Export
+      下載 CSV
     </button>
   );
 }

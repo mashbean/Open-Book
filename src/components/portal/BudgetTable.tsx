@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { formatCurrency } from "@/lib/format";
+import { formatCurrency, formatFiscalYear } from "@/lib/format";
 import TooltipIcon from "./TooltipIcon";
 
 interface TableRow {
@@ -96,9 +96,9 @@ export default function BudgetTable({
   const effectiveHeaders = yearColumns
     ? [
         ...headers,
-        ...visibleYears.map((y) => `FY${y}`),
+        ...visibleYears.map(formatFiscalYear),
         ...(showPctChange
-          ? [`% Change FY${priorYear} to FY${recentYear}`]
+          ? [`${formatFiscalYear(priorYear)}至${formatFiscalYear(recentYear)}增減率`]
           : []),
       ]
     : headers;
@@ -119,7 +119,7 @@ export default function BudgetTable({
           typeof recent !== "number" ||
           prior === 0
         ) {
-          pctCells = ["—"];
+          pctCells = ["無法計算"];
         } else {
           const pct = ((recent - prior) / prior) * 100;
           const sign = pct > 0 ? "+" : "";
@@ -158,16 +158,16 @@ export default function BudgetTable({
             <div className="flex-1 max-w-sm">
               <input
                 type="text"
-                placeholder="Search line items..."
+                placeholder="搜尋機關或科目"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                aria-label="Search budget items"
+                aria-label="搜尋預算項目"
               />
               {query && (
                 <p className="text-xs text-gray-500 mt-1.5">
                   {filtered.filter((r) => !r.isGroup && !r.isSubtotal).length}{" "}
-                  results
+                  筆結果
                 </p>
               )}
             </div>
@@ -184,9 +184,9 @@ export default function BudgetTable({
                 aria-expanded={yearMenuOpen}
                 className="inline-flex items-center gap-2 px-3 py-2 text-sm border border-gray-200 rounded-md bg-gray-50 hover:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
               >
-                <span className="font-medium text-gray-700">Fiscal Year</span>
+                <span className="font-medium text-gray-700">年度</span>
                 <span className="text-gray-500 text-xs">
-                  {selectedYears.length} selected
+                  已選 {selectedYears.length} 個
                 </span>
                 <svg
                   className="w-3 h-3 text-gray-400"
@@ -222,7 +222,7 @@ export default function BudgetTable({
                           onChange={() => toggleYear(year)}
                           className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                         />
-                        <span className="text-gray-700">FY{year}</span>
+                        <span className="text-gray-700">{formatFiscalYear(year)}</span>
                       </label>
                     );
                   })}
@@ -248,7 +248,7 @@ export default function BudgetTable({
             className="w-full text-sm"
             style={{ minWidth: "600px" }}
             role="table"
-            aria-label="Budget data"
+            aria-label="預算資料"
           >
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50/80">
@@ -356,8 +356,8 @@ export default function BudgetTable({
                     className="px-4 py-8 text-center text-gray-500 text-sm"
                   >
                     {query
-                      ? "No items match your search."
-                      : "No data available."}
+                      ? "找不到符合的項目。"
+                      : "目前沒有資料。"}
                   </td>
                 </tr>
               )}

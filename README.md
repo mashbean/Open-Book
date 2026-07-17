@@ -1,6 +1,32 @@
-# OpenBook
+# OpenBook 臺灣開放預算實驗
 
-A municipal budget transparency platform. OpenBook lets towns publish their budgets online so residents can explore expenses, revenues, and capital projects in plain language.
+這個分支把 OpenBook 改造成臺灣地方政府預算透明入口。第一個概念驗證採用臺北市政府主計處 114、115 年度正式總預算 XML，提供繁體中文的歲出、歲入、資本門、資料來源、常見問題、CSV 下載與列印預算書。
+
+目前呈現的是機關與科目彙總，不是逐筆支付帳。資料選擇、能回答的問題與限制整理在 [臺灣版 OpenBook 資料範圍](docs/taiwan-data-scope.md)。
+
+```bash
+npm install
+npm run refresh:taipei
+npm run seed
+npm run dev
+```
+
+`npm run refresh:taipei` 會直接從臺北市資料大平臺重新下載官方 XML，產生 `sample-data/taipei-*.csv`。公開入口為 `/taipei`。
+
+## GitHub Pages 公開版
+
+GitHub Pages 只能託管靜態網站，因此 `pages-site/` 提供不需要資料庫的公開查詢版，包含年度切換、歲出、歲入、資本門、搜尋、CSV 下載、資料來源與常見問題。完整的 PostgreSQL 應用與管理後台仍保留在 Next.js 專案中。
+
+```bash
+npm run build:pages
+python3 -m http.server 8080 --directory pages-site
+```
+
+推送到 `main` 後，`.github/workflows/deploy-pages.yml` 會自動重建資料並發布至 <https://mashbean.github.io/Open-Book/>。
+
+---
+
+OpenBook is a municipal budget transparency platform. OpenBook lets towns publish their budgets online so residents can explore expenses, revenues, and capital projects in plain language.
 
 ![Homepage](docs/screenshots/homepage.png)
 
@@ -32,7 +58,7 @@ This part is a complete walk-through from a fresh computer to a running OpenBook
 
 You need a few things before OpenBook can run. They are free, official, and safe to install.
 
-### 1. Node.js (version 18 or newer; 20 LTS recommended)
+### 1. Node.js (version 20.19 or newer; 22 LTS recommended)
 
 **What it is.** Node.js is the program that runs OpenBook on your computer. OpenBook is written in a language called JavaScript/TypeScript, and Node.js is what reads and executes it. Installing Node.js also installs **`npm`** ("node package manager"), which downloads the small building-block libraries OpenBook depends on so you don't have to.
 
@@ -296,7 +322,7 @@ Vercel builds the app, applies migrations, and gives you a live URL. Connect a c
 
 ### Path B — Self-Hosted
 
-Any server with Node.js 20+ works:
+Any server with Node.js 20.19+ works:
 
 ```bash
 git clone https://github.com/Allen-Lab-for-Democracy-Renovation/Open-Book.git
