@@ -13,6 +13,17 @@ npm run dev
 
 `npm run refresh:taipei` 會直接從臺北市資料大平臺重新下載官方 XML，產生 `sample-data/taipei-*.csv`。公開入口為 `/taipei`。
 
+## GitHub Pages 公開版
+
+GitHub Pages 只能託管靜態網站，因此 `pages-site/` 提供不需要資料庫的公開查詢版，包含年度切換、歲出、歲入、資本門、搜尋、CSV 下載、資料來源與常見問題。完整的 PostgreSQL 應用與管理後台仍保留在 Next.js 專案中。
+
+```bash
+npm run build:pages
+python3 -m http.server 8080 --directory pages-site
+```
+
+推送到 `main` 後，`.github/workflows/deploy-pages.yml` 會自動重建資料並發布至 <https://mashbean.github.io/Open-Book/>。
+
 ---
 
 OpenBook is a municipal budget transparency platform. OpenBook lets towns publish their budgets online so residents can explore expenses, revenues, and capital projects in plain language.
