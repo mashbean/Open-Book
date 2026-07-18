@@ -15,55 +15,60 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <a class="skip-link" href="#main">跳到主要內容</a>
+    <a class="skip-link" href="#main" data-i18n="skip">跳到主要內容</a>
 
     <header class="site-header">
       <div class="header-inner">
-        <button class="brand nav-trigger" type="button" data-view="overview" aria-label="回到總覽">
+        <button class="brand nav-trigger" type="button" data-view="overview" aria-label="回到總覽" data-i18n-aria="homeLabel">
           <span class="brand-mark" aria-hidden="true">北</span>
           <span>
-            <strong>臺北市</strong>
+            <strong data-i18n="city">臺北市</strong>
             <small>OpenBook</small>
           </span>
         </button>
 
-        <nav class="primary-nav" aria-label="主要導覽">
-          <button class="nav-trigger active" type="button" data-view="overview">總覽</button>
-          <button class="nav-trigger" type="button" data-view="expenses">歲出</button>
-          <button class="nav-trigger" type="button" data-view="revenues">歲入</button>
-          <button class="nav-trigger" type="button" data-view="capital">資本門</button>
-          <button class="nav-trigger" type="button" data-view="sources">資料來源</button>
-          <button class="nav-trigger" type="button" data-view="faq">常見問題</button>
+        <nav class="primary-nav" aria-label="主要導覽" data-i18n-aria="navLabel">
+          <button class="nav-trigger active" type="button" data-view="overview" data-i18n="overview">總覽</button>
+          <button class="nav-trigger" type="button" data-view="expenses" data-i18n="expenses">歲出</button>
+          <button class="nav-trigger" type="button" data-view="revenues" data-i18n="revenues">歲入</button>
+          <button class="nav-trigger" type="button" data-view="capital" data-i18n="capital">資本門</button>
+          <button class="nav-trigger" type="button" data-view="sources" data-i18n="sources">資料與文件</button>
+          <button class="nav-trigger" type="button" data-view="faq" data-i18n="faq">常見問題</button>
         </nav>
 
         <label class="year-control">
-          <span>年度</span>
-          <select id="year-select" aria-label="選擇預算年度"></select>
+          <span data-i18n="year">年度</span>
+          <select id="year-select" aria-label="選擇預算年度" data-i18n-aria="yearSelect"></select>
         </label>
+        <div class="language-control" role="group" aria-label="語言與幣別" data-i18n-aria="languageLabel">
+          <button type="button" data-language="zh" data-i18n="zhCurrency">中文 · TWD</button>
+          <button type="button" data-language="en" data-i18n="enCurrency">EN · USD</button>
+        </div>
       </div>
     </header>
 
     <main id="main">
       <section class="view active" id="view-overview" data-view-panel="overview">
-        <section class="hero" aria-label="首頁主視覺">
+        <section class="hero" aria-label="首頁主視覺" data-i18n-aria="heroLabel">
           <div class="hero-grid shell">
             <div class="hero-copy-block">
-              <div class="municipal-label"><span class="seal-mini">北</span><span>市政預算透明<br /><strong>臺北市</strong></span></div>
-              <p class="hero-kicker">Municipal Budget Transparency</p>
-              <h1>更清楚地看見<br />臺北市的<br /><em>財政全貌</em></h1>
-              <p class="hero-copy">OpenBook 把市政預算、歲入、歲出與資本投資整理成每位市民都能理解與查詢的公共資訊。</p>
+              <div class="municipal-label"><span class="seal-mini">北</span><span><span data-i18n="municipal">市政預算透明</span><br /><strong data-i18n="city">臺北市</strong></span></div>
+              <p class="hero-kicker" data-i18n="transparency">Municipal Budget Transparency</p>
+              <h1 data-i18n-html="heroTitle">更清楚地看見<br />臺北市的<br /><em>財政全貌</em></h1>
+              <p class="hero-copy" data-i18n="heroCopy">OpenBook 把市政預算、歲入、歲出與資本投資整理成每位市民都能理解與查詢的公共資訊。</p>
               <div class="hero-actions">
-                <button class="button gold nav-trigger" type="button" data-view="expenses">探索 <span id="hero-year">115</span> 年度預算 <span aria-hidden="true">→</span></button>
-                <button class="button ghost nav-trigger" type="button" data-view="capital">查看資本投資</button>
+                <button class="button gold nav-trigger" id="hero-expense-cta" type="button" data-view="expenses">探索 115 年度預算 →</button>
+                <button class="button ghost nav-trigger" type="button" data-view="capital" data-i18n="seeCapital">查看資本投資</button>
               </div>
             </div>
             <div class="hero-glance">
-              <div class="glance-heading"><span><b id="glance-year">115</b> 年度預算一覽</span><span class="official-pill">官方資料</span></div>
+              <div class="glance-heading"><span id="glance-title">115 年度預算一覽</span><span class="official-pill" data-i18n="officialData">官方資料</span></div>
               <div id="overview-stats" class="stat-grid" aria-live="polite"></div>
               <div class="glance-chart">
-                <p><span><b id="glance-chart-year">115</b> 年度歲出</span><span>按主管機關比例</span></p>
+                <p><span id="glance-chart-title">115 年度歲出</span><span data-i18n="budgetByAgency">按主管機關比例</span></p>
                 <div id="hero-budget-bars" class="hero-budget-bars"></div>
               </div>
+              <p class="fx-note" id="fx-note" data-i18n="fxNote">所有官方原始金額均為新臺幣。</p>
             </div>
           </div>
         </section>
@@ -71,15 +76,15 @@
         <section class="journey-section">
           <div class="shell">
             <div class="section-intro centered">
-              <p class="kicker">理解預算</p>
-              <h2>追蹤每一塊公共支出</h2>
-              <p>每一筆預算都有一條路徑，從公共收入到市民每天使用的服務。</p>
+              <p class="kicker" data-i18n="understandBudget">理解預算</p>
+              <h2 data-i18n="followDollar">追蹤每一塊公共支出</h2>
+              <p data-i18n="followDollarCopy">每一筆預算都有一條路徑，從公共收入到市民每天使用的服務。</p>
             </div>
             <div class="journey-grid">
-              <button class="journey-card nav-trigger" type="button" data-view="revenues"><span>01</span><h3>收入進入城市</h3><p>稅課、補助、規費與財產收入共同支應城市運作。</p><b>深入了解 →</b></button>
-              <button class="journey-card nav-trigger" type="button" data-view="sources"><span>02</span><h3>預算編列與通過</h3><p>市府依法編列年度總預算，經議會審議後提供各項服務。</p><b>深入了解 →</b></button>
-              <button class="journey-card nav-trigger" type="button" data-view="expenses"><span>03</span><h3>公共服務落地</h3><p>教育、社福、治安、交通與環境服務進入市民生活。</p><b>深入了解 →</b></button>
-              <button class="journey-card nav-trigger" type="button" data-view="capital"><span>04</span><h3>投資城市未來</h3><p>公共工程、設備與基礎建設形成長期公共效益。</p><b>深入了解 →</b></button>
+              <button class="journey-card nav-trigger" type="button" data-view="revenues"><span>01</span><h3 data-i18n="step1Title">收入進入城市</h3><p data-i18n="step1Copy">稅課、補助、規費與財產收入共同支應城市運作。</p><b data-i18n="learnMore">深入了解 →</b></button>
+              <button class="journey-card nav-trigger" type="button" data-view="sources"><span>02</span><h3 data-i18n="step2Title">預算編列與通過</h3><p data-i18n="step2Copy">市府依法編列年度總預算，經議會審議後提供各項服務。</p><b data-i18n="learnMore">深入了解 →</b></button>
+              <button class="journey-card nav-trigger" type="button" data-view="expenses"><span>03</span><h3 data-i18n="step3Title">公共服務落地</h3><p data-i18n="step3Copy">教育、社福、治安、交通與環境服務進入市民生活。</p><b data-i18n="learnMore">深入了解 →</b></button>
+              <button class="journey-card nav-trigger" type="button" data-view="capital"><span>04</span><h3 data-i18n="step4Title">投資城市未來</h3><p data-i18n="step4Copy">公共工程、設備與基礎建設形成長期公共效益。</p><b data-i18n="learnMore">深入了解 →</b></button>
             </div>
           </div>
         </section>
@@ -87,11 +92,11 @@
         <section class="investment-section">
           <div class="shell investment-grid">
             <div class="investment-copy">
-              <p class="kicker"><span id="investment-year">115</span> 年度預算</p>
-              <h2>臺北市把預算<br />投資在哪裡</h2>
+              <p class="kicker" id="investment-kicker">115 年度預算</p>
+              <h2 data-i18n-html="investsTitle">臺北市把預算<br />投資在哪裡</h2>
               <p id="investment-summary">從主管機關別歲出，理解城市服務的預算規模。</p>
-              <div class="investment-total"><strong id="investment-total">載入中</strong><span>年度歲出預算總額</span></div>
-              <button class="button dark nav-trigger" type="button" data-view="expenses">查看全部歲出 →</button>
+              <div class="investment-total"><strong id="investment-total">載入中</strong><span data-i18n="totalExpenseBudget">年度歲出預算總額</span></div>
+              <button class="button dark nav-trigger" type="button" data-view="expenses" data-i18n="viewAllExpenses">查看全部歲出 →</button>
             </div>
             <div id="agency-bars" class="ranking-list"></div>
           </div>
@@ -100,14 +105,14 @@
         <section class="balance-section">
           <div class="shell">
             <div class="section-intro centered light">
-              <p class="kicker">財政概況</p>
-              <h2>年度預算收支</h2>
-              <p>並列歲入與歲出，快速掌握年度預算是否平衡。</p>
+              <p class="kicker" data-i18n="fiscalHealth">財政概況</p>
+              <h2 data-i18n="balanceTitle">年度預算收支</h2>
+              <p data-i18n="balanceIntro">並列歲入與歲出，快速掌握年度預算是否平衡。</p>
             </div>
             <div class="balance-grid">
-              <article class="balance-column"><p>歲入</p><strong id="balance-revenue-total">載入中</strong><div id="revenue-overview" class="balance-list"></div><button class="text-link nav-trigger" type="button" data-view="revenues">查看全部歲入 →</button></article>
-              <div class="balance-center"><span>年度差額</span><strong id="balance-value">載入中</strong><p id="balance-copy"></p></div>
-              <article class="balance-column"><p>歲出</p><strong id="balance-expense-total">載入中</strong><div id="balance-expense-list" class="balance-list"></div><button class="text-link nav-trigger" type="button" data-view="expenses">查看全部歲出 →</button></article>
+              <article class="balance-column"><p data-i18n="revenue">歲入</p><strong id="balance-revenue-total">載入中</strong><div id="revenue-overview" class="balance-list"></div><button class="text-link nav-trigger" type="button" data-view="revenues" data-i18n="viewAllRevenues">查看全部歲入 →</button></article>
+              <div class="balance-center"><span data-i18n="budgetDifference">年度差額</span><strong id="balance-value">載入中</strong><p id="balance-copy"></p></div>
+              <article class="balance-column"><p data-i18n="expense">歲出</p><strong id="balance-expense-total">載入中</strong><div id="balance-expense-list" class="balance-list"></div><button class="text-link nav-trigger" type="button" data-view="expenses" data-i18n="viewAllExpenses">查看全部歲出 →</button></article>
             </div>
           </div>
         </section>
@@ -115,11 +120,11 @@
         <section class="capital-feature">
           <div class="shell capital-feature-grid">
             <div>
-              <p class="kicker">資本投資計畫</p>
-              <h2>打造臺北市的未來</h2>
-              <p>資本門預算投入公共工程、設備與基礎建設。現階段開放資料可查到主管機關彙總，尚未細分成個別工程。</p>
-              <div class="capital-total"><strong id="capital-highlight-total">載入中</strong><span><b id="capital-feature-year">115</b> 年度<br />資本門預算</span></div>
-              <button class="button gold nav-trigger" type="button" data-view="capital">探索資本門 →</button>
+              <p class="kicker" data-i18n="capitalPlan">資本投資計畫</p>
+              <h2 data-i18n="futureTitle">打造臺北市的未來</h2>
+              <p data-i18n="futureCopy">資本門預算投入公共工程、設備與基礎建設。現階段開放資料可查到主管機關彙總，尚未細分成個別工程。</p>
+              <div class="capital-total"><strong id="capital-highlight-total">載入中</strong><span id="capital-budget-label">115 年度<br />資本門預算</span></div>
+              <button class="button gold nav-trigger" type="button" data-view="capital" data-i18n="exploreCapital">探索資本門 →</button>
             </div>
             <div id="capital-highlight-list" class="capital-highlight-list"></div>
           </div>
@@ -128,17 +133,17 @@
         <section class="documents-section">
           <div class="shell">
             <div class="section-intro centered">
-              <p class="kicker">公開透明</p>
-              <h2>數字背後的資料都在這裡</h2>
-              <p>查看完整明細、方法與原始資料，無需帳號即可使用。</p>
+              <p class="kicker" data-i18n="transparencyLabel">公開透明</p>
+              <h2 data-i18n="documentsTitle">數字背後的資料都在這裡</h2>
+              <p data-i18n="documentsIntro">查看完整明細、方法與原始資料，無需帳號即可使用。</p>
             </div>
             <div class="document-grid">
-              <button class="document-card nav-trigger" type="button" data-view="expenses"><span>▤</span><h3>歲出明細</h3><p>按主管機關與經常門、資本門查詢。</p></button>
-              <button class="document-card nav-trigger" type="button" data-view="revenues"><span>＄</span><h3>歲入總表</h3><p>查看城市公共服務的主要財源。</p></button>
-              <button class="document-card nav-trigger" type="button" data-view="capital"><span>▧</span><h3>資本門</h3><p>比較長期投資的主管機關預算。</p></button>
-              <button class="document-card nav-trigger" type="button" data-view="sources"><span>↗</span><h3>官方資料</h3><p>回到臺北市政府資料來源核對。</p></button>
-              <button class="document-card nav-trigger" type="button" data-view="faq"><span>?</span><h3>常見問題</h3><p>了解預算、決算與資料範圍。</p></button>
-              <a class="document-card" href="https://github.com/mashbean/Open-Book"><span>⌘</span><h3>開放原始碼</h3><p>檢視網站程式與資料整理方式。</p></a>
+              <button class="document-card nav-trigger" type="button" data-view="expenses"><span>▤</span><h3 data-i18n="expenseDetail">歲出明細</h3><p data-i18n="expenseDetailCopy">按主管機關與經常門、資本門查詢。</p></button>
+              <button class="document-card nav-trigger" type="button" data-view="revenues"><span>＄</span><h3 data-i18n="revenueSummary">歲入總表</h3><p data-i18n="revenueSummaryCopy">查看城市公共服務的主要財源。</p></button>
+              <button class="document-card nav-trigger" type="button" data-view="capital"><span>▧</span><h3 data-i18n="capitalDetail">資本門</h3><p data-i18n="capitalDetailCopy">比較長期投資的主管機關預算。</p></button>
+              <button class="document-card nav-trigger" type="button" data-view="sources"><span>↗</span><h3 data-i18n="officialSources">官方資料</h3><p data-i18n="officialSourcesCopy">回到臺北市政府資料來源核對。</p></button>
+              <button class="document-card nav-trigger" type="button" data-view="faq"><span>?</span><h3 data-i18n="faqCard">常見問題</h3><p data-i18n="faqCardCopy">了解預算、決算與資料範圍。</p></button>
+              <a class="document-card" href="https://github.com/mashbean/Open-Book"><span>⌘</span><h3 data-i18n="openSource">開放原始碼</h3><p data-i18n="openSourceCopy">檢視網站程式與資料整理方式。</p></a>
             </div>
           </div>
         </section>
@@ -149,8 +154,8 @@
 
         <section class="data-boundary">
           <div class="shell notice" role="note">
-            <strong>資料邊界</strong>
-            <span>目前公開的是正式總預算彙總，並非逐筆付款帳。網站不會把採購決標金額誤當成實際支出。</span>
+            <strong data-i18n="dataBoundary">資料邊界</strong>
+            <span data-i18n="dataBoundaryCopy">目前公開的是正式總預算彙總，並非逐筆付款帳。網站不會把採購決標金額誤當成實際支出。</span>
           </div>
         </section>
 
@@ -158,20 +163,20 @@
 
       <section class="view" id="view-expenses" data-view-panel="expenses" hidden>
         <div class="page-heading shell">
-          <p class="eyebrow">城市準備把錢用在哪裡</p>
-          <h1>歲出預算</h1>
-          <p>依經常門、資本門與主管機關查看，並與前一年度比較。</p>
+          <p class="eyebrow" data-i18n="expenseEyebrow">城市準備把錢用在哪裡</p>
+          <h1 data-i18n="expenseTitle">歲出預算</h1>
+          <p data-i18n="expenseIntro">依經常門、資本門與主管機關查看，並與前一年度比較。</p>
         </div>
         <div class="shell section-stack">
           <div id="expense-stats" class="stat-grid compact"></div>
           <article class="panel data-panel">
             <div class="table-toolbar">
-              <label class="search-field"><span class="sr-only">搜尋歲出資料</span><input id="expense-search" type="search" placeholder="搜尋主管機關或科目" /></label>
-              <button class="button secondary" id="download-expenses" type="button">下載 CSV</button>
+              <label class="search-field"><span class="sr-only" data-i18n="expenseSearch">搜尋主管機關或科目</span><input id="expense-search" type="search" placeholder="搜尋主管機關或科目" data-i18n-placeholder="expenseSearch" /></label>
+              <button class="button secondary" id="download-expenses" type="button" data-i18n="downloadCsv">下載 CSV</button>
             </div>
             <div class="table-wrap">
               <table>
-                <thead><tr><th>主管機關</th><th>歲出性質</th><th>款</th><th class="number">預算金額</th><th class="number">占比</th></tr></thead>
+                <thead><tr><th data-i18n="agency">主管機關</th><th data-i18n="expenseType">歲出性質</th><th data-i18n="section">款</th><th class="number" data-i18n="budgetAmount">預算金額</th><th class="number" data-i18n="share">占比</th></tr></thead>
                 <tbody id="expense-table"></tbody>
               </table>
             </div>
@@ -182,20 +187,20 @@
 
       <section class="view" id="view-revenues" data-view-panel="revenues" hidden>
         <div class="page-heading shell">
-          <p class="eyebrow">公共服務的財源</p>
-          <h1>歲入預算</h1>
-          <p>從稅課、補助、規費與其他來源理解城市收入。</p>
+          <p class="eyebrow" data-i18n="revenueEyebrow">公共服務的財源</p>
+          <h1 data-i18n="revenueTitle">歲入預算</h1>
+          <p data-i18n="revenueIntro">從稅課、補助、規費與其他來源理解城市收入。</p>
         </div>
         <div class="shell section-stack">
           <div id="revenue-stats" class="stat-grid compact"></div>
           <article class="panel data-panel">
             <div class="table-toolbar">
-              <label class="search-field"><span class="sr-only">搜尋歲入資料</span><input id="revenue-search" type="search" placeholder="搜尋歲入來源或科目" /></label>
-              <button class="button secondary" id="download-revenues" type="button">下載 CSV</button>
+              <label class="search-field"><span class="sr-only" data-i18n="revenueSearch">搜尋歲入來源或科目</span><input id="revenue-search" type="search" placeholder="搜尋歲入來源或科目" data-i18n-placeholder="revenueSearch" /></label>
+              <button class="button secondary" id="download-revenues" type="button" data-i18n="downloadCsv">下載 CSV</button>
             </div>
             <div class="table-wrap">
               <table>
-                <thead><tr><th>歲入來源</th><th>科目</th><th>性質</th><th class="number">預算金額</th><th class="number">占比</th></tr></thead>
+                <thead><tr><th data-i18n="revenueSource">歲入來源</th><th data-i18n="item">科目</th><th data-i18n="type">性質</th><th class="number" data-i18n="budgetAmount">預算金額</th><th class="number" data-i18n="share">占比</th></tr></thead>
                 <tbody id="revenue-table"></tbody>
               </table>
             </div>
@@ -206,20 +211,20 @@
 
       <section class="view" id="view-capital" data-view-panel="capital" hidden>
         <div class="page-heading shell">
-          <p class="eyebrow">形成資產或長期效益</p>
-          <h1>資本門預算</h1>
-          <p>官方資料目前只到主管機關彙總，因此這裡不把機關合計誤寫成個別工程。</p>
+          <p class="eyebrow" data-i18n="capitalEyebrow">形成資產或長期效益</p>
+          <h1 data-i18n="capitalTitle">資本門預算</h1>
+          <p data-i18n="capitalIntro">官方資料目前只到主管機關彙總，因此這裡不把機關合計誤寫成個別工程。</p>
         </div>
         <div class="shell section-stack">
           <div id="capital-stats" class="stat-grid compact"></div>
           <article class="panel data-panel">
             <div class="table-toolbar">
-              <label class="search-field"><span class="sr-only">搜尋資本門資料</span><input id="capital-search" type="search" placeholder="搜尋主管機關" /></label>
-              <button class="button secondary" id="download-capital" type="button">下載 CSV</button>
+              <label class="search-field"><span class="sr-only" data-i18n="capitalSearch">搜尋主管機關</span><input id="capital-search" type="search" placeholder="搜尋主管機關" data-i18n-placeholder="capitalSearch" /></label>
+              <button class="button secondary" id="download-capital" type="button" data-i18n="downloadCsv">下載 CSV</button>
             </div>
             <div class="table-wrap">
               <table>
-                <thead><tr><th>主管機關</th><th>資料層級</th><th class="number">預算金額</th><th>資料來源</th></tr></thead>
+                <thead><tr><th data-i18n="agency">主管機關</th><th data-i18n="dataLevel">資料層級</th><th class="number" data-i18n="budgetAmount">預算金額</th><th data-i18n="dataSource">資料來源</th></tr></thead>
                 <tbody id="capital-table"></tbody>
               </table>
             </div>
@@ -230,47 +235,62 @@
 
       <section class="view" id="view-sources" data-view-panel="sources" hidden>
         <div class="page-heading shell">
-          <p class="eyebrow">每個數字都能回去核對</p>
-          <h1>資料來源</h1>
-          <p>資料來自臺北市政府主計處、財政局與政府資料開放平臺，採政府資料開放授權條款第 1 版。</p>
+          <p class="eyebrow" data-i18n="sourcesEyebrow">每個數字都能回去核對</p>
+          <h1 data-i18n="sourcesTitle">資料與文件</h1>
+          <p data-i18n="sourcesIntro">資料來自臺北市政府主計處、財政局與政府資料開放平臺，採政府資料開放授權條款第 1 版。</p>
         </div>
         <div class="shell section-stack">
           <div id="source-list" class="source-grid"></div>
           <article class="panel methodology">
-            <p class="kicker">整理方法</p>
-            <h2>從官方 XML 到可查詢表格</h2>
+            <p class="kicker" data-i18n="methodology">整理方法</p>
+            <h2 data-i18n="methodologyTitle">從官方 XML 到可查詢表格</h2>
             <ol>
-              <li>下載 114、115 年度正式總預算 XML</li>
-              <li>保留主管機關、款項、經常門、資本門與金額</li>
-              <li>逐年核對整理後加總與官方合計</li>
-              <li>產生可搜尋、比較與下載的靜態資料</li>
+              <li data-i18n="method1">下載 114、115 年度正式總預算 XML</li>
+              <li data-i18n="method2">保留主管機關、款項、經常門、資本門與金額</li>
+              <li data-i18n="method3">逐年核對整理後加總與官方合計</li>
+              <li data-i18n="method4">產生可搜尋、比較與下載的靜態資料</li>
             </ol>
+          </article>
+          <article class="panel fx-method">
+            <p class="kicker">USD</p>
+            <h2 data-i18n="fxMethodTitle">英文版美元換算</h2>
+            <p data-i18n="fxMethodCopy">英文版以臺灣銀行 2026 年 7 月 17 日美元即期買賣中價換算，固定使用 NT$32.25 = US$1。這是方便國際讀者比較的估算值，官方預算仍以新臺幣為準。</p>
+            <a href="https://rate.bot.com.tw/xrt?Lang=en-US" target="_blank" rel="noopener noreferrer" data-i18n="fxMethodLink">查看臺灣銀行牌告匯率 ↗</a>
           </article>
         </div>
       </section>
 
       <section class="view" id="view-faq" data-view-panel="faq" hidden>
         <div class="page-heading shell">
-          <p class="eyebrow">資料怎麼讀</p>
-          <h1>常見問題</h1>
-          <p>說明這份預算資料能回答什麼，以及目前還缺少哪些資訊。</p>
+          <p class="eyebrow" data-i18n="faqEyebrow">資料怎麼讀</p>
+          <h1 data-i18n="faqTitle">常見問題</h1>
+          <p data-i18n="faqIntro">說明這份預算資料能回答什麼，以及目前還缺少哪些資訊。</p>
         </div>
         <div class="shell narrow section-stack"><div id="faq-list" class="faq-list"></div></div>
       </section>
     </main>
 
+    <section class="trust-strip" aria-label="網站資料承諾" data-i18n-aria="trustLabel">
+      <div class="shell trust-grid">
+        <span><b>↻</b><span data-i18n="updatedRegularly">定期更新</span></span>
+        <span><b>▤</b><span data-i18n="adoptedData">正式預算資料</span></span>
+        <span><b>◇</b><span data-i18n="noAccount">無需帳號</span></span>
+        <span><b>♿</b><span data-i18n="accessible">為所有人設計</span></span>
+      </div>
+    </section>
+
     <footer>
       <div class="shell footer-inner">
         <div>
-          <p class="footer-kicker">為市民而建</p>
-          <strong>每位臺北市民，都能直接理解城市財政。</strong>
-          <p>清楚、完整、免費使用。民間概念驗證，原始資料以發布機關內容為準。</p>
+          <p class="footer-kicker" data-i18n="builtForResidents">為市民而建</p>
+          <strong data-i18n="footerTitle">每位臺北市民，都能直接理解城市財政。</strong>
+          <p data-i18n="footerCopy">清楚、完整、免費使用。民間概念驗證，原始資料以發布機關內容為準。</p>
         </div>
-        <div class="footer-meta"><span id="generated-date"></span><a href="https://github.com/mashbean/Open-Book">查看原始碼</a></div>
+        <div class="footer-meta"><span id="generated-date"></span><a href="https://github.com/mashbean/Open-Book" data-i18n="sourceCode">查看原始碼</a></div>
       </div>
     </footer>
 
-    <div class="loading-screen" id="loading-screen" role="status"><div class="loader"></div><span>正在整理預算資料</span></div>
+    <div class="loading-screen" id="loading-screen" role="status"><div class="loader"></div><span data-i18n="loading">正在整理預算資料</span></div>
     <script type="module" src="./app.js"></script>
   </body>
 </html>

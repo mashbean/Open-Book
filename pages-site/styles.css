@@ -119,6 +119,29 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   color: #fff;
   background: #244a39;
 }
+.language-control {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 8px;
+  background: rgba(0,0,0,.12);
+}
+.language-control button {
+  min-height: 32px;
+  padding: .3rem .55rem;
+  border: 0;
+  border-radius: 5px;
+  color: rgba(255,255,255,.62);
+  background: transparent;
+  font-size: .72rem;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.language-control button.active {
+  color: #1d291f;
+  background: var(--gold);
+  font-weight: 800;
+}
 .view { min-height: calc(100vh - 72px); animation: view-in 200ms ease-out; }
 @keyframes view-in { from { opacity: 0; } to { opacity: 1; } }
 
@@ -200,6 +223,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .glance-chart > p { display: flex; justify-content: space-between; margin: 0 0 .9rem; color: rgba(255,255,255,.58); font-size: .7rem; }
 .hero-budget-bars { display: flex; height: 24px; overflow: hidden; border-radius: 4px; background: rgba(255,255,255,.08); }
 .hero-budget-bars i { display: block; min-width: 3px; height: 100%; border-right: 1px solid rgba(10,30,18,.3); }
+.fx-note { margin: .8rem .35rem .15rem; color: rgba(255,255,255,.55); font-size: .68rem; line-height: 1.45; }
 
 .journey-section, .documents-section { padding: 5.5rem 0; background: #fff; }
 .section-intro { max-width: 720px; }
@@ -309,11 +333,18 @@ td small { color: var(--ink-soft); }
 .source-link { color: var(--green); font-size: .8rem; font-weight: 800; }
 .methodology h2 { margin: .2rem 0 1rem; }
 .methodology li { margin: .45rem 0; }
+.fx-method p { max-width: 900px; color: var(--ink-soft); }
+.fx-method a { color: var(--green); font-weight: 800; }
 .faq-list { display: grid; gap: .7rem; }
 .faq-list details { border: 1px solid var(--line); border-radius: 9px; background: #fff; }
 .faq-list summary { padding: 1rem 1.2rem; font-weight: 800; cursor: pointer; }
 .faq-answer { padding: 0 1.2rem 1.2rem; color: var(--ink-soft); }
 
+.trust-strip { padding: 1.4rem 0; color: rgba(255,255,255,.72); background: #193329; border-bottom: 1px solid rgba(255,255,255,.08); }
+.trust-grid { display: grid; grid-template-columns: repeat(4,1fr); }
+.trust-grid > span { display: flex; align-items: center; justify-content: center; gap: .65rem; min-height: 44px; border-left: 1px solid rgba(255,255,255,.13); font-size: .78rem; }
+.trust-grid > span:first-child { border-left: 0; }
+.trust-grid b { color: var(--gold); font-size: 1rem; }
 footer { padding: 4.5rem 0; color: #fff; background: #12251d; }
 .footer-inner { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; }
 .footer-kicker { margin: 0 0 .7rem; color: var(--gold); font-size: .72rem; font-weight: 800; letter-spacing: .14em; }
@@ -332,6 +363,7 @@ footer { padding: 4.5rem 0; color: #fff; background: #12251d; }
   .primary-nav { order: 3; width: 100%; overflow-x: auto; }
   .primary-nav button { min-height: 48px; white-space: nowrap; }
   .year-control { margin-left: auto; }
+  .language-control { margin-left: 0; }
   .hero-grid { grid-template-columns: 1fr; min-height: auto; }
   .hero-copy-block { max-width: 720px; }
   .hero-glance { max-width: 720px; }
@@ -345,6 +377,10 @@ footer { padding: 4.5rem 0; color: #fff; background: #12251d; }
   .site-header { position: relative; }
   .brand-mark { width: 34px; height: 34px; }
   .year-control > span { display: none; }
+  .header-inner { gap: .65rem; }
+  .language-control { margin-left: auto; }
+  .year-control { margin-left: 0; }
+  .language-control button { padding-inline: .42rem; }
   .hero-grid { padding-block: 3rem; gap: 2.5rem; }
   .municipal-label { margin-bottom: 1.5rem; }
   .hero h1 { font-size: clamp(2.55rem,14vw,4.2rem); }
@@ -370,6 +406,9 @@ footer { padding: 4.5rem 0; color: #fff; background: #12251d; }
   .footer-inner { align-items: flex-start; flex-direction: column; }
   .footer-meta { align-items: flex-start; }
   .notice { flex-direction: column; }
+  .trust-grid { grid-template-columns: 1fr 1fr; }
+  .trust-grid > span:nth-child(3) { border-left: 0; border-top: 1px solid rgba(255,255,255,.13); }
+  .trust-grid > span:nth-child(4) { border-top: 1px solid rgba(255,255,255,.13); }
 }
 
 @media (max-width: 440px) {
