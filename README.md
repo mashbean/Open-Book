@@ -1,6 +1,6 @@
 # OpenBook 臺灣開放預算實驗
 
-這個專案把 OpenBook 改造成臺灣地方政府預算透明入口。首頁以行政院主計總處 115 年度直轄市及縣市總預算彙編呈現 22 縣市共同指標，並把官方資料、OpenFun 與 TwinkleAI 分成證據底座、整理補充，以及搜尋、讀列與對帳三個責任層。上方導覽提供全臺總覽與 22 個獨立縣市頁，每個縣市頁都呈現官方預算結構、融資平衡、OpenFun 工作計畫，以及 TwinkleAI 實際採用、讀列後排除或純搜尋的狀態。
+這個專案把 OpenBook 改造成臺灣地方政府預算透明入口。首頁以行政院主計總處 115 年度直轄市及縣市總預算彙編呈現 22 縣市共同指標，並把官方資料、OpenFun 與 TwinkleAI 分成證據底座、公開 bulk 整理與 API 目錄，以及 MCP 搜尋、讀列與對帳三個責任層。上方導覽提供全臺總覽與 22 個獨立縣市頁，每個縣市頁都呈現官方預算結構、融資平衡、OpenFun 工作計畫，以及 TwinkleAI 實際採用、讀列後排除或純搜尋的狀態。
 
 英文版使用美元顯示，按臺灣銀行 2026 年 7 月 17 日美元即期買賣中價固定換算為 `NT$32.25 = US$1`。美元金額用於國際讀者比較，官方原始金額及中文版均維持新臺幣。英文版可直接開啟 <https://mashbean.github.io/Open-Book/?lang=en>。
 
@@ -15,7 +15,17 @@ npm run seed
 npm run dev
 ```
 
-`npm run refresh:interfaces` 會用 OpenFun 公開靜態檔與 Twinkle MCP 對 22 縣市逐一驗收。Twinkle 管線先搜尋與讀取 metadata，再對全縣市候選呼叫 `query_rows` 取得實際資料列，產生不含金鑰的 `data-sources/ai-interface-audit.json`。Twinkle key 只從本機環境變數 `TWINKLE_API_KEY` 讀取。
+`npm run refresh:interfaces` 會先使用真實 OpenFun Token 驗證搜尋、受保護 records、欄位搜尋、精確篩選、聚合及預算端點，再用 OpenFun 公開 bulk 檔與 Twinkle MCP 對 22 縣市逐一驗收。Twinkle 管線先搜尋與讀取 metadata，再對全縣市候選呼叫 `query_rows` 取得實際資料列，產生不含任何金鑰的 `data-sources/ai-interface-audit.json`。金鑰只從本機環境變數 `OPENFUN_API_TOKEN` 與 `TWINKLE_API_KEY` 讀取。
+
+```bash
+set -a
+source ~/.config/secrets/openfun.env
+source ~/.config/secrets/twinkle.env
+set +a
+npm run refresh:interfaces
+```
+
+2026 年 7 月 23 日實測顯示，OpenFun Token 可正常查詢受保護的機關代碼資料集，總筆數為 17,388，欄位搜尋與精確篩選均成功。預算搜尋可找到地方預算與預算詳情兩份資料集，但兩者都是 bulk 類型，`records` 與 `agg` 端點都回傳 HTTP 400，因此本站的縣市工作計畫仍直接讀取免 Token 的公開 CSV／JSON。完整與授權資料集目前標示為邀請制封測，需要帳號與群組授權；有使用需求可聯絡歐噴資料庫團隊。
 
 `npm run refresh:national` 會下載行政院主計總處的 115 年度縣市總預算彙編，驗證 22 縣市總額、政事別、經資門及收支平衡，再合併雙接口驗收結果產生 `pages-site/cities.json`。
 
@@ -23,7 +33,7 @@ npm run dev
 
 ## GitHub Pages 公開版
 
-GitHub Pages 只能託管靜態網站，因此 `pages-site/` 提供不需要資料庫的公開查詢版，包含全臺總覽、22 個獨立縣市頁、三層資料實測、預算結構、融資平衡、中英文與美元估算、搜尋及完整 CSV 下載。TwinkleAI 的 `query_rows` 目前實讀 8 個候選資料集，只有新北市與嘉義市通過官方總額對帳並供應機關別明細，其餘資料明確標為未採用。臺北市另在同一頁顯示官方主管機關別歲出與歲入資料。完整的 PostgreSQL 應用與管理後台仍保留在 Next.js 專案中。
+GitHub Pages 只能託管靜態網站，因此 `pages-site/` 提供不需要資料庫的公開查詢版，包含全臺總覽、22 個獨立縣市頁、三層資料實測、OpenFun API 與 TwinkleAI MCP 能力比較、預算結構、融資平衡、中英文與美元估算、搜尋及完整 CSV 下載。OpenFun 可讀取 21 個縣市工作計畫 CSV，其中 11 個縣市另有實質用途文字。TwinkleAI 的 `query_rows` 實讀 8 個候選資料集，只有新北市與嘉義市通過官方總額對帳並供應機關別明細，其餘資料明確標為未採用。臺北市另在同一頁顯示官方主管機關別歲出與歲入資料。完整的 PostgreSQL 應用與管理後台仍保留在 Next.js 專案中。
 
 ```bash
 npm run build:pages

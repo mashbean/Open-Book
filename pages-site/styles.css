@@ -546,6 +546,23 @@ footer { padding: 4.5rem 0; color: #fff; background: #12251d; }
 .source-flow-card > i { position: absolute; top: 44%; right: -2rem; z-index: 2; display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border: 1px solid var(--line); border-radius: 50%; color: var(--green); background: var(--paper); font-style: normal; font-weight: 900; }
 .source-use-rule { display: flex; gap: 1rem; margin-top: 1.4rem; padding: 1rem 1.2rem; border-left: 4px solid var(--green); color: #334b40; background: #eef4ef; }
 .source-use-rule strong { flex: 0 0 auto; }
+.interface-comparison { margin-top: 1.6rem; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: #fbfbf8; }
+.comparison-heading { display: grid; grid-template-columns: minmax(0,1fr) minmax(280px,.7fr); gap: 2rem; padding: 1.4rem 1.5rem; border-bottom: 1px solid var(--line); }
+.comparison-heading span { color: #75602e; font-size: .67rem; font-weight: 900; letter-spacing: .12em; }
+.comparison-heading h3 { margin: .35rem 0 0; font-size: 1.22rem; }
+.comparison-heading p { margin: 0; color: var(--ink-soft); font-size: .82rem; }
+.comparison-table-wrap { overflow-x: auto; }
+.comparison-table { width: 100%; min-width: 760px; border-collapse: collapse; table-layout: fixed; }
+.comparison-table th, .comparison-table td { padding: .9rem 1rem; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); text-align: left; vertical-align: top; font-size: .78rem; line-height: 1.55; }
+.comparison-table thead th { color: #fff; background: var(--header); font-size: .72rem; letter-spacing: .04em; }
+.comparison-table tbody th { width: 16%; color: var(--forest); background: #f1f4ef; }
+.comparison-table th:last-child, .comparison-table td:last-child { border-right: 0; }
+.beta-note { display: flex; gap: 1rem; padding: 1rem 1.2rem; color: #5b461d; background: #f8efd8; font-size: .78rem; }
+.beta-note strong { flex: 0 0 auto; }
+.openfun-api-notice { display: grid; grid-template-columns: auto 1fr; gap: .15rem 1rem; margin-bottom: 1rem; padding: 1rem 1.2rem; border: 1px solid #ead9ad; border-radius: 10px; background: #fff8e7; }
+.openfun-api-notice span { grid-row: 1 / 3; align-self: start; padding: .22rem .5rem; border-radius: 99px; color: #fff; background: #8b6423; font-size: .62rem; font-weight: 900; letter-spacing: .09em; }
+.openfun-api-notice strong { color: #4d3914; }
+.openfun-api-notice p { margin: .15rem 0 0; color: #715f39; font-size: .8rem; }
 
 .coverage-panel { padding: 0; overflow: hidden; }
 .coverage-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; padding: 2rem; border-bottom: 1px solid var(--line); }
@@ -713,6 +730,10 @@ footer { padding: 4.5rem 0; color: #fff; background: #12251d; }
   .nationwide-stats, .city-primary-stats { grid-template-columns: 1fr 1fr; }
   .source-relationship-panel, .city-budget-panel, .city-sources-panel, .taipei-extra-panel { padding: 1.25rem; }
   .source-use-rule { flex-direction: column; }
+  .comparison-heading { grid-template-columns: 1fr; gap: .75rem; }
+  .beta-note { flex-direction: column; }
+  .openfun-api-notice { grid-template-columns: 1fr; }
+  .openfun-api-notice span { grid-row: auto; width: max-content; }
   .coverage-heading { align-items: stretch; flex-direction: column; padding: 1.3rem; }
   .coverage-controls { flex-basis: auto; }
   .city-detail-heading { padding: 3rem 0 2.6rem; }
