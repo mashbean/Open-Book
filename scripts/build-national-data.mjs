@@ -138,6 +138,19 @@ const cities = [...cityData.values()].map((city) => {
     throw new Error(`Current and capital total mismatch for ${city.city}`);
   }
   const openfunComparable = interfaceProfile.openfun.status === "ok" && interfaceProfile.openfun.latest_year === 115;
+  const twinkleRows = interfaceProfile.twinkle.row_data ?? { attempted: false, status: "search_only" };
+  const twinkleReportedTotal = twinkleRows.reported_total_thousand_twd ?? null;
+  const twinkleDifference = twinkleReportedTotal === null ? null : twinkleReportedTotal - city.expenditure_thousand_twd;
+  const twinkleYearIsCurrentOrUnlabeled = twinkleRows.fiscal_year_roc === 115 || twinkleRows.fiscal_year_roc === null;
+  const twinkleEligibleForUse = twinkleRows.status === "ok"
+    && twinkleRows.row_complete !== false
+    && twinkleDifference === 0
+    && twinkleYearIsCurrentOrUnlabeled;
+  let twinkleReconciliationStatus = "search_only";
+  if (twinkleRows.attempted && twinkleRows.status !== "ok") twinkleReconciliationStatus = "row_read_failed";
+  if (twinkleRows.status === "ok" && twinkleRows.fiscal_year_roc !== null && twinkleRows.fiscal_year_roc !== 115) twinkleReconciliationStatus = "stale_year";
+  if (twinkleRows.status === "ok" && twinkleYearIsCurrentOrUnlabeled && twinkleDifference !== 0) twinkleReconciliationStatus = "total_mismatch";
+  if (twinkleEligibleForUse) twinkleReconciliationStatus = twinkleRows.fiscal_year_roc === 115 ? "reconciled" : "reconciled_year_unlabeled";
   const financingBalance = city.revenue_thousand_twd + city.borrowing_thousand_twd + city.prior_surplus_thousand_twd
     - city.expenditure_thousand_twd - city.debt_repayment_thousand_twd;
   if (financingBalance !== city.budget_surplus_thousand_twd) {
@@ -160,9 +173,28 @@ const cities = [...cityData.values()].map((city) => {
         : null,
     },
     openfun: interfaceProfile.openfun,
-    twinkle: interfaceProfile.twinkle,
+    twinkle: {
+      ...interfaceProfile.twinkle,
+      row_reconciliation: {
+        attempted: Boolean(twinkleRows.attempted),
+        status: twinkleReconciliationStatus,
+        eligible_for_use: twinkleEligibleForUse,
+        reported_total_thousand_twd: twinkleReportedTotal,
+        official_total_thousand_twd: city.expenditure_thousand_twd,
+        difference_thousand_twd: twinkleDifference,
+        difference_share: twinkleDifference === null ? null : twinkleDifference / city.expenditure_thousand_twd,
+        fiscal_year_roc: twinkleRows.fiscal_year_roc ?? null,
+        year_evidence: twinkleRows.year_evidence ?? null,
+        row_count_returned: twinkleRows.row_count_returned ?? null,
+        row_complete: twinkleRows.row_complete ?? null,
+        top_agencies: twinkleEligibleForUse ? (twinkleRows.top_agencies ?? []) : [],
+      },
+    },
   };
 });
+
+const twinkleRowsAttempted = cities.filter((city) => city.twinkle.row_reconciliation.attempted).length;
+const twinkleRowsReconciled = cities.filter((city) => city.twinkle.row_reconciliation.eligible_for_use).length;
 
 const payload = {
   meta: {
@@ -179,7 +211,11 @@ const payload = {
       generated_at: interfaceAudit.meta.generated_at,
       methodology: interfaceAudit.meta.methodology,
       boundary: interfaceAudit.meta.boundary,
-      summary: interfaceAudit.summary,
+      summary: {
+        ...interfaceAudit.summary,
+        twinkle_query_rows_attempted: twinkleRowsAttempted,
+        twinkle_rows_reconciled: twinkleRowsReconciled,
+      },
       services: interfaceAudit.services,
     },
   },

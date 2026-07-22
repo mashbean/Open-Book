@@ -661,6 +661,19 @@ footer { padding: 4.5rem 0; color: #fff; background: #12251d; }
 .dataset-meta { display: flex; flex-wrap: wrap; gap: .5rem 1.2rem; margin: 1rem 0; }
 .dataset-meta span { color: var(--ink-soft); font-size: .68rem; }
 .dataset-meta b { color: var(--ink); }
+.twinkle-row-panel { margin: 1.5rem; overflow: hidden; border: 1px solid var(--line); border-radius: 10px; }
+.twinkle-row-panel > div:first-child { padding: 1.25rem 1.4rem; }
+.twinkle-row-panel > div > span { display: block; margin-bottom: .35rem; font-size: .65rem; font-weight: 900; letter-spacing: .1em; }
+.twinkle-row-panel > div > strong { display: block; font-size: 1.05rem; }
+.twinkle-row-panel > div > p { margin: .5rem 0 0; color: var(--ink-soft); font-size: .82rem; }
+.twinkle-row-panel > div > small { display: block; margin-top: .55rem; color: var(--ink-soft); font-size: .7rem; }
+.twinkle-row-panel.accepted { border-color: #b7d9c8; background: #f3faf6; }
+.twinkle-row-panel.accepted > div > span { color: #14704c; }
+.twinkle-row-panel.accepted .detail-table { background: #fff; }
+.twinkle-row-panel.rejected { border-color: #e5c2ba; background: #fff7f5; }
+.twinkle-row-panel.rejected > div > span { color: var(--red); }
+.twinkle-row-panel.search-only { border-color: #d9d9ea; background: #f7f7fb; }
+.twinkle-row-panel.search-only > div > span { color: #5a5c8a; }
 .schema-chips { display: flex; flex-wrap: wrap; gap: .45rem; }
 .schema-chips code { max-width: 100%; padding: .35rem .55rem; overflow: hidden; border: 1px solid #dddfea; border-radius: 6px; color: #3e416b; background: #f6f6fa; font-size: .65rem; text-overflow: ellipsis; white-space: nowrap; }
 .schema-chips > span { align-self: center; color: var(--ink-soft); font-size: .7rem; }

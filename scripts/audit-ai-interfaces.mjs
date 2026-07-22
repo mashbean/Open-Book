@@ -14,6 +14,17 @@ const CITIES = [
   "彰化縣", "南投縣", "雲林縣", "嘉義市", "嘉義縣", "屏東縣", "澎湖縣", "花蓮縣", "臺東縣", "金門縣", "連江縣",
 ];
 
+const TWINKLE_ROW_PROFILES = new Map(Object.entries({
+  "177273": { city: "新北市", agency_column: "field1", amount_column: "amounts unit dollars4", total_label: "總計", fiscal_year_roc: 115, year_evidence: "資料集標題明示 115 年度" },
+  "46434": { city: "桃園市", agency_column: "科目名稱", amount_column: "合計_千元", fiscal_year_roc: null, year_evidence: "資料列與標題未明示年度" },
+  "89337": { city: "臺中市", agency_column: "欄位名稱", amount_column: "數值", unit_divisor: 1000, fiscal_year_roc: 108, year_evidence: "資料列日期為 2019-01-01" },
+  "53336": { city: "臺南市", agency_column: "名稱", amount_column: "本年度預算數", total_label: "合計", fiscal_year_roc: null, year_evidence: "資料列與標題未明示年度" },
+  "101171": { city: "高雄市", agency_column: "名稱", amount_column: "合計金額", total_label: "合計", fiscal_year_roc: null, year_evidence: "資料列與標題未明示年度" },
+  "168463": { city: "南投縣", agency_column: "項目", amount_column: "本年度預算數金額（千元）", total_label: "歲出合計", fiscal_year_roc: null, year_evidence: "資料列與標題未明示年度" },
+  "52350": { city: "嘉義市", agency_column: "名稱", amount_column: "合計金額", fiscal_year_roc: null, year_evidence: "資料列與標題未明示年度" },
+  "148048": { city: "花蓮縣", agency_column: "名稱", amount_column: "107年度預算數(經資門併計)(千元)", fiscal_year_roc: 107, year_evidence: "金額欄位明示 107 年度" },
+}));
+
 function normalizeText(value) {
   return String(value ?? "").replaceAll("台", "臺").replaceAll(/\s+/g, "").toLowerCase();
 }
@@ -195,8 +206,9 @@ async function createTwinkleClient(apiKey) {
   const toolNames = {
     search: resolveTool("search_datasets"),
     get: resolveTool("get_dataset"),
+    query: resolveTool("query_rows"),
   };
-  if (!toolNames.search || !toolNames.get) throw new Error(`Required Twinkle tools missing. Available: ${[...names].join(", ")}`);
+  if (!toolNames.search || !toolNames.get || !toolNames.query) throw new Error(`Required Twinkle tools missing. Available: ${[...names].join(", ")}`);
   async function call(name, argumentsValue) {
     return unwrapToolResult(await request("tools/call", { name, arguments: argumentsValue }));
   }
@@ -238,6 +250,73 @@ function metadataShape(payload) {
     license: dataset?.license ?? payload?.license ?? null,
     row_count: number(dataset?.row_count ?? dataset?.count ?? metadata?.schema?.row_count ?? dataset?.data_volume_total ?? payload?.row_count ?? payload?.count),
     columns: columns.map((column) => typeof column === "string" ? column : column.name ?? column.label ?? column.key).filter(Boolean),
+    description: dataset?.description ?? metadata?.description ?? null,
+    metadata_updated: dataset?.metadata_updated ?? metadata?.updated_at ?? null,
+    update_freq: dataset?.update_freq ?? metadata?.update_freq ?? null,
+    quality_tier: dataset?.quality_tier ?? metadata?.quality_tier ?? null,
+    normalised_at: dataset?.provenance?.normalised_at ?? metadata?.provenance?.normalised_at ?? null,
+  };
+}
+
+function queryRowsShape(payload) {
+  const data = payload?.data ?? payload;
+  return {
+    columns: Array.isArray(data?.columns) ? data.columns : [],
+    rows: Array.isArray(data?.rows) ? data.rows : [],
+    row_count_returned: number(data?.row_count_returned) ?? (Array.isArray(data?.rows) ? data.rows.length : 0),
+  };
+}
+
+function inspectTwinkleAmount(value) {
+  const parsed = number(String(value ?? "").replaceAll(",", ""));
+  return parsed === null ? null : parsed;
+}
+
+async function inspectTwinkleRows(client, city, datasetId, metadata) {
+  const profile = TWINKLE_ROW_PROFILES.get(String(datasetId));
+  if (!profile || profile.city !== city) {
+    return { attempted: false, status: "no_row_profile", reason: "候選資料集尚未建立可重現的欄位讀取規則" };
+  }
+  const payload = await client.call(client.toolNames.query, { dataset_id: String(datasetId), limit: 100 });
+  const result = queryRowsShape(payload);
+  const agencyIndex = result.columns.indexOf(profile.agency_column);
+  const amountIndex = result.columns.indexOf(profile.amount_column);
+  if (agencyIndex < 0 || amountIndex < 0) {
+    return {
+      attempted: true,
+      status: "schema_mismatch",
+      row_count_returned: result.row_count_returned,
+      columns: result.columns,
+      reason: `預期欄位不存在：${profile.agency_column}／${profile.amount_column}`,
+    };
+  }
+  const divisor = profile.unit_divisor ?? 1;
+  const parsedRows = result.rows.map((row) => ({
+    agency: String(row[agencyIndex] ?? "").trim(),
+    amount_thousand_twd: inspectTwinkleAmount(row[amountIndex]) === null ? null : inspectTwinkleAmount(row[amountIndex]) / divisor,
+  }));
+  const totalRow = profile.total_label ? parsedRows.find((row) => row.agency === profile.total_label) : null;
+  const reportedTotal = totalRow?.amount_thousand_twd ?? parsedRows.reduce((sum, row) => sum + (row.amount_thousand_twd ?? 0), 0);
+  const excludedLabels = new Set(["合計", "總計", "歲出合計", "歲入合計", "歲入歲出餘絀"]);
+  const topAgencies = parsedRows
+    .filter((row) => row.agency && !excludedLabels.has(row.agency) && row.amount_thousand_twd > 0)
+    .sort((left, right) => right.amount_thousand_twd - left.amount_thousand_twd)
+    .slice(0, 5);
+  return {
+    attempted: true,
+    status: "ok",
+    tool: client.toolNames.query,
+    row_count_returned: result.row_count_returned,
+    expected_row_count: metadata?.row_count ?? null,
+    row_complete: metadata?.row_count == null ? null : result.row_count_returned === metadata.row_count,
+    columns: result.columns,
+    agency_column: profile.agency_column,
+    amount_column: profile.amount_column,
+    reported_total_thousand_twd: reportedTotal,
+    fiscal_year_roc: profile.fiscal_year_roc,
+    year_evidence: profile.year_evidence,
+    top_agencies: topAgencies,
+    meta: payload?._meta ?? null,
   };
 }
 
@@ -278,6 +357,16 @@ async function inspectTwinkleCity(client, city) {
   if (process.env.DEBUG_TWINKLE === "1" && city === CITIES[0]) console.log(JSON.stringify(dataset, null, 2));
   const exactCityHits = results.filter((row) => normalizeText(`${twinkleTitle(row)} ${twinkleAgency(row)}`).includes(normalizeText(city)));
   const selectedText = normalizeText(`${twinkleTitle(best)} ${twinkleAgency(best)}`);
+  const selectedIsCitywideExpenseBudget = Boolean(best && selectedText.includes("總預算") && selectedText.includes("歲出") && !selectedText.includes("地方檢察署"));
+  const selectedMetadata = dataset ? metadataShape(dataset) : null;
+  let rowData = { attempted: false, status: "search_only", reason: "最佳命中不是全縣市歲出總預算，未讀取資料列" };
+  if (selectedIsCitywideExpenseBudget && datasetId !== null) {
+    try {
+      rowData = await inspectTwinkleRows(client, city, datasetId, selectedMetadata);
+    } catch (error) {
+      rowData = { attempted: true, status: "error", error: error.message };
+    }
+  }
   return {
     status: "ok",
     queries: searchPayloads.map(({ query, payload }) => ({ query, result_count: findArray(payload).length, meta: payload?._meta ?? null })),
@@ -288,9 +377,10 @@ async function inspectTwinkleCity(client, city) {
     selected_agency: twinkleAgency(best) || null,
     selected_score: number(best?.score),
     selected_is_exact_city_match: best ? normalizeText(`${twinkleTitle(best)} ${twinkleAgency(best)}`).includes(normalizeText(city)) : false,
-    selected_is_citywide_expense_budget: Boolean(best && selectedText.includes("總預算") && selectedText.includes("歲出") && !selectedText.includes("地方檢察署")),
-    selected_metadata: dataset ? metadataShape(dataset) : null,
+    selected_is_citywide_expense_budget: selectedIsCitywideExpenseBudget,
+    selected_metadata: selectedMetadata,
     dataset_error: datasetError,
+    row_data: rowData,
     search_meta: searchPayloads.map(({ payload }) => payload?._meta ?? null),
   };
 }
@@ -328,8 +418,8 @@ async function main() {
       generated_at: new Date().toISOString(),
       cities_expected: CITIES.length,
       cities_audited: records.length,
-      methodology: "OpenFun 工作計劃 CSV 逐縣市讀取並檢查詳細歲出 JSON；Twinkle public_finance 逐縣市搜尋，再讀取最佳命中資料集 metadata。",
-      boundary: "查詢命中代表服務可發現或整理該資料，不代表數值已和官方 115 年度共同表同口徑，也不代表任何異常構成不當支出。",
+      methodology: "OpenFun 工作計劃 CSV 逐縣市讀取並檢查詳細歲出 JSON；Twinkle public_finance 逐縣市搜尋、讀取最佳命中 metadata，對全縣市候選再以 query_rows 取得實際資料列。",
+      boundary: "Twinkle 查詢命中不代表可用。實際資料列仍須和官方 115 年度共同表對帳，未通過者不得供應正式數字，也不代表任何異常構成不當支出。",
     },
     services: {
       openfun: {
@@ -355,6 +445,8 @@ async function main() {
       twinkle_with_results: records.filter((row) => row.twinkle.result_count > 0).length,
       twinkle_exact_city_match: records.filter((row) => row.twinkle.selected_is_exact_city_match).length,
       twinkle_citywide_expense_budget: records.filter((row) => row.twinkle.selected_is_citywide_expense_budget).length,
+      twinkle_query_rows_attempted: records.filter((row) => row.twinkle.row_data?.attempted).length,
+      twinkle_query_rows_succeeded: records.filter((row) => row.twinkle.row_data?.status === "ok").length,
     },
     cities: records,
   };

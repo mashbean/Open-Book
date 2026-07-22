@@ -7,11 +7,11 @@ const copy = {
   zh: {
     skip: "跳到主要內容", siteName: "臺灣地方政府", baseline: "115 年度共同基準", nationwide: "全臺總覽",
     nationalEyebrow: "先比較，再進入各縣市", nationalTitle: "22 縣市預算<br /><em>一頁看懂差異</em>",
-    nationalIntro: "官方資料回答可比較的預算數字，OpenFun 補上工作計畫，TwinkleAI 協助發現資料集。三者各有不同責任。",
+    nationalIntro: "官方資料回答可比較的預算數字，OpenFun 補上工作計畫，TwinkleAI 實際讀取候選資料列；只有和官方總額對上的結果才會採用。",
     relationshipKicker: "資料從哪裡來", relationshipTitle: "先分清楚證據、整理與搜尋",
-    relationshipCopy: "OpenBook 不把三個服務當成三份互相競爭的答案。官方數字是底座，OpenFun 提供整理後的計畫資料，TwinkleAI 是找資料的入口。",
+    relationshipCopy: "官方數字是底座，OpenFun 提供整理後的計畫資料。TwinkleAI 先搜尋再讀取資料列，網站會逐縣市公開是否真的採用。",
     coverageKicker: "22 縣市逐一實測", coverageTitle: "每個縣市目前可以看到多深",
-    coverageCopy: "點選任一列進入獨立縣市頁。表格把官方總預算、OpenFun 工作計畫與 TwinkleAI 命中品質放在同一列比較。",
+    coverageCopy: "點選任一列進入獨立縣市頁。TwinkleAI 欄會區分實際採用、讀取但未通過對帳，以及只有搜尋命中。",
     citySearch: "搜尋縣市", downloadCsv: "下載完整 CSV", columnCity: "縣市", columnOfficial: "官方 115 年總預算", columnQuestion: "本頁值得追問", openCity: "開啟縣市頁",
     expenseScale: "歲出規模", compareCities: "比較 22 縣市年度預算", compareCitiesCopy: "長條只表示主計總處共同表中的歲出規模，不代表施政品質或財政健康。",
     watchpointsKicker: "跨縣市線索", watchpointsTitle: "數字突出時，先提出可查證的問題", watchpointsCopy: "這些訊號用來安排回查順序，不代表違法、浪費或政策失敗。",
@@ -20,8 +20,8 @@ const copy = {
     questionLabel: "本頁先問", questionBoundary: "這是資料驅動的查證起點，需回到預算書、表註與年度分類判讀。",
     officialBaseline: "官方共同基準", budgetStructure: "錢編在哪些政策領域", budgetStructureCopy: "以下數字都來自主計總處同一份 115 年度彙編，因此可以和其他縣市比較。",
     financingTitle: "收支如何平衡", financingCopy: "歲入加上舉借與以前年度賸餘，用於歲出、還本與預計賸餘。",
-    cityAuditKicker: "三層資料實測", cityAuditTitle: "這個縣市的資料實際走到哪裡", cityAuditCopy: "先看官方基準，再看 OpenFun 是否有工作計畫，最後檢查 TwinkleAI 搜到的是全縣市資料或局處資料。",
-    roleEvidence: "證據底座", officialData: "官方資料", officialPrimary: "正式比較依據", roleNormalize: "整理補充", roleDiscover: "搜尋探索",
+    cityAuditKicker: "三層資料實測", cityAuditTitle: "這個縣市的資料實際走到哪裡", cityAuditCopy: "先看官方基準與 OpenFun 工作計畫，再檢查 TwinkleAI 是否只搜尋到資料集、實際讀取資料列，或已通過官方總額對帳。",
+    roleEvidence: "證據底座", officialData: "官方資料", officialPrimary: "正式比較依據", roleNormalize: "整理補充", roleDiscover: "搜尋、讀列與對帳",
     taipeiExtraKicker: "臺北額外官方明細", taipeiExtraTitle: "主管機關別歲出與歲入資料", taipeiExtraCopy: "臺北另有跨年度官方 XML，可在同一個臺北頁面補充主管機關別資料，不再拆成首頁上方的獨立分頁。",
     methodLabel: "如何閱讀", methodTitle: "來源越深，越需要交叉驗證",
     footerTitle: "讓每個縣市的預算，都能被找到、比較與追問。", footerCopy: "民間概念驗證，數字與定義仍以主計總處及地方政府原始資料為準。", reportLink: "研究報告", loading: "正在整理 22 縣市資料",
@@ -29,11 +29,11 @@ const copy = {
   en: {
     skip: "Skip to main content", siteName: "Taiwan Local Governments", baseline: "FY2026 common baseline", nationwide: "National overview",
     nationalEyebrow: "Compare first, then open each locality", nationalTitle: "22 local budgets<br /><em>with their differences made clear</em>",
-    nationalIntro: "Official data supplies comparable budget figures, OpenFun adds work-program detail, and TwinkleAI helps discover datasets. Each has a different responsibility.",
+    nationalIntro: "Official data supplies comparable figures, OpenFun adds work-program detail, and TwinkleAI reads candidate rows. Only results reconciled to the official total are used.",
     relationshipKicker: "Where the data comes from", relationshipTitle: "Separate evidence, normalization, and discovery",
-    relationshipCopy: "OpenBook does not treat these services as three competing answers. Official figures are the evidence base, OpenFun organizes program data, and TwinkleAI is a discovery gateway.",
+    relationshipCopy: "Official figures are the evidence base and OpenFun organizes program data. TwinkleAI searches and then reads rows, while this site discloses whether each result is actually used.",
     coverageKicker: "All 22 localities tested", coverageTitle: "How much detail is available for each locality",
-    coverageCopy: "Open any row for its dedicated page. The table compares the official budget, OpenFun work programs, and TwinkleAI search quality side by side.",
+    coverageCopy: "Open any row for its dedicated page. The TwinkleAI column separates actual use, rows rejected after reconciliation, and search-only hits.",
     citySearch: "Search local governments", downloadCsv: "Download full CSV", columnCity: "Local government", columnOfficial: "Official FY2026 budget", columnQuestion: "Question to investigate", openCity: "Open locality page",
     expenseScale: "Expense scale", compareCities: "Compare all 22 annual budgets", compareCitiesCopy: "Bars represent expense-budget size in the common DGBAS workbook, not policy quality or fiscal health.",
     watchpointsKicker: "Cross-locality leads", watchpointsTitle: "When a number stands out, start with a verifiable question", watchpointsCopy: "These signals prioritize source checks. They do not establish illegality, waste, or policy failure.",
@@ -42,8 +42,8 @@ const copy = {
     questionLabel: "Start with this question", questionBoundary: "This data-driven lead must be checked against budget books, notes, and year-to-year classification changes.",
     officialBaseline: "Official common baseline", budgetStructure: "Where the budget is allocated", budgetStructureCopy: "All figures below come from the same FY2026 DGBAS workbook and can therefore be compared across localities.",
     financingTitle: "How the budget balances", financingCopy: "Revenue, borrowing, and prior surpluses fund expenses, debt repayment, and the projected surplus.",
-    cityAuditKicker: "Three-layer data audit", cityAuditTitle: "How far the data actually goes for this locality", cityAuditCopy: "Start with the official baseline, check OpenFun work programs, then verify whether TwinkleAI found a citywide budget or only an agency dataset.",
-    roleEvidence: "Evidence base", officialData: "Official data", officialPrimary: "Primary comparison source", roleNormalize: "Normalized enrichment", roleDiscover: "Search and discovery",
+    cityAuditKicker: "Three-layer data audit", cityAuditTitle: "How far the data actually goes for this locality", cityAuditCopy: "Start with the official baseline and OpenFun programs, then check whether TwinkleAI only found a dataset, read actual rows, or passed total reconciliation.",
+    roleEvidence: "Evidence base", officialData: "Official data", officialPrimary: "Primary comparison source", roleNormalize: "Normalized enrichment", roleDiscover: "Search, rows, reconciliation",
     taipeiExtraKicker: "Additional Taipei official detail", taipeiExtraTitle: "Expenses and revenues by supervising agency", taipeiExtraCopy: "Taipei also publishes cross-year official XML. It is now included on the single Taipei page instead of occupying separate top navigation tabs.",
     methodLabel: "How to read this page", methodTitle: "Deeper data requires more cross-checking",
     footerTitle: "Make every local budget findable, comparable, and open to questions.", footerCopy: "An independent proof of concept. Official definitions and figures remain authoritative.", reportLink: "Research report", loading: "Organizing data for 22 localities",
@@ -110,6 +110,10 @@ function cityQuestion(row) {
   if (row.openfun?.latest_year && row.openfun.latest_year < 115) return isEnglish()
     ? `OpenFun stops at ROC ${row.openfun.latest_year}. Where are the newer files, and can the update chain be repaired?`
     : `OpenFun 資料停在民國 ${row.openfun.latest_year} 年，較新檔案在哪裡，更新鏈能否修復？`;
+  const twinkleReconciliation = row.twinkle?.row_reconciliation;
+  if (twinkleReconciliation?.attempted && !twinkleReconciliation.eligible_for_use) return isEnglish()
+    ? `TwinkleAI read ${twdNumber.format(twinkleReconciliation.row_count_returned)} rows, but its total differs from the official baseline by ${percent(Math.abs(twinkleReconciliation.difference_share))}. Which year or scope caused the gap?`
+    : `TwinkleAI 已讀取 ${twdNumber.format(twinkleReconciliation.row_count_returned)} 列，但總額與官方基準相差 ${percent(Math.abs(twinkleReconciliation.difference_share))}，差異來自年度還是資料範圍？`;
   if (!row.twinkle?.selected_is_citywide_expense_budget) return isEnglish()
     ? "TwinkleAI found the locality but not a citywide expense budget. Which exact dataset ID should become the verified source?"
     : "TwinkleAI 命中同縣市，但不是全縣市歲出總預算，應把哪個精確 dataset ID 列為驗證來源？";
@@ -126,7 +130,9 @@ function openfunStatus(row) {
 }
 
 function twinkleStatus(row) {
-  if (row.twinkle.selected_is_citywide_expense_budget) return { label: isEnglish() ? "Verified citywide hit" : "命中全縣市總預算", tone: "good" };
+  const reconciliation = row.twinkle.row_reconciliation;
+  if (reconciliation?.eligible_for_use) return { label: isEnglish() ? "Rows used after reconciliation" : "實際列已對帳採用", tone: "good" };
+  if (reconciliation?.attempted) return { label: isEnglish() ? "Rows read, not accepted" : "已讀列但未通過", tone: "bad" };
   if (row.twinkle.selected_is_exact_city_match) return { label: isEnglish() ? "Same locality, partial" : "同縣市但僅部分資料", tone: "warn" };
   return { label: isEnglish() ? "No precise locality hit" : "未精確命中縣市", tone: "bad" };
 }
@@ -144,8 +150,8 @@ function applyTranslations() {
   });
   const title = isEnglish() ? "Taiwan Local Government OpenBook" : "臺灣地方政府 OpenBook";
   const description = isEnglish()
-    ? "Compare all 22 local budgets and inspect official data, OpenFun detail, and TwinkleAI search quality for every locality."
-    : "比較臺灣 22 縣市預算，並逐縣市檢視官方資料、OpenFun 整理與 TwinkleAI 搜尋結果。";
+    ? "Compare all 22 local budgets and inspect official data, OpenFun detail, and TwinkleAI row-level reconciliation for every locality."
+    : "比較臺灣 22 縣市預算，逐縣市檢視官方資料、OpenFun 整理與 TwinkleAI 實際資料列對帳結果。";
   document.title = state.selectedCity ? `${displayCity(state.selectedCity)} | ${title}` : title;
   document.querySelector('meta[name="description"]').content = description;
   document.querySelector('meta[property="og:title"]').content = title;
@@ -159,19 +165,20 @@ function renderTabs() {
 }
 
 function renderSourceRelationship() {
+  const audit = state.cities.meta.interface_audit.summary;
   const cards = isEnglish() ? [
     { step: "01", role: "Evidence base", name: "Official data", copy: "DGBAS and local governments publish the figures, definitions, and notes that remain authoritative.", use: "OpenBook uses this layer for all comparable totals.", tone: "official" },
     { step: "02", role: "Normalized enrichment", name: "OpenFun", copy: "OpenFun reshapes dispersed files into consistent work-program and narrative fields.", use: "OpenBook uses it for history, programs, and anomaly leads after reconciliation.", tone: "openfun" },
-    { step: "03", role: "Search and discovery", name: "TwinkleAI", copy: "TwinkleAI indexes datasets and exposes them through MCP for agent discovery.", use: "OpenBook uses it to find candidates; semantic hits do not become official figures automatically.", tone: "twinkle" },
+    { step: "03", role: "Search, row retrieval, reconciliation", name: "TwinkleAI", copy: "TwinkleAI searches datasets and query_rows retrieves their actual rows through MCP.", use: `${audit.twinkle_query_rows_attempted} datasets were read; ${audit.twinkle_rows_reconciled} reconciled exactly and now supply agency detail.`, tone: "twinkle" },
   ] : [
     { step: "01", role: "證據底座", name: "官方資料", copy: "主計總處與地方政府發布數字、定義與表註，是最後可被追責的來源。", use: "OpenBook 的跨縣市總額全部以這一層為準。", tone: "official" },
     { step: "02", role: "整理補充", name: "OpenFun", copy: "OpenFun 把分散檔案整理成較一致的工作計畫與用途文字欄位。", use: "通過年度與總額對帳後，用於歷年、計畫與變動線索。", tone: "openfun" },
-    { step: "03", role: "搜尋探索", name: "TwinkleAI", copy: "TwinkleAI 索引資料集並透過 MCP 讓 AI agent 搜尋與讀取。", use: "用來找候選資料；語意命中不會自動變成正式數字。", tone: "twinkle" },
+    { step: "03", role: "搜尋、讀列、對帳", name: "TwinkleAI", copy: "TwinkleAI 先搜尋資料集，再透過 MCP query_rows 讀取實際資料列。", use: `已讀取 ${audit.twinkle_query_rows_attempted} 個候選；${audit.twinkle_rows_reconciled} 個總額完全對上，開始供應機關別明細。`, tone: "twinkle" },
   ];
   document.querySelector("#source-flow").innerHTML = cards.map((item, index) => `<article class="source-flow-card ${item.tone}"><div><span>${item.step}</span><small>${escapeHtml(item.role)}</small></div><h3>${escapeHtml(item.name)}</h3><p>${escapeHtml(item.copy)}</p><b>${escapeHtml(item.use)}</b>${index < cards.length - 1 ? `<i aria-hidden="true">→</i>` : ""}</article>`).join("");
   document.querySelector("#source-use-rule").innerHTML = isEnglish()
-    ? `<strong>OpenBook decision rule</strong><span>Official totals → reconcile OpenFun enrichment → use TwinkleAI to discover missing sources.</span>`
-    : `<strong>OpenBook 使用規則</strong><span>官方總額作基準 → OpenFun 補充先對帳 → TwinkleAI 只協助尋找缺少的來源。</span>`;
+    ? `<strong>OpenBook decision rule</strong><span>Official totals → reconcile OpenFun → read TwinkleAI rows → use only exact matches. TwinkleAI currently supplies no official total.</span>`
+    : `<strong>OpenBook 使用規則</strong><span>官方總額作基準 → OpenFun 先對帳 → TwinkleAI 實際讀列 → 只有總額完全相符才採用。TwinkleAI 目前不供應任何官方總額。</span>`;
 }
 
 function renderNationalWatchpoints() {
@@ -187,14 +194,14 @@ function renderNationalWatchpoints() {
     ["OpenFun", "Tainan health programs shifted sharply", `${tainan.openfun.largest_latest_increase.program} rose ${percent(tainan.openfun.largest_latest_increase.change_rate)}.`],
     ["DGBAS", "Kinmen draws heavily on prior surpluses", `Prior surpluses fund ${percent(kinmen.metrics.prior_surplus_share)} of expenses.`],
     ["OpenFun", "Coverage includes empty, missing, and stale files", "Changhua returns 404, while Penghu work-program data stops at ROC 110."],
-    ["TwinkleAI", "A successful call is not the same as a usable citywide table", `Only ${state.cities.meta.interface_audit.summary.twinkle_citywide_expense_budget} of 22 best hits are citywide expense budgets.`],
+    ["TwinkleAI", "Eight datasets were read; only two passed reconciliation", "New Taipei and Chiayi City now use TwinkleAI agency rows. The other six remain excluded."],
   ] : [
     ["主計總處", "臺中與新北的融資毛流量特別大", `舉借加還本分別相當於歲出的 ${percent(taichung.metrics.financing_turnover_share)} 與 ${percent(newTaipei.metrics.financing_turnover_share)}。`],
     ["OpenFun", "新竹市工商管理出現大幅增加", `「${hsinchu.openfun.largest_latest_increase.program}」增加 ${percent(hsinchu.openfun.largest_latest_increase.change_rate)}。`],
     ["OpenFun", "臺南衛生工作計畫大幅移動", `「${tainan.openfun.largest_latest_increase.program}」增加 ${percent(tainan.openfun.largest_latest_increase.change_rate)}。`],
     ["主計總處", "金門大量動用以前年度賸餘", `以前年度賸餘支應歲出的 ${percent(kinmen.metrics.prior_surplus_share)}。`],
     ["OpenFun", "涵蓋清單包含空檔、缺檔與舊檔", "彰化回傳 404，澎湖工作計畫只到民國 110 年。"],
-    ["TwinkleAI", "呼叫成功不等於取得全縣市總表", `22 個最佳命中只有 ${state.cities.meta.interface_audit.summary.twinkle_citywide_expense_budget} 個是全縣市歲出總預算。`],
+    ["TwinkleAI", "8 個候選已實際讀列，只有 2 個通過對帳", "新北市與嘉義市開始採用 TwinkleAI 機關別明細，其餘 6 個仍排除。"],
   ];
   document.querySelector("#national-watchpoints").innerHTML = items.map(([source, title, body]) => `<article class="watchpoint-card"><span class="watchpoint-source">${escapeHtml(source)}</span><h3>${escapeHtml(title)}</h3><p>${escapeHtml(body)}</p></article>`).join("");
 }
@@ -208,7 +215,7 @@ function renderNationwide() {
     statCard(isEnglish() ? "Local governments" : "地方政府", "22", isEnglish() ? "One common official workbook" : "同一份官方彙編"),
     statCard(isEnglish() ? "Combined expenses" : "歲出合計", formatAmount(totalExpenses), isEnglish() ? "Budget scale" : "預算規模"),
     statCard(isEnglish() ? "OpenFun programs" : "OpenFun 工作計畫", `${audit.openfun_ok}/22`, isEnglish() ? `${audit.openfun_detail_json_substantive} include narratives` : `${audit.openfun_detail_json_substantive} 縣市另有用途文字`),
-    statCard(isEnglish() ? "TwinkleAI citywide hits" : "TwinkleAI 全市命中", `${audit.twinkle_citywide_expense_budget}/22`, isEnglish() ? "Strict best-hit test" : "嚴格最佳命中判定"),
+    statCard(isEnglish() ? "TwinkleAI rows actually used" : "TwinkleAI 實際採用", `${audit.twinkle_rows_reconciled}/22`, isEnglish() ? `${audit.twinkle_query_rows_attempted} candidates read and reconciled` : `已讀取並對帳 ${audit.twinkle_query_rows_attempted} 個候選`),
   ].join("");
   renderSourceRelationship();
 
@@ -221,7 +228,7 @@ function renderNationwide() {
       <td><button class="city-name-button" type="button" data-city="${escapeHtml(row.city)}"><span>${escapeHtml(displayRegion(row.region))}</span><strong>${escapeHtml(displayCity(row))}</strong></button></td>
       <td><strong>${escapeHtml(formatAmount(row.expenditure_thousand_twd))}</strong><small>${isEnglish() ? `Capital ${percent(row.metrics.capital_share)}` : `資本支出 ${percent(row.metrics.capital_share)}`}</small></td>
       <td><span class="audit-pill ${openfun.tone}">${escapeHtml(openfun.label)}</span><small>${row.openfun.status === "ok" ? `${twdNumber.format(row.openfun.row_count)} ${isEnglish() ? "historical rows" : "筆歷年資料"}` : (isEnglish() ? "Generic URL returned 404" : "通用網址回傳 404")}</small></td>
-      <td><span class="audit-pill ${twinkle.tone}">${escapeHtml(twinkle.label)}</span><small>${twdNumber.format(row.twinkle.result_count)} ${isEnglish() ? "unique candidates" : "個不重複候選"}</small></td>
+      <td><span class="audit-pill ${twinkle.tone}">${escapeHtml(twinkle.label)}</span><small>${row.twinkle.row_reconciliation?.eligible_for_use ? `${twdNumber.format(row.twinkle.row_reconciliation.row_count_returned)} ${isEnglish() ? "actual rows" : "筆實際資料列"}` : row.twinkle.row_reconciliation?.attempted ? `${isEnglish() ? "Difference" : "與官方差異"} ${percent(Math.abs(row.twinkle.row_reconciliation.difference_share))}` : `${twdNumber.format(row.twinkle.result_count)} ${isEnglish() ? "search candidates only" : "個搜尋候選，未用於數值"}`}</small></td>
       <td class="coverage-question">${escapeHtml(cityQuestion(row))}</td>
       <td><button class="row-open-button" type="button" data-city="${escapeHtml(row.city)}" aria-label="${escapeHtml(text("openCity"))}">→</button></td>
     </tr>`;
@@ -275,24 +282,38 @@ function renderOpenfunDetail(row) {
 function renderTwinkleDetail(row) {
   const data = row.twinkle;
   const status = twinkleStatus(row);
+  const reconciliation = data.row_reconciliation || {};
   const stateNode = document.querySelector("#twinkle-state");
   stateNode.textContent = status.label;
   stateNode.className = `source-state state-${status.tone}`;
   const metadata = data.selected_metadata || {};
   const columns = metadata.columns || [];
-  const interpretation = data.selected_is_citywide_expense_budget
-    ? (isEnglish() ? "This best hit represents a citywide expense budget and can become a candidate for an exact-ID allowlist after reconciliation." : "最佳命中代表全縣市歲出總預算，完成對帳後可列入精確 ID 白名單候選。")
-    : data.selected_is_exact_city_match
-      ? (isEnglish() ? "The service found the correct locality, but the best hit is not a complete citywide expense budget. Do not use it as the city's total." : "服務找到正確縣市，但最佳命中不是完整的全縣市歲出總預算，不能拿來代表該縣市總額。")
-      : (isEnglish() ? "The best hit is not a precise locality match. Semantic search must not supply official figures here." : "最佳命中不是精確縣市資料，語意搜尋結果不能供應本頁正式數字。")
+  const interpretation = reconciliation.eligible_for_use
+    ? (isEnglish()
+      ? "OpenBook called query_rows, read the actual agency rows, and matched their reported total exactly to the official FY2026 baseline. These rows now supply agency detail; the official total remains authoritative."
+      : "OpenBook 已呼叫 query_rows 讀取實際機關列，回傳總額與官方 115 年基準完全相符。這些資料列開始供應機關別明細，正式總額仍以官方資料為準。")
+    : reconciliation.attempted
+      ? (isEnglish()
+        ? "OpenBook called query_rows and read the actual rows, but rejected them because the year was stale or the total did not match the official FY2026 baseline."
+        : "OpenBook 已呼叫 query_rows 讀取實際資料列，但因年度過舊或總額與官方 115 年基準不符，因此未採用任何數值。")
+      : data.selected_is_exact_city_match
+        ? (isEnglish() ? "TwinkleAI found the locality, but no complete citywide candidate was approved for row retrieval. This remains search metadata only." : "TwinkleAI 找到同縣市資料，但沒有可核准讀列的全縣市候選，目前只使用搜尋 metadata。")
+        : (isEnglish() ? "The best hit is not a precise locality match. TwinkleAI is not used for budget figures here." : "最佳命中不是精確縣市資料，TwinkleAI 在本頁沒有用於任何預算數值。");
+  const topAgencies = reconciliation.top_agencies || [];
+  const rowPanel = reconciliation.eligible_for_use
+    ? `<div class="twinkle-row-panel accepted"><div><span>${isEnglish() ? "ACTUAL MCP DATA IN USE" : "實際 MCP 資料已採用"}</span><strong>${isEnglish() ? "Agency rows passed reconciliation" : "機關別資料列通過對帳"}</strong><p>${isEnglish() ? `${twdNumber.format(reconciliation.row_count_returned)} rows were read. The returned total equals ${formatAmount(reconciliation.official_total_thousand_twd)}.` : `已讀取 ${twdNumber.format(reconciliation.row_count_returned)} 列，回傳總額與官方 ${formatAmount(reconciliation.official_total_thousand_twd)} 完全相符。`}${reconciliation.status === "reconciled_year_unlabeled" ? (isEnglish() ? " The source does not label its fiscal year; exact-total reconciliation is disclosed as the year evidence." : " 來源未明示年度，目前以總額完全相符作為年度判斷依據。") : ""}</p></div><div class="table-wrap"><table class="detail-table"><thead><tr><th>${isEnglish() ? "Agency" : "TwinkleAI 實際機關列"}</th><th>${isEnglish() ? "Amount" : "金額"}</th><th>${isEnglish() ? "Share of official total" : "占官方總額"}</th></tr></thead><tbody>${topAgencies.map((item) => `<tr><td><strong>${escapeHtml(item.agency)}</strong></td><td>${escapeHtml(formatAmount(item.amount_thousand_twd))}</td><td>${escapeHtml(percent(item.amount_thousand_twd / reconciliation.official_total_thousand_twd))}</td></tr>`).join("")}</tbody></table></div></div>`
+    : reconciliation.attempted
+      ? `<div class="twinkle-row-panel rejected"><div><span>${isEnglish() ? "ACTUAL MCP ROWS REJECTED" : "實際 MCP 資料列未採用"}</span><strong>${reconciliation.status === "stale_year" ? (isEnglish() ? "The dataset year is stale" : "資料集年度過舊") : (isEnglish() ? "The returned total failed reconciliation" : "回傳總額未通過對帳")}</strong><p>${isEnglish() ? `TwinkleAI returned ${twdNumber.format(reconciliation.row_count_returned)} rows totaling ${formatAmount(reconciliation.reported_total_thousand_twd)}. The official FY2026 total is ${formatAmount(reconciliation.official_total_thousand_twd)}, a ${percent(Math.abs(reconciliation.difference_share))} gap.` : `TwinkleAI 回傳 ${twdNumber.format(reconciliation.row_count_returned)} 列，合計 ${formatAmount(reconciliation.reported_total_thousand_twd)}；官方 115 年總額為 ${formatAmount(reconciliation.official_total_thousand_twd)}，相差 ${percent(Math.abs(reconciliation.difference_share))}。`}</p><small>${escapeHtml(reconciliation.year_evidence || (isEnglish() ? "Fiscal year not labeled" : "資料未明示年度"))}</small></div></div>`
+      : `<div class="twinkle-row-panel search-only"><div><span>${isEnglish() ? "SEARCH ONLY" : "只有搜尋結果"}</span><strong>${isEnglish() ? "No TwinkleAI rows are used on this page" : "本頁沒有使用 TwinkleAI 資料列"}</strong><p>${isEnglish() ? "The MCP search result is shown for discovery and source auditing only. It does not supply any displayed budget figure." : "MCP 搜尋結果只用於發現資料集與來源稽核，沒有供應本頁任何預算數字。"}</p></div></div>`;
   document.querySelector("#twinkle-detail").innerHTML = `
     <div class="source-metrics">
       ${statCard(isEnglish() ? "MCP status" : "MCP 狀態", data.status === "ok" ? (isEnglish() ? "Successful" : "成功") : (isEnglish() ? "Failed" : "失敗"), isEnglish() ? "Authenticated production call" : "正式服務認證呼叫")}
       ${statCard(isEnglish() ? "Unique candidates" : "不重複候選", twdNumber.format(data.result_count), isEnglish() ? `${data.exact_city_hits} exact-locality hits` : `${data.exact_city_hits} 個同縣市命中`)}
-      ${statCard(isEnglish() ? "Selected dataset rows" : "選中資料列數", metadata.row_count == null ? (isEnglish() ? "Unknown" : "未提供") : twdNumber.format(metadata.row_count), metadata.agency || data.selected_agency || "")}
-      ${statCard(isEnglish() ? "Citywide expense budget" : "全縣市歲出總預算", data.selected_is_citywide_expense_budget ? (isEnglish() ? "Yes" : "是") : (isEnglish() ? "No" : "否"), status.label)}
+      ${statCard(isEnglish() ? "query_rows" : "實際資料列", reconciliation.attempted ? (isEnglish() ? `${twdNumber.format(reconciliation.row_count_returned)} read` : `已讀 ${twdNumber.format(reconciliation.row_count_returned)} 列`) : (isEnglish() ? "Not called" : "未呼叫"), reconciliation.attempted ? status.label : (isEnglish() ? "Search metadata only" : "只有搜尋 metadata"))}
+      ${statCard(isEnglish() ? "Used by OpenBook" : "OpenBook 實際採用", reconciliation.eligible_for_use ? (isEnglish() ? "Agency detail" : "機關別明細") : (isEnglish() ? "No figures" : "未採用數值"), reconciliation.eligible_for_use ? (isEnglish() ? "Official total unchanged" : "官方總額不變") : (isEnglish() ? "Explicitly excluded" : "明確排除"))}
     </div>
-    <div class="twinkle-selected"><span>${isEnglish() ? "Best semantic-search hit" : "語意搜尋最佳命中"}</span><h4>${escapeHtml(data.selected_title || (isEnglish() ? "No dataset selected" : "未選中資料集"))}</h4><p>${escapeHtml(interpretation)}</p><div class="dataset-meta"><span>Dataset ID <b>${escapeHtml(data.selected_dataset_id || "—")}</b></span><span>${isEnglish() ? "Agency" : "機關"} <b>${escapeHtml(data.selected_agency || metadata.agency || "—")}</b></span><span>${isEnglish() ? "License" : "授權"} <b>${escapeHtml(metadata.license || "—")}</b></span></div>${sourceLink(metadata.source_url, isEnglish() ? "Open official dataset source" : "開啟資料集官方來源")}</div>
+    <div class="twinkle-selected"><span>${isEnglish() ? "Best semantic-search hit" : "語意搜尋最佳命中"}</span><h4>${escapeHtml(data.selected_title || (isEnglish() ? "No dataset selected" : "未選中資料集"))}</h4><p>${escapeHtml(interpretation)}</p><div class="dataset-meta"><span>Dataset ID <b>${escapeHtml(data.selected_dataset_id || "—")}</b></span><span>${isEnglish() ? "Agency" : "機關"} <b>${escapeHtml(data.selected_agency || metadata.agency || "—")}</b></span><span>${isEnglish() ? "License" : "授權"} <b>${escapeHtml(metadata.license || "—")}</b></span><span>${isEnglish() ? "Metadata updated" : "目錄更新"} <b>${escapeHtml(metadata.metadata_updated || "—")}</b></span></div>${sourceLink(metadata.source_url, isEnglish() ? "Open official dataset source" : "開啟資料集官方來源")}</div>
+    ${rowPanel}
     <div class="schema-panel"><div class="subsection-heading"><h4>${isEnglish() ? "Schema returned by TwinkleAI" : "TwinkleAI 回傳欄位"}</h4><span>${columns.length} ${isEnglish() ? "columns" : "欄"}</span></div>${columns.length ? `<div class="schema-chips">${columns.slice(0, 12).map((column) => `<code>${escapeHtml(column)}</code>`).join("")}${columns.length > 12 ? `<span>${isEnglish() ? `+${columns.length - 12} more` : `另有 ${columns.length - 12} 欄`}</span>` : ""}</div>` : `<p>${isEnglish() ? "No schema was returned for the selected hit." : "選中資料沒有回傳 schema。"}</p>`}</div>`;
 }
 
@@ -317,8 +338,8 @@ function renderCity(row) {
   document.querySelector("#city-region").textContent = `${displayRegion(row.region)} · ${isEnglish() ? "FY2026" : "115 年度"}`;
   document.querySelector("#city-title").textContent = displayCity(row);
   document.querySelector("#city-summary").textContent = isEnglish()
-    ? `Official common-budget figures, OpenFun program depth, and TwinkleAI search results for ${displayCity(row)} on one page.`
-    : `把 ${displayCity(row)} 的官方共同預算、OpenFun 計畫深度與 TwinkleAI 搜尋結果放在同一頁判讀。`;
+    ? `Official common-budget figures, OpenFun program depth, and TwinkleAI ${row.twinkle.row_reconciliation?.eligible_for_use ? "reconciled agency rows" : row.twinkle.row_reconciliation?.attempted ? "rows rejected after reconciliation" : "search-only results"} for ${displayCity(row)} on one page.`
+    : `把 ${displayCity(row)} 的官方共同預算、OpenFun 計畫深度，以及 TwinkleAI ${row.twinkle.row_reconciliation?.eligible_for_use ? "已對帳機關列" : row.twinkle.row_reconciliation?.attempted ? "讀取後未通過資料" : "純搜尋結果"}放在同一頁判讀。`;
   document.querySelector("#city-heading-badges").innerHTML = `<span>${escapeHtml(displayMachine(row.official_machine))}</span><span>${escapeHtml(displayInterface(row.interface))}</span><span>${isEnglish() ? "Readiness" : "資料工程成熟度"} ${escapeHtml(row.tier)}</span>`;
   document.querySelector("#city-primary-stats").innerHTML = [
     statCard(isEnglish() ? "Expense budget" : "歲出預算", formatAmount(row.expenditure_thousand_twd), isEnglish() ? "Official common baseline" : "官方共同基準"),
@@ -340,8 +361,8 @@ function renderCity(row) {
   renderTwinkleDetail(row);
   renderTaipeiExtra(row);
   document.querySelector("#city-method-copy").innerHTML = isEnglish()
-    ? `<p><strong>Official</strong> answers comparable totals. <strong>OpenFun</strong> adds normalized program rows but must reconcile to the official year and stage. <strong>TwinkleAI</strong> helps locate datasets; only an exact, reviewed dataset ID should enter production.</p><p>Read unusual movements as questions. Classification changes, grants, funds, refinancing, and one-off projects can all produce large shifts.</p><p>USD figures are estimates at NT$${FX.rate} per US$1 (${FX.date}); the downloadable CSV retains official TWD amounts.</p>`
-    : `<p><strong>官方資料</strong>回答可比較總額。<strong>OpenFun</strong>補充正規化計畫列，但必須對齊官方年度與預算階段。<strong>TwinkleAI</strong>負責找資料，只有經人工確認的精確 dataset ID 才能進正式資料流。</p><p>大幅變動先當問題閱讀。科目重分類、中央補助、基金、換債與一次性工程都可能造成數字跳動。</p>`;
+    ? `<p><strong>Official</strong> answers comparable totals. <strong>OpenFun</strong> adds normalized program rows but must reconcile to the official year and stage. <strong>TwinkleAI</strong> searches datasets and query_rows retrieves actual rows; only exact-total matches may supply agency detail, never the official total.</p><p>Read unusual movements as questions. Classification changes, grants, funds, refinancing, and one-off projects can all produce large shifts.</p><p>USD figures are estimates at NT$${FX.rate} per US$1 (${FX.date}); the downloadable CSV retains official TWD amounts.</p>`
+    : `<p><strong>官方資料</strong>回答可比較總額。<strong>OpenFun</strong>補充正規化計畫列，但必須對齊官方年度與預算階段。<strong>TwinkleAI</strong>先搜尋資料集，再用 query_rows 讀取實際資料列；只有總額完全相符時才能補充機關別明細，不能取代官方總額。</p><p>大幅變動先當問題閱讀。科目重分類、中央補助、基金、換債與一次性工程都可能造成數字跳動。</p>`;
 }
 
 function showNationwide(updateUrl = true) {
@@ -399,9 +420,9 @@ function csvValue(value) {
 
 function downloadCities() {
   const headers = isEnglish()
-    ? ["Local government", "Expense TWD", "Revenue TWD", "Capital TWD", "Borrowing TWD", "Debt repayment TWD", "Prior surplus TWD", "OpenFun latest ROC year", "OpenFun rows", "OpenFun narrative JSON", "Twinkle exact locality", "Twinkle citywide expense budget", "Twinkle selected dataset", "Official source"]
-    : ["縣市", "歲出新臺幣", "歲入新臺幣", "資本支出新臺幣", "舉借新臺幣", "債務償還新臺幣", "以前年度賸餘新臺幣", "OpenFun 最新年度", "OpenFun 列數", "OpenFun 用途文字", "Twinkle 同縣市", "Twinkle 全縣市歲出", "Twinkle 選中資料集", "官方來源"];
-  const rows = state.cities.cities.map((row) => [displayCity(row), row.expenditure_thousand_twd * 1000, row.revenue_thousand_twd * 1000, row.capital_expenditure_thousand_twd * 1000, row.borrowing_thousand_twd * 1000, row.debt_repayment_thousand_twd * 1000, row.prior_surplus_thousand_twd * 1000, row.openfun.latest_year || "", row.openfun.row_count || "", Boolean(row.openfun.detailed_plan_json?.substantive), row.twinkle.selected_is_exact_city_match, row.twinkle.selected_is_citywide_expense_budget, row.twinkle.selected_title || "", row.source_url]);
+    ? ["Local government", "Expense TWD", "Revenue TWD", "Capital TWD", "Borrowing TWD", "Debt repayment TWD", "Prior surplus TWD", "OpenFun latest ROC year", "OpenFun rows", "OpenFun narrative JSON", "Twinkle exact locality", "Twinkle citywide candidate", "Twinkle query_rows attempted", "Twinkle rows used", "Twinkle returned total TWD", "Twinkle difference TWD", "Twinkle selected dataset", "Official source"]
+    : ["縣市", "歲出新臺幣", "歲入新臺幣", "資本支出新臺幣", "舉借新臺幣", "債務償還新臺幣", "以前年度賸餘新臺幣", "OpenFun 最新年度", "OpenFun 列數", "OpenFun 用途文字", "Twinkle 同縣市", "Twinkle 全縣市候選", "Twinkle 已呼叫 query_rows", "Twinkle 實際採用", "Twinkle 回傳總額新臺幣", "Twinkle 與官方差額新臺幣", "Twinkle 選中資料集", "官方來源"];
+  const rows = state.cities.cities.map((row) => [displayCity(row), row.expenditure_thousand_twd * 1000, row.revenue_thousand_twd * 1000, row.capital_expenditure_thousand_twd * 1000, row.borrowing_thousand_twd * 1000, row.debt_repayment_thousand_twd * 1000, row.prior_surplus_thousand_twd * 1000, row.openfun.latest_year || "", row.openfun.row_count || "", Boolean(row.openfun.detailed_plan_json?.substantive), row.twinkle.selected_is_exact_city_match, row.twinkle.selected_is_citywide_expense_budget, Boolean(row.twinkle.row_reconciliation?.attempted), Boolean(row.twinkle.row_reconciliation?.eligible_for_use), row.twinkle.row_reconciliation?.reported_total_thousand_twd == null ? "" : row.twinkle.row_reconciliation.reported_total_thousand_twd * 1000, row.twinkle.row_reconciliation?.difference_thousand_twd == null ? "" : row.twinkle.row_reconciliation.difference_thousand_twd * 1000, row.twinkle.selected_title || "", row.source_url]);
   const content = [headers, ...rows].map((row) => row.map(csvValue).join(",")).join("\n");
   const url = URL.createObjectURL(new Blob([`\ufeff${content}`], { type: "text/csv;charset=utf-8" }));
   const link = document.createElement("a");

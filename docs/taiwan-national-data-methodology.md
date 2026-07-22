@@ -49,21 +49,25 @@ set +a
 npm run refresh:interfaces
 ```
 
-OpenFun 使用免 token 的 `tw.openfun~bulk~budget-detail` 靜態檔案。程式逐縣市下載 `工作計劃.csv`，統計年度、列數、最新年度最大工作計畫與最大年度變動，並用 HEAD 檢查 `歲出分支列表.json` 是否真的有計畫文字與用途別內容。Twinkle 使用 Bearer token 連接正式 MCP，對每個縣市各執行一次廣泛預算搜尋與一次全縣市歲出搜尋，再讀取最佳命中的 dataset metadata、schema、列數及官方下載來源。
+OpenFun 使用免 token 的 `tw.openfun~bulk~budget-detail` 靜態檔案。程式逐縣市下載 `工作計劃.csv`，統計年度、列數、最新年度最大工作計畫與最大年度變動，並用 HEAD 檢查 `歲出分支列表.json` 是否真的有計畫文字與用途別內容。Twinkle 使用 Bearer token 連接正式 MCP，對每個縣市各執行一次廣泛預算搜尋與一次全縣市歲出搜尋，再讀取最佳命中的 dataset metadata。若最佳命中為全縣市歲出候選，管線會進一步呼叫 `query_rows` 取得實際資料列，依明確欄位規則計算總額，最後和主計總處 115 年共同表對帳。
 
-2026 年 7 月 22 日的實測結果如下。
+2026 年 7 月 23 日的實測結果如下。
 
 - OpenFun 工作計畫 CSV 可讀取 21 個縣市，彰化縣的通用 URL 回傳 404
 - OpenFun 的詳細歲出 JSON 在 21 個縣市回傳成功，但只有 11 個檔案有實際內容，其餘多為 2-byte 空物件
 - 澎湖縣工作計畫最新只到民國 110 年，其他可讀縣市多已到 115 年
 - Twinkle 的 22 縣市 MCP 呼叫全部成功，當次查詢成本皆顯示 `US$0`
 - 21 個縣市的最佳命中屬於同一縣市，只有 8 個最佳命中確實是全縣市歲出總預算
+- 8 個候選皆成功呼叫 `query_rows` 並取得實際資料列；只有新北市與嘉義市的回傳總額和官方 115 年歲出完全相符
+- 新北市使用 63 列資料並以標題確認 115 年度；嘉義市使用 13 列資料，總額完全相符，但來源未明示年度，因此網站會保留此限制
+- 桃園、臺南、高雄與南投的回傳總額分別和官方基準相差約 46.7%、20.8%、14.3% 與 4.1%，未納入正式明細
+- 臺中資料列日期為 2019 年，花蓮金額欄明示民國 107 年，兩者均判定為舊資料
 - Twinkle 文件列出的工具名稱帶 `opendata-` 前綴，正式工具 registry 實際回傳無前綴名稱
 - 新竹縣最佳命中的 CSV schema 出現編碼亂碼，臺中全市歲出資料集 metadata 只有 2 列，顯示命中標題後仍需驗證內容
 
-結果保存在 `data-sources/ai-interface-audit.json`，只包含查詢摘要、metadata 與衍生統計，不含 Twinkle API key。`npm run refresh:national` 會把這份摘要合併進 `pages-site/cities.json`。GitHub Pages 建置不需要接觸 API key。
+結果保存在 `data-sources/ai-interface-audit.json`，包含查詢摘要、metadata、讀列結果與衍生統計，不含 Twinkle API key。`npm run refresh:national` 會執行官方總額對帳並合併進 `pages-site/cities.json`。GitHub Pages 只讀取已驗證快照，不需要接觸 API key。
 
-這套檢查刻意分開四個層次，包括服務可連線、搜尋有結果、命中同一縣市、命中可比較的全縣市總預算。只有最後一層才適合直接接到共同預算模型。
+這套檢查刻意分開六個層次，包括服務可連線、搜尋有結果、命中同一縣市、命中全縣市候選、實際資料列可讀，以及總額和官方共同表完全相符。只有最後一層可以供應機關別補充明細，官方總額本身不會被 TwinkleAI 取代。
 
 ## 值得追問的訊號如何產生
 
