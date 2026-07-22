@@ -1,23 +1,26 @@
 # OpenBook 臺灣開放預算實驗
 
-這個專案把 OpenBook 改造成臺灣地方政府預算透明入口。第一個概念驗證採用臺北市政府主計處 114、115 年度正式總預算 XML，提供中英文歲出、歲入、資本門、資料與文件、常見問題及 CSV 下載。
+這個專案把 OpenBook 改造成臺灣地方政府預算透明入口。首頁以行政院主計總處 115 年度直轄市及縣市總預算彙編呈現 22 縣市共同指標，提供區域與資料成熟度篩選、縣市比較及 CSV 下載。臺北市深度頁另採主計處 114、115 年度正式總預算 XML，保留歲出、歲入、資本門、資料與文件及常見問題。
 
 英文版使用美元顯示，按臺灣銀行 2026 年 7 月 17 日美元即期買賣中價固定換算為 `NT$32.25 = US$1`。美元金額用於國際讀者比較，官方原始金額及中文版均維持新臺幣。英文版可直接開啟 <https://mashbean.github.io/Open-Book/?lang=en>。
 
-目前呈現的是機關與科目彙總，不是逐筆支付帳。資料選擇、能回答的問題與限制整理在 [臺灣版 OpenBook 資料範圍](docs/taiwan-data-scope.md)，與 Sutton 原站的差距及後續工作整理在 [臺北版與 Sutton OpenBook 差距檢討](docs/taiwan-sutton-gap-review.md)。
+目前呈現的是法定預算彙總，不是逐筆支付帳。全台共同基準、22 縣市資料成熟度評估與更新方法整理在 [全台版資料方法](docs/taiwan-national-data-methodology.md)，臺北深度頁的資料範圍整理在 [臺灣版 OpenBook 資料範圍](docs/taiwan-data-scope.md)，與 Sutton 原站的差距及後續工作整理在 [臺灣版與 Sutton OpenBook 差距檢討](docs/taiwan-sutton-gap-review.md)。
 
 ```bash
 npm install
+npm run refresh:national
 npm run refresh:taipei
 npm run seed
 npm run dev
 ```
 
+`npm run refresh:national` 會下載行政院主計總處的 115 年度縣市總預算彙編，驗證 22 縣市總額與政事別加總後產生 `pages-site/cities.json`。
+
 `npm run refresh:taipei` 會直接從臺北市資料大平臺重新下載官方 XML，產生 `sample-data/taipei-*.csv`。公開入口為 `/taipei`。
 
 ## GitHub Pages 公開版
 
-GitHub Pages 只能託管靜態網站，因此 `pages-site/` 提供不需要資料庫的公開查詢版，包含中英文切換、年度切換、歲出、歲入、資本門、搜尋、CSV 下載、資料與文件及常見問題。完整的 PostgreSQL 應用與管理後台仍保留在 Next.js 專案中。
+GitHub Pages 只能託管靜態網站，因此 `pages-site/` 提供不需要資料庫的公開查詢版，包含全台 22 縣市總覽、資料成熟度篩選、中英文切換、臺北年度切換、歲出、歲入、資本門、搜尋、CSV 下載、資料與文件及常見問題。完整的 PostgreSQL 應用與管理後台仍保留在 Next.js 專案中。
 
 ```bash
 npm run build:pages
