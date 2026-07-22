@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#176b5b" />
-    <meta name="description" content="用主計總處官方資料比較全臺 22 縣市預算，再深入探索臺北市歲入、歲出與資本門。" />
+    <meta name="theme-color" content="#173d31" />
+    <meta name="description" content="比較臺灣 22 縣市預算，並逐縣市檢視官方資料、OpenFun 整理與 TwinkleAI 搜尋結果。" />
     <meta property="og:title" content="臺灣地方政府 OpenBook" />
-    <meta property="og:description" content="比較 22 縣市預算規模、功能分類、資本支出與資料開放成熟度。" />
+    <meta property="og:description" content="22 個獨立縣市頁，清楚呈現官方預算、OpenFun 深度與 TwinkleAI 命中品質。" />
     <meta property="og:type" content="website" />
     <title>臺灣地方政府 OpenBook</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -14,373 +14,189 @@
     <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body>
-    <a class="skip-link" href="#main" data-i18n="skip">跳到主要內容</a>
+  <body class="showing-nationwide">
+    <a class="skip-link" href="#main" data-copy="skip">跳到主要內容</a>
 
     <header class="site-header">
-      <div class="header-inner">
-        <button class="brand nav-trigger" type="button" data-view="nationwide" aria-label="回到全臺總覽" data-i18n-aria="homeLabel">
+      <div class="header-inner openbook-header">
+        <button class="brand" id="home-button" type="button" aria-label="回到全臺總覽">
           <span class="brand-mark" aria-hidden="true">臺</span>
-          <span>
-            <strong data-i18n="siteName">全臺地方政府</strong>
-            <small>OpenBook</small>
-          </span>
+          <span><strong data-copy="siteName">臺灣地方政府</strong><small>OpenBook</small></span>
         </button>
-
-        <nav class="primary-nav" aria-label="主要導覽" data-i18n-aria="navLabel">
-          <button class="nav-trigger active" type="button" data-view="nationwide" data-i18n="nationwide">全臺總覽</button>
-          <button class="nav-trigger" type="button" data-view="overview" data-i18n="overview">臺北總覽</button>
-          <button class="nav-trigger" type="button" data-view="expenses" data-i18n="expenses">歲出</button>
-          <button class="nav-trigger" type="button" data-view="revenues" data-i18n="revenues">歲入</button>
-          <button class="nav-trigger" type="button" data-view="capital" data-i18n="capital">資本門</button>
-          <button class="nav-trigger" type="button" data-view="sources" data-i18n="sources">資料與文件</button>
-          <button class="nav-trigger" type="button" data-view="faq" data-i18n="faq">常見問題</button>
-        </nav>
-
-        <label class="year-control">
-          <span data-i18n="year">年度</span>
-          <select id="year-select" aria-label="選擇預算年度" data-i18n-aria="yearSelect"></select>
-        </label>
-        <div class="language-control" role="group" aria-label="語言與幣別" data-i18n-aria="languageLabel">
-          <button type="button" data-language="zh" data-i18n="zhCurrency">中文 · TWD</button>
-          <button type="button" data-language="en" data-i18n="enCurrency">EN · USD</button>
+        <span class="header-baseline" data-copy="baseline">115 年度共同基準</span>
+        <div class="language-control" role="group" aria-label="語言與幣別">
+          <button type="button" data-language="zh">中文 · TWD</button>
+          <button type="button" data-language="en">EN · USD</button>
         </div>
       </div>
+      <nav class="city-tabs-shell" aria-label="縣市分頁">
+        <div class="shell city-tabs-track">
+          <button class="city-tab overview-tab active" id="nationwide-tab" type="button" data-copy="nationwide">全臺總覽</button>
+          <div id="city-tabs" class="city-tabs" role="tablist" aria-label="22 縣市"></div>
+        </div>
+      </nav>
     </header>
 
     <main id="main">
-      <section class="view active nationwide-view" id="view-nationwide" data-view-panel="nationwide">
-        <div class="page-heading nationwide-heading">
+      <section class="view active" id="view-nationwide" data-view-panel="nationwide">
+        <div class="nationwide-heading">
           <div class="shell nationwide-heading-grid">
             <div>
-              <p class="eyebrow" data-i18n="nationwideEyebrow">115 年度地方政府共同基準</p>
-              <h1 data-i18n-html="nationwideTitle">一次看懂<br /><em>22 縣市預算</em></h1>
-              <p data-i18n="nationwideIntro">用行政院主計總處同一份彙編比較各縣市，再把地方資料能否持續更新、深入到單位計畫的差異攤開來看。</p>
+              <p class="eyebrow" data-copy="nationalEyebrow">先比較，再進入各縣市</p>
+              <h1 data-copy-html="nationalTitle">22 縣市預算<br /><em>一頁看懂差異</em></h1>
+              <p data-copy="nationalIntro">官方資料回答可比較的預算數字，OpenFun 補上工作計畫，TwinkleAI 協助發現資料集。三者各有不同責任。</p>
             </div>
             <div id="nationwide-stats" class="stat-grid nationwide-stats"></div>
           </div>
         </div>
+
         <div class="shell section-stack nationwide-content">
-          <article class="panel nationwide-explainer">
-            <div><span class="tier-badge tier-a">A</span><strong data-i18n="tierATitle">可直接擴充</strong><p data-i18n="tierACopy">地方平台已有完整機器格式與 API，適合下一批城市深度頁。</p></div>
-            <div><span class="tier-badge tier-b">B</span><strong data-i18n="tierBTitle">需要轉接器</strong><p data-i18n="tierBCopy">有穩定檔案、歷年資料或完整文件，仍需清理與年度更新流程。</p></div>
-            <div><span class="tier-badge tier-c">C</span><strong data-i18n="tierCTitle">文件抽取優先</strong><p data-i18n="tierCCopy">目前以文件下載或較舊資料為主，先建立可驗證的抽取流程。</p></div>
+          <article class="panel source-relationship-panel" aria-labelledby="source-relationship-title">
+            <div class="section-intro source-relationship-intro">
+              <p class="kicker" data-copy="relationshipKicker">資料從哪裡來</p>
+              <h2 id="source-relationship-title" data-copy="relationshipTitle">先分清楚證據、整理與搜尋</h2>
+              <p data-copy="relationshipCopy">OpenBook 不把三個服務當成三份互相競爭的答案。官方數字是底座，OpenFun 提供整理後的計畫資料，TwinkleAI 是找資料的入口。</p>
+            </div>
+            <div class="source-flow" id="source-flow"></div>
+            <div class="source-use-rule" id="source-use-rule"></div>
           </article>
 
-          <article class="panel interface-audit-panel">
-            <div class="section-intro">
-              <p class="kicker" data-i18n="interfaceAuditKicker">22 縣市雙接口實測</p>
-              <h2 data-i18n="interfaceAuditTitle">OpenFun 與 Twinkle 能帶我們走多遠</h2>
-              <p data-i18n="interfaceAuditCopy">逐縣市下載 OpenFun 工作計畫資料，並用 Twinkle MCP 搜尋同一縣市的財政資料。成功連線、找到同縣市與找到全市總預算是三件不同的事。</p>
+          <article class="panel coverage-panel">
+            <div class="coverage-heading">
+              <div class="section-intro">
+                <p class="kicker" data-copy="coverageKicker">22 縣市逐一實測</p>
+                <h2 data-copy="coverageTitle">每個縣市目前可以看到多深</h2>
+                <p data-copy="coverageCopy">點選任一列進入獨立縣市頁。表格把官方總預算、OpenFun 工作計畫與 TwinkleAI 命中品質放在同一列比較。</p>
+              </div>
+              <div class="coverage-controls">
+                <label class="search-field"><span class="sr-only" data-copy="citySearch">搜尋縣市</span><input id="city-search" type="search" placeholder="搜尋縣市" /></label>
+                <button class="button secondary" id="download-cities" type="button" data-copy="downloadCsv">下載完整 CSV</button>
+              </div>
             </div>
-            <div id="interface-audit-stats" class="interface-audit-stats"></div>
-          </article>
-
-          <article class="panel data-panel nationwide-panel">
-            <div class="table-toolbar nationwide-toolbar">
-              <label class="search-field"><span class="sr-only" data-i18n="citySearch">搜尋縣市</span><input id="city-search" type="search" placeholder="搜尋縣市" data-i18n-placeholder="citySearch" /></label>
-              <label><span data-i18n="region">區域</span><select id="region-filter"><option value="" data-i18n="allRegions">全部區域</option><option value="北部" data-i18n="north">北部</option><option value="中部" data-i18n="central">中部</option><option value="南部" data-i18n="south">南部</option><option value="東部" data-i18n="east">東部</option><option value="外島" data-i18n="islands">外島</option></select></label>
-              <label><span data-i18n="readiness">實作成熟度</span><select id="tier-filter"><option value="" data-i18n="allTiers">全部層級</option><option value="A">A</option><option value="B">B</option><option value="C">C</option></select></label>
-              <button class="button secondary" id="download-cities" type="button" data-i18n="downloadCsv">下載 CSV</button>
+            <div class="table-wrap coverage-table-wrap">
+              <table class="coverage-table">
+                <thead><tr><th data-copy="columnCity">縣市</th><th data-copy="columnOfficial">官方 115 年總預算</th><th>OpenFun</th><th>TwinkleAI</th><th data-copy="columnQuestion">本頁值得追問</th><th><span class="sr-only" data-copy="openCity">開啟縣市頁</span></th></tr></thead>
+                <tbody id="coverage-table-body"></tbody>
+              </table>
             </div>
-            <div id="city-budget-grid" class="city-budget-grid"></div>
             <p class="table-status" id="city-status"></p>
           </article>
 
           <article class="panel national-ranking-panel">
             <div class="section-intro">
-              <p class="kicker" data-i18n="expenseScale">歲出規模</p>
-              <h2 data-i18n="compareCities">比較 22 縣市年度預算</h2>
-              <p data-i18n="compareCitiesCopy">金額來自主計總處 115 年度彙編，長條顯示相對規模，並非衡量政策好壞。</p>
+              <p class="kicker" data-copy="expenseScale">歲出規模</p>
+              <h2 data-copy="compareCities">比較 22 縣市年度預算</h2>
+              <p data-copy="compareCitiesCopy">長條只表示主計總處共同表中的歲出規模，不代表施政品質或財政健康。</p>
             </div>
             <div id="national-ranking" class="national-ranking"></div>
           </article>
 
           <article class="panel watchpoints-panel">
             <div class="section-intro">
-              <p class="kicker" data-i18n="watchpointsKicker">值得追問</p>
-              <h2 data-i18n="watchpointsTitle">數字突出的地方，先提出問題</h2>
-              <p data-i18n="watchpointsCopy">下列訊號由官方共同表與 OpenFun 工作計畫計算，用來安排查證，不代表違法、浪費或政策失敗。</p>
+              <p class="kicker" data-copy="watchpointsKicker">跨縣市線索</p>
+              <h2 data-copy="watchpointsTitle">數字突出時，先提出可查證的問題</h2>
+              <p data-copy="watchpointsCopy">這些訊號用來安排回查順序，不代表違法、浪費或政策失敗。</p>
             </div>
             <div id="national-watchpoints" class="national-watchpoints"></div>
           </article>
 
-          <article class="panel interface-matrix-panel">
+          <div class="notice" role="note"><strong data-copy="nationalBoundary">比較邊界</strong><span data-copy="nationalBoundaryCopy">預算、決算、採購契約與實際付款是不同階段。此站目前比較總預算與可取得的工作計畫，不把決標金額當成實際支出。</span></div>
+        </div>
+      </section>
+
+      <section class="view city-view" id="view-city" data-view-panel="city" hidden>
+        <div class="city-detail-heading">
+          <div class="shell city-detail-heading-grid">
+            <div>
+              <button class="text-link back-overview" id="back-overview" type="button" data-copy="backOverview">← 回到全臺比較</button>
+              <p class="eyebrow" id="city-region"></p>
+              <h1 id="city-title"></h1>
+              <p id="city-summary"></p>
+              <div id="city-heading-badges" class="city-heading-badges"></div>
+            </div>
+            <div id="city-primary-stats" class="stat-grid city-primary-stats"></div>
+          </div>
+        </div>
+
+        <nav class="city-section-nav" aria-label="縣市頁段落">
+          <div class="shell">
+            <a href="#city-budget" data-copy="cityNavBudget">預算結構</a>
+            <a href="#city-sources" data-copy="cityNavSources">資料實測</a>
+            <a href="#city-question" data-copy="cityNavQuestion">值得追問</a>
+            <a href="#city-taipei-extra" id="taipei-extra-nav" hidden data-copy="cityNavTaipei">臺北進階明細</a>
+          </div>
+        </nav>
+
+        <div class="shell section-stack city-detail-content">
+          <article class="panel city-question-panel" id="city-question">
+            <span class="question-label" data-copy="questionLabel">本頁先問</span>
+            <h2 id="city-question-title"></h2>
+            <p data-copy="questionBoundary">這是資料驅動的查證起點，需回到預算書、表註與年度分類判讀。</p>
+          </article>
+
+          <article class="panel city-budget-panel" id="city-budget">
             <div class="section-intro">
-              <p class="kicker" data-i18n="matrixKicker">逐縣市驗收</p>
-              <h2 data-i18n="matrixTitle">同一個問題，兩種服務給出不同深度</h2>
-              <p data-i18n="matrixCopy">OpenFun 顯示可下載的工作計畫與最晚年度；Twinkle 顯示語意搜尋後選出的資料集。資料集標題可直接看出是否真的命中全市總預算。</p>
+              <p class="kicker" data-copy="officialBaseline">官方共同基準</p>
+              <h2 data-copy="budgetStructure">錢編在哪些政策領域</h2>
+              <p data-copy="budgetStructureCopy">以下數字都來自主計總處同一份 115 年度彙編，因此可以和其他縣市比較。</p>
             </div>
-            <div class="table-wrap">
-              <table class="interface-matrix">
-                <thead><tr><th data-i18n="matrixCity">縣市</th><th>OpenFun</th><th data-i18n="matrixDetail">計畫文字</th><th>Twinkle MCP</th><th data-i18n="matrixSelected">最佳命中</th></tr></thead>
-                <tbody id="interface-matrix-body"></tbody>
-              </table>
-            </div>
-          </article>
-
-          <article class="panel nationwide-methodology">
-            <div>
-              <p class="kicker" data-i18n="commonBaseline">共同基準</p>
-              <h2 data-i18n="dgbasMethodTitle">先用官方彙編回答可比問題</h2>
-              <p data-i18n="dgbasMethodCopy">22 縣市的歲入、歲出、融資、政事別與資本支出都取自同一份 Excel。金門縣在來源中標示為總預算案，其他縣市依表註呈現。</p>
-              <a href="https://www.dgbas.gov.tw/News_Content.aspx?n=1525&s=236271" target="_blank" rel="noopener noreferrer" data-i18n="openDgbas">開啟主計總處原始資料 ↗</a>
-            </div>
-            <div>
-              <p class="kicker" data-i18n="depthLayer">深度資料層</p>
-              <h2 data-i18n="depthMethodTitle">地方資料成熟度另行評分</h2>
-              <p data-i18n="depthMethodCopy">分數綜合官方機器格式、歷年連續性、完整單位預算與介面穩定性。所有縣市都能做總覽，分數只表示維護深度城市頁所需的工程量。</p>
-              <a href="https://budget.openfun.app/" target="_blank" rel="noopener noreferrer" data-i18n="openOpenfun">查看 OpenFun 全臺預算查詢 ↗</a>
-            </div>
-          </article>
-
-          <div class="notice" role="note"><strong data-i18n="nationalBoundary">比較邊界</strong><span data-i18n="nationalBoundaryCopy">預算代表政府獲准或計畫使用的金額。採購決標、決算與逐筆付款屬於不同資料層，不能互相替代。</span></div>
-        </div>
-      </section>
-
-      <section class="view" id="view-overview" data-view-panel="overview" hidden>
-        <section class="hero" aria-label="首頁主視覺" data-i18n-aria="heroLabel">
-          <div class="hero-grid shell">
-            <div class="hero-copy-block">
-              <div class="municipal-label"><span class="seal-mini">北</span><span><span data-i18n="municipal">市政預算透明</span><br /><strong data-i18n="city">臺北市</strong></span></div>
-              <p class="hero-kicker" data-i18n="transparency">Municipal Budget Transparency</p>
-              <h1 data-i18n-html="heroTitle">更清楚地看見<br />臺北市的<br /><em>財政全貌</em></h1>
-              <p class="hero-copy" data-i18n="heroCopy">OpenBook 把市政預算、歲入、歲出與資本投資整理成每位市民都能理解與查詢的公共資訊。</p>
-              <div class="hero-actions">
-                <button class="button gold nav-trigger" id="hero-expense-cta" type="button" data-view="expenses">探索 115 年度預算 →</button>
-                <button class="button ghost nav-trigger" type="button" data-view="capital" data-i18n="seeCapital">查看資本投資</button>
+            <div class="city-budget-layout">
+              <div id="city-category-bars" class="city-category-bars"></div>
+              <div class="financing-panel">
+                <h3 data-copy="financingTitle">收支如何平衡</h3>
+                <p data-copy="financingCopy">歲入加上舉借與以前年度賸餘，用於歲出、還本與預計賸餘。</p>
+                <div id="financing-equation" class="financing-equation"></div>
               </div>
             </div>
-            <div class="hero-glance">
-              <div class="glance-heading"><span id="glance-title">115 年度預算一覽</span><span class="official-pill" data-i18n="officialData">官方資料</span></div>
-              <div id="overview-stats" class="stat-grid" aria-live="polite"></div>
-              <div class="glance-chart">
-                <p><span id="glance-chart-title">115 年度歲出</span><span data-i18n="budgetByAgency">按主管機關比例</span></p>
-                <div id="hero-budget-bars" class="hero-budget-bars"></div>
-              </div>
-              <p class="fx-note" id="fx-note" data-i18n="fxNote">所有官方原始金額均為新臺幣。</p>
-            </div>
-          </div>
-        </section>
+          </article>
 
-        <section class="journey-section">
-          <div class="shell">
-            <div class="section-intro centered">
-              <p class="kicker" data-i18n="understandBudget">理解預算</p>
-              <h2 data-i18n="followDollar">追蹤每一塊公共支出</h2>
-              <p data-i18n="followDollarCopy">每一筆預算都有一條路徑，從公共收入到市民每天使用的服務。</p>
+          <article class="panel city-sources-panel" id="city-sources">
+            <div class="section-intro">
+              <p class="kicker" data-copy="cityAuditKicker">三層資料實測</p>
+              <h2 data-copy="cityAuditTitle">這個縣市的資料實際走到哪裡</h2>
+              <p data-copy="cityAuditCopy">先看官方基準，再看 OpenFun 是否有工作計畫，最後檢查 TwinkleAI 搜到的是全縣市資料或局處資料。</p>
             </div>
-            <div class="journey-grid">
-              <button class="journey-card nav-trigger" type="button" data-view="revenues"><span>01</span><h3 data-i18n="step1Title">收入進入城市</h3><p data-i18n="step1Copy">稅課、補助、規費與財產收入共同支應城市運作。</p><b data-i18n="learnMore">深入了解 →</b></button>
-              <button class="journey-card nav-trigger" type="button" data-view="sources"><span>02</span><h3 data-i18n="step2Title">預算編列與通過</h3><p data-i18n="step2Copy">市府依法編列年度總預算，經議會審議後提供各項服務。</p><b data-i18n="learnMore">深入了解 →</b></button>
-              <button class="journey-card nav-trigger" type="button" data-view="expenses"><span>03</span><h3 data-i18n="step3Title">公共服務落地</h3><p data-i18n="step3Copy">教育、社福、治安、交通與環境服務進入市民生活。</p><b data-i18n="learnMore">深入了解 →</b></button>
-              <button class="journey-card nav-trigger" type="button" data-view="capital"><span>04</span><h3 data-i18n="step4Title">投資城市未來</h3><p data-i18n="step4Copy">公共工程、設備與基礎建設形成長期公共效益。</p><b data-i18n="learnMore">深入了解 →</b></button>
+            <div class="city-source-stack">
+              <section class="city-source-section official-source-section">
+                <div class="source-section-heading"><span class="source-step">01</span><div><span class="source-role" data-copy="roleEvidence">證據底座</span><h3 data-copy="officialData">官方資料</h3></div><span class="source-state state-primary" data-copy="officialPrimary">正式比較依據</span></div>
+                <div id="official-detail" class="source-detail-grid"></div>
+              </section>
+              <section class="city-source-section openfun-source-section">
+                <div class="source-section-heading"><span class="source-step">02</span><div><span class="source-role" data-copy="roleNormalize">整理補充</span><h3>OpenFun</h3></div><span id="openfun-state" class="source-state"></span></div>
+                <div id="openfun-detail"></div>
+              </section>
+              <section class="city-source-section twinkle-source-section">
+                <div class="source-section-heading"><span class="source-step">03</span><div><span class="source-role" data-copy="roleDiscover">搜尋探索</span><h3>TwinkleAI</h3></div><span id="twinkle-state" class="source-state"></span></div>
+                <div id="twinkle-detail"></div>
+              </section>
             </div>
-          </div>
-        </section>
+          </article>
 
-        <section class="investment-section">
-          <div class="shell investment-grid">
-            <div class="investment-copy">
-              <p class="kicker" id="investment-kicker">115 年度預算</p>
-              <h2 data-i18n-html="investsTitle">臺北市把預算<br />投資在哪裡</h2>
-              <p id="investment-summary">從主管機關別歲出，理解城市服務的預算規模。</p>
-              <div class="investment-total"><strong id="investment-total">載入中</strong><span data-i18n="totalExpenseBudget">年度歲出預算總額</span></div>
-              <button class="button dark nav-trigger" type="button" data-view="expenses" data-i18n="viewAllExpenses">查看全部歲出 →</button>
+          <article class="panel taipei-extra-panel" id="city-taipei-extra" hidden>
+            <div class="section-intro">
+              <p class="kicker" data-copy="taipeiExtraKicker">臺北額外官方明細</p>
+              <h2 data-copy="taipeiExtraTitle">主管機關別歲出與歲入資料</h2>
+              <p data-copy="taipeiExtraCopy">臺北另有跨年度官方 XML，可在同一個臺北頁面補充主管機關別資料，不再拆成首頁上方的獨立分頁。</p>
             </div>
-            <div id="agency-bars" class="ranking-list"></div>
-          </div>
-        </section>
+            <div id="taipei-extra-content"></div>
+          </article>
 
-        <section class="balance-section">
-          <div class="shell">
-            <div class="section-intro centered light">
-              <p class="kicker" data-i18n="fiscalHealth">財政概況</p>
-              <h2 data-i18n="balanceTitle">年度預算收支</h2>
-              <p data-i18n="balanceIntro">並列歲入與歲出，快速掌握年度預算是否平衡。</p>
-            </div>
-            <div class="balance-grid">
-              <article class="balance-column"><p data-i18n="revenue">歲入</p><strong id="balance-revenue-total">載入中</strong><div id="revenue-overview" class="balance-list"></div><button class="text-link nav-trigger" type="button" data-view="revenues" data-i18n="viewAllRevenues">查看全部歲入 →</button></article>
-              <div class="balance-center"><span data-i18n="budgetDifference">年度差額</span><strong id="balance-value">載入中</strong><p id="balance-copy"></p></div>
-              <article class="balance-column"><p data-i18n="expense">歲出</p><strong id="balance-expense-total">載入中</strong><div id="balance-expense-list" class="balance-list"></div><button class="text-link nav-trigger" type="button" data-view="expenses" data-i18n="viewAllExpenses">查看全部歲出 →</button></article>
-            </div>
-          </div>
-        </section>
-
-        <section class="capital-feature">
-          <div class="shell capital-feature-grid">
-            <div>
-              <p class="kicker" data-i18n="capitalPlan">資本投資計畫</p>
-              <h2 data-i18n="futureTitle">打造臺北市的未來</h2>
-              <p data-i18n="futureCopy">資本門預算投入公共工程、設備與基礎建設。現階段開放資料可查到主管機關彙總，尚未細分成個別工程。</p>
-              <div class="capital-total"><strong id="capital-highlight-total">載入中</strong><span id="capital-budget-label">115 年度<br />資本門預算</span></div>
-              <button class="button gold nav-trigger" type="button" data-view="capital" data-i18n="exploreCapital">探索資本門 →</button>
-            </div>
-            <div id="capital-highlight-list" class="capital-highlight-list"></div>
-          </div>
-        </section>
-
-        <section class="documents-section">
-          <div class="shell">
-            <div class="section-intro centered">
-              <p class="kicker" data-i18n="transparencyLabel">公開透明</p>
-              <h2 data-i18n="documentsTitle">數字背後的資料都在這裡</h2>
-              <p data-i18n="documentsIntro">查看完整明細、方法與原始資料，無需帳號即可使用。</p>
-            </div>
-            <div class="document-grid">
-              <button class="document-card nav-trigger" type="button" data-view="expenses"><span>▤</span><h3 data-i18n="expenseDetail">歲出明細</h3><p data-i18n="expenseDetailCopy">按主管機關與經常門、資本門查詢。</p></button>
-              <button class="document-card nav-trigger" type="button" data-view="revenues"><span>＄</span><h3 data-i18n="revenueSummary">歲入總表</h3><p data-i18n="revenueSummaryCopy">查看城市公共服務的主要財源。</p></button>
-              <button class="document-card nav-trigger" type="button" data-view="capital"><span>▧</span><h3 data-i18n="capitalDetail">資本門</h3><p data-i18n="capitalDetailCopy">比較長期投資的主管機關預算。</p></button>
-              <button class="document-card nav-trigger" type="button" data-view="sources"><span>↗</span><h3 data-i18n="officialSources">官方資料</h3><p data-i18n="officialSourcesCopy">回到臺北市政府資料來源核對。</p></button>
-              <button class="document-card nav-trigger" type="button" data-view="faq"><span>?</span><h3 data-i18n="faqCard">常見問題</h3><p data-i18n="faqCardCopy">了解預算、決算與資料範圍。</p></button>
-              <a class="document-card" href="https://github.com/mashbean/Open-Book"><span>⌘</span><h3 data-i18n="openSource">開放原始碼</h3><p data-i18n="openSourceCopy">檢視網站程式與資料整理方式。</p></a>
-            </div>
-          </div>
-        </section>
-
-        <section class="summary-band">
-          <div id="summary-strip" class="shell summary-strip"></div>
-        </section>
-
-        <section class="data-boundary">
-          <div class="shell notice" role="note">
-            <strong data-i18n="dataBoundary">資料邊界</strong>
-            <span data-i18n="dataBoundaryCopy">目前公開的是正式總預算彙總，並非逐筆付款帳。網站不會把採購決標金額誤當成實際支出。</span>
-          </div>
-        </section>
-
-      </section>
-
-      <section class="view" id="view-expenses" data-view-panel="expenses" hidden>
-        <div class="page-heading shell">
-          <p class="eyebrow" data-i18n="expenseEyebrow">城市準備把錢用在哪裡</p>
-          <h1 data-i18n="expenseTitle">歲出預算</h1>
-          <p data-i18n="expenseIntro">依經常門、資本門與主管機關查看，並與前一年度比較。</p>
-        </div>
-        <div class="shell section-stack">
-          <div id="expense-stats" class="stat-grid compact"></div>
-          <article class="panel data-panel">
-            <div class="table-toolbar">
-              <label class="search-field"><span class="sr-only" data-i18n="expenseSearch">搜尋主管機關或科目</span><input id="expense-search" type="search" placeholder="搜尋主管機關或科目" data-i18n-placeholder="expenseSearch" /></label>
-              <button class="button secondary" id="download-expenses" type="button" data-i18n="downloadCsv">下載 CSV</button>
-            </div>
-            <div class="table-wrap">
-              <table>
-                <thead><tr><th data-i18n="agency">主管機關</th><th data-i18n="expenseType">歲出性質</th><th data-i18n="section">款</th><th class="number" data-i18n="budgetAmount">預算金額</th><th class="number" data-i18n="share">占比</th></tr></thead>
-                <tbody id="expense-table"></tbody>
-              </table>
-            </div>
-            <p class="table-status" id="expense-status"></p>
+          <article class="panel city-method-panel">
+            <div><p class="kicker" data-copy="methodLabel">如何閱讀</p><h2 data-copy="methodTitle">來源越深，越需要交叉驗證</h2></div>
+            <div id="city-method-copy"></div>
           </article>
         </div>
-      </section>
-
-      <section class="view" id="view-revenues" data-view-panel="revenues" hidden>
-        <div class="page-heading shell">
-          <p class="eyebrow" data-i18n="revenueEyebrow">公共服務的財源</p>
-          <h1 data-i18n="revenueTitle">歲入預算</h1>
-          <p data-i18n="revenueIntro">從稅課、補助、規費與其他來源理解城市收入。</p>
-        </div>
-        <div class="shell section-stack">
-          <div id="revenue-stats" class="stat-grid compact"></div>
-          <article class="panel data-panel">
-            <div class="table-toolbar">
-              <label class="search-field"><span class="sr-only" data-i18n="revenueSearch">搜尋歲入來源或科目</span><input id="revenue-search" type="search" placeholder="搜尋歲入來源或科目" data-i18n-placeholder="revenueSearch" /></label>
-              <button class="button secondary" id="download-revenues" type="button" data-i18n="downloadCsv">下載 CSV</button>
-            </div>
-            <div class="table-wrap">
-              <table>
-                <thead><tr><th data-i18n="revenueSource">歲入來源</th><th data-i18n="item">科目</th><th data-i18n="type">性質</th><th class="number" data-i18n="budgetAmount">預算金額</th><th class="number" data-i18n="share">占比</th></tr></thead>
-                <tbody id="revenue-table"></tbody>
-              </table>
-            </div>
-            <p class="table-status" id="revenue-status"></p>
-          </article>
-        </div>
-      </section>
-
-      <section class="view" id="view-capital" data-view-panel="capital" hidden>
-        <div class="page-heading shell">
-          <p class="eyebrow" data-i18n="capitalEyebrow">形成資產或長期效益</p>
-          <h1 data-i18n="capitalTitle">資本門預算</h1>
-          <p data-i18n="capitalIntro">官方資料目前只到主管機關彙總，因此這裡不把機關合計誤寫成個別工程。</p>
-        </div>
-        <div class="shell section-stack">
-          <div id="capital-stats" class="stat-grid compact"></div>
-          <article class="panel data-panel">
-            <div class="table-toolbar">
-              <label class="search-field"><span class="sr-only" data-i18n="capitalSearch">搜尋主管機關</span><input id="capital-search" type="search" placeholder="搜尋主管機關" data-i18n-placeholder="capitalSearch" /></label>
-              <button class="button secondary" id="download-capital" type="button" data-i18n="downloadCsv">下載 CSV</button>
-            </div>
-            <div class="table-wrap">
-              <table>
-                <thead><tr><th data-i18n="agency">主管機關</th><th data-i18n="dataLevel">資料層級</th><th class="number" data-i18n="budgetAmount">預算金額</th><th data-i18n="dataSource">資料來源</th></tr></thead>
-                <tbody id="capital-table"></tbody>
-              </table>
-            </div>
-            <p class="table-status" id="capital-status"></p>
-          </article>
-        </div>
-      </section>
-
-      <section class="view" id="view-sources" data-view-panel="sources" hidden>
-        <div class="page-heading shell">
-          <p class="eyebrow" data-i18n="sourcesEyebrow">每個數字都能回去核對</p>
-          <h1 data-i18n="sourcesTitle">資料與文件</h1>
-          <p data-i18n="sourcesIntro">資料來自臺北市政府主計處、財政局與政府資料開放平臺，採政府資料開放授權條款第 1 版。</p>
-        </div>
-        <div class="shell section-stack">
-          <div id="source-list" class="source-grid"></div>
-          <article class="panel methodology">
-            <p class="kicker" data-i18n="methodology">整理方法</p>
-            <h2 data-i18n="methodologyTitle">從官方 XML 到可查詢表格</h2>
-            <ol>
-              <li data-i18n="method1">下載 114、115 年度正式總預算 XML</li>
-              <li data-i18n="method2">保留主管機關、款項、經常門、資本門與金額</li>
-              <li data-i18n="method3">逐年核對整理後加總與官方合計</li>
-              <li data-i18n="method4">產生可搜尋、比較與下載的靜態資料</li>
-            </ol>
-          </article>
-          <article class="panel fx-method">
-            <p class="kicker">USD</p>
-            <h2 data-i18n="fxMethodTitle">英文版美元換算</h2>
-            <p data-i18n="fxMethodCopy">英文版以臺灣銀行 2026 年 7 月 17 日美元即期買賣中價換算，固定使用 NT$32.25 = US$1。這是方便國際讀者比較的估算值，官方預算仍以新臺幣為準。</p>
-            <a href="https://rate.bot.com.tw/xrt?Lang=en-US" target="_blank" rel="noopener noreferrer" data-i18n="fxMethodLink">查看臺灣銀行牌告匯率 ↗</a>
-          </article>
-        </div>
-      </section>
-
-      <section class="view" id="view-faq" data-view-panel="faq" hidden>
-        <div class="page-heading shell">
-          <p class="eyebrow" data-i18n="faqEyebrow">資料怎麼讀</p>
-          <h1 data-i18n="faqTitle">常見問題</h1>
-          <p data-i18n="faqIntro">說明這份預算資料能回答什麼，以及目前還缺少哪些資訊。</p>
-        </div>
-        <div class="shell narrow section-stack"><div id="faq-list" class="faq-list"></div></div>
       </section>
     </main>
 
-    <section class="trust-strip" aria-label="網站資料承諾" data-i18n-aria="trustLabel">
-      <div class="shell trust-grid">
-        <span><b>↻</b><span data-i18n="updatedRegularly">定期更新</span></span>
-        <span><b>▤</b><span data-i18n="adoptedData">正式預算資料</span></span>
-        <span><b>◇</b><span data-i18n="noAccount">無需帳號</span></span>
-        <span><b>♿</b><span data-i18n="accessible">為所有人設計</span></span>
-      </div>
-    </section>
-
     <footer>
       <div class="shell footer-inner">
-        <div>
-          <p class="footer-kicker" data-i18n="builtForResidents">為市民而建</p>
-          <strong data-i18n="footerTitle">每位臺北市民，都能直接理解城市財政。</strong>
-          <p data-i18n="footerCopy">清楚、完整、免費使用。民間概念驗證，原始資料以發布機關內容為準。</p>
-        </div>
-        <div class="footer-meta"><span id="generated-date"></span><a href="https://github.com/mashbean/Open-Book" data-i18n="sourceCode">查看原始碼</a></div>
+        <div><p class="footer-kicker">OPENBOOK TAIWAN</p><strong data-copy="footerTitle">讓每個縣市的預算，都能被找到、比較與追問。</strong><p data-copy="footerCopy">民間概念驗證，數字與定義仍以主計總處及地方政府原始資料為準。</p></div>
+        <div class="footer-meta"><a href="https://github.com/mashbean/Open-Book">GitHub</a><a href="https://pro.mashbean.net/reports/2026-07-22-taiwan-open-budget-ai-interfaces/" data-copy="reportLink">研究報告</a><span id="generated-date"></span></div>
       </div>
     </footer>
 
-    <div class="loading-screen" id="loading-screen" role="status"><div class="loader"></div><span data-i18n="loading">正在整理預算資料</span></div>
+    <div class="loading-screen" id="loading-screen" role="status" aria-live="polite"><span class="loader"></span><strong data-copy="loading">正在整理 22 縣市資料</strong></div>
     <script type="module" src="./app.js"></script>
   </body>
 </html>
