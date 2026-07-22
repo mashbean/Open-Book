@@ -4,9 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#173d31" />
-    <meta name="description" content="比較臺灣 22 縣市預算，逐縣市檢視官方資料、OpenFun 整理與 TwinkleAI 實際資料列對帳結果。" />
+    <meta name="description" content="比較臺灣 22 縣市預算，公開 OpenFun API、預算 bulk 檔案與 TwinkleAI MCP 的實測能力及採用結果。" />
     <meta property="og:title" content="臺灣地方政府 OpenBook" />
-    <meta property="og:description" content="22 個獨立縣市頁，公開 TwinkleAI 實際讀列、對帳、採用與排除結果。" />
+    <meta property="og:description" content="22 個獨立縣市頁，公開 OpenFun API 與 TwinkleAI MCP 的搜尋、讀列、對帳、採用及排除結果。" />
     <meta property="og:type" content="website" />
     <title>臺灣地方政府 OpenBook</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -59,6 +59,7 @@
             </div>
             <div class="source-flow" id="source-flow"></div>
             <div class="source-use-rule" id="source-use-rule"></div>
+            <div class="interface-comparison" id="interface-comparison"></div>
           </article>
 
           <article class="panel coverage-panel">
@@ -154,7 +155,7 @@
             <div class="section-intro">
               <p class="kicker" data-copy="cityAuditKicker">三層資料實測</p>
               <h2 data-copy="cityAuditTitle">這個縣市的資料實際走到哪裡</h2>
-              <p data-copy="cityAuditCopy">先看官方基準與 OpenFun 工作計畫，再檢查 TwinkleAI 是否只搜尋到資料集、實際讀取資料列，或已通過官方總額對帳。</p>
+              <p data-copy="cityAuditCopy">先看官方基準，再辨認 OpenFun 資料來自公開 bulk 檔或 API，最後檢查 TwinkleAI 是純搜尋、已讀列，或已通過官方總額對帳。</p>
             </div>
             <div class="city-source-stack">
               <section class="city-source-section official-source-section">
@@ -162,7 +163,7 @@
                 <div id="official-detail" class="source-detail-grid"></div>
               </section>
               <section class="city-source-section openfun-source-section">
-                <div class="source-section-heading"><span class="source-step">02</span><div><span class="source-role" data-copy="roleNormalize">整理補充</span><h3>OpenFun</h3></div><span id="openfun-state" class="source-state"></span></div>
+                <div class="source-section-heading"><span class="source-step">02</span><div><span class="source-role" data-copy="roleNormalize">bulk 整理＋API 目錄</span><h3>OpenFun</h3></div><span id="openfun-state" class="source-state"></span></div>
                 <div id="openfun-detail"></div>
               </section>
               <section class="city-source-section twinkle-source-section">

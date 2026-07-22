@@ -8,6 +8,7 @@ import Papa from "papaparse";
 const projectRoot = path.resolve(import.meta.dirname, "..");
 const outputPath = path.join(projectRoot, "data-sources", "ai-interface-audit.json");
 const OPENFUN_ROOT = "https://local-budget-files.ronny-s3.click/files/merged-county";
+const OPENFUN_API_BASE = "https://data.openfun.tw/api/v1";
 const TWINKLE_ENDPOINT = "https://api.twinkleai.tw/mcp/";
 const CITIES = [
   "臺北市", "新北市", "桃園市", "臺中市", "臺南市", "高雄市", "基隆市", "新竹市", "新竹縣", "宜蘭縣", "苗栗縣",
@@ -48,6 +49,119 @@ async function fetchText(url) {
   const response = await fetch(url, { headers: { "user-agent": "OpenBook-Taiwan/1.0 (+https://github.com/mashbean/Open-Book)" } });
   if (!response.ok) throw new Error(`HTTP ${response.status} for ${url}`);
   return { text: await response.text(), response };
+}
+
+async function fetchJsonResult(url, options = {}) {
+  const startedAt = performance.now();
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      "user-agent": "OpenBook-Taiwan/1.0 (+https://github.com/mashbean/Open-Book)",
+      ...(options.headers || {}),
+    },
+  });
+  const text = await response.text();
+  let body;
+  try {
+    body = JSON.parse(text);
+  } catch {
+    body = { raw: text.slice(0, 500) };
+  }
+  return {
+    ok: response.ok,
+    http_status: response.status,
+    elapsed_ms: Math.round(performance.now() - startedAt),
+    body,
+  };
+}
+
+function openFunSearchUrl(query) {
+  const url = new URL(`${OPENFUN_API_BASE}/search`);
+  url.searchParams.set("q", query);
+  return url;
+}
+
+function openFunDatasetSummary(result) {
+  return {
+    slug: result.slug,
+    title: result.title || result.name || null,
+    skill_md_url: result.skill_md_url || null,
+  };
+}
+
+async function inspectOpenFunApi(token) {
+  const authorization = { authorization: `Bearer ${token}` };
+  const searchQueries = ["地方預算", "政府預算"];
+  const searches = [];
+
+  for (const query of searchQueries) {
+    const [anonymous, authenticated] = await Promise.all([
+      fetchJsonResult(openFunSearchUrl(query)),
+      fetchJsonResult(openFunSearchUrl(query), { headers: authorization }),
+    ]);
+    const anonymousDatasets = (anonymous.body.datasets?.results || []).map(openFunDatasetSummary);
+    const authenticatedDatasets = (authenticated.body.datasets?.results || []).map(openFunDatasetSummary);
+    searches.push({
+      query,
+      anonymous_http_status: anonymous.http_status,
+      authenticated_http_status: authenticated.http_status,
+      anonymous_datasets: anonymousDatasets,
+      authenticated_datasets: authenticatedDatasets,
+      same_dataset_slugs: anonymousDatasets.map((item) => item.slug).join("|") === authenticatedDatasets.map((item) => item.slug).join("|"),
+    });
+  }
+
+  const budgetSlugs = ["tw.openfun~bulk~budget-local", "tw.openfun~bulk~budget-detail"];
+  const budgetEndpoints = [];
+  for (const slug of budgetSlugs) {
+    const encodedSlug = encodeURIComponent(slug);
+    const [records, aggregation] = await Promise.all([
+      fetchJsonResult(`${OPENFUN_API_BASE}/datasets/${encodedSlug}/records?per_page=1`, { headers: authorization }),
+      fetchJsonResult(`${OPENFUN_API_BASE}/datasets/${encodedSlug}/agg?group_by=${encodeURIComponent("縣市")}`, { headers: authorization }),
+    ]);
+    budgetEndpoints.push({
+      slug,
+      records: { http_status: records.http_status, supported: records.ok, error: records.body.error || records.body.message || null },
+      aggregation: { http_status: aggregation.http_status, supported: aggregation.ok, error: aggregation.body.error || aggregation.body.message || null },
+    });
+  }
+
+  const probeSlug = "tw.gov.dgpa~ref~gov-org";
+  const probeBase = `${OPENFUN_API_BASE}/datasets/${encodeURIComponent(probeSlug)}`;
+  const [anonymousProbe, authenticatedProbe, nameSearch, exactFilter, aggregationProbe] = await Promise.all([
+    fetchJsonResult(`${probeBase}/records?per_page=1`),
+    fetchJsonResult(`${probeBase}/records?per_page=1`, { headers: authorization }),
+    fetchJsonResult(`${probeBase}/records?${new URLSearchParams({ "q[機關名稱]": "臺北市政府", per_page: "1" })}`, { headers: authorization }),
+    fetchJsonResult(`${probeBase}/records?${new URLSearchParams({ 機關層級: "1", per_page: "1" })}`, { headers: authorization }),
+    fetchJsonResult(`${probeBase}/agg?group_by=${encodeURIComponent("機關層級")}`, { headers: authorization }),
+  ]);
+
+  return {
+    tested_at: new Date().toISOString(),
+    endpoint: OPENFUN_API_BASE,
+    access_label_zh: "邀請制封測中，完整權限需帳號與群組授權",
+    access_label_en: "Invitation-only beta; full access requires an account and group authorization",
+    search: searches,
+    budget_dataset_type: "bulk",
+    budget_endpoints: budgetEndpoints,
+    budget_records_supported: budgetEndpoints.every((item) => item.records.supported),
+    budget_aggregation_supported: budgetEndpoints.every((item) => item.aggregation.supported),
+    token_probe: {
+      dataset: probeSlug,
+      anonymous_http_status: anonymousProbe.http_status,
+      authenticated_http_status: authenticatedProbe.http_status,
+      authenticated_total_records: authenticatedProbe.body.total ?? null,
+      schema_field_count: authenticatedProbe.body.schema?.length ?? null,
+      name_search_http_status: nameSearch.http_status,
+      name_search_total: nameSearch.body.total ?? null,
+      exact_filter_http_status: exactFilter.http_status,
+      exact_filter_total: exactFilter.body.total ?? null,
+      aggregation_http_status: aggregationProbe.http_status,
+      aggregation_error: aggregationProbe.body.error || aggregationProbe.body.message || null,
+      documented_aggregation_example_currently_works: aggregationProbe.ok,
+    },
+    conclusion: "搜尋與受保護 records 查詢可用；地方預算目前以公開 bulk CSV/JSON 供應，不能透過 records 或 agg 查詢。",
+  };
 }
 
 async function inspectOpenFunCity(city) {
@@ -387,7 +501,12 @@ async function inspectTwinkleCity(client, city) {
 
 async function main() {
   const apiKey = process.env.TWINKLE_API_KEY;
+  const openFunToken = process.env.OPENFUN_API_TOKEN;
   if (!apiKey) throw new Error("TWINKLE_API_KEY is required. Load it from ~/.config/secrets/twinkle.env before running.");
+  if (!openFunToken) throw new Error("OPENFUN_API_TOKEN is required. Load it from ~/.config/secrets/openfun.env before running.");
+
+  console.log("Testing OpenFun search, authenticated records, filters, aggregation, and budget endpoint support");
+  const openFunApi = await inspectOpenFunApi(openFunToken);
 
   console.log("Connecting to Twinkle MCP and reading the production tool registry");
   const twinkle = await createTwinkleClient(apiKey);
@@ -418,15 +537,16 @@ async function main() {
       generated_at: new Date().toISOString(),
       cities_expected: CITIES.length,
       cities_audited: records.length,
-      methodology: "OpenFun 工作計劃 CSV 逐縣市讀取並檢查詳細歲出 JSON；Twinkle public_finance 逐縣市搜尋、讀取最佳命中 metadata，對全縣市候選再以 query_rows 取得實際資料列。",
-      boundary: "Twinkle 查詢命中不代表可用。實際資料列仍須和官方 115 年度共同表對帳，未通過者不得供應正式數字，也不代表任何異常構成不當支出。",
+      methodology: "OpenFun API 實測搜尋、認證 records、篩選、聚合與預算端點，再以公開 bulk CSV/JSON 逐縣市讀取工作計劃；Twinkle public_finance 逐縣市搜尋、讀取 metadata，對全縣市候選再以 query_rows 取得實際資料列。",
+      boundary: "OpenFun Token 有效不等於預算 bulk 資料支援 records 或 agg。Twinkle 查詢命中也不代表可用；實際資料列仍須和官方 115 年度共同表對帳，未通過者不得供應正式數字。",
     },
     services: {
       openfun: {
         dataset: "tw.openfun~bulk~budget-detail",
         docs: "https://data.openfun.tw/datasets/tw.openfun~bulk~budget-detail/skill.md",
         attribution: "資料來源：歐噴資料庫（data.openfun.tw）／行政院主計總處與各縣市主計",
-        authentication: "none for static CSV/JSON",
+        authentication: "Bearer token for queryable API datasets; none for public budget bulk CSV/JSON",
+        api_audit: openFunApi,
       },
       twinkle: {
         endpoint: TWINKLE_ENDPOINT,
