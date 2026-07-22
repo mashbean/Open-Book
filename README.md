@@ -8,13 +8,16 @@
 
 ```bash
 npm install
+npm run refresh:interfaces
 npm run refresh:national
 npm run refresh:taipei
 npm run seed
 npm run dev
 ```
 
-`npm run refresh:national` 會下載行政院主計總處的 115 年度縣市總預算彙編，驗證 22 縣市總額與政事別加總後產生 `pages-site/cities.json`。
+`npm run refresh:interfaces` 會用 OpenFun 公開靜態檔與 Twinkle MCP 對 22 縣市逐一驗收，產生不含金鑰的 `data-sources/ai-interface-audit.json`。Twinkle key 只從本機環境變數 `TWINKLE_API_KEY` 讀取。
+
+`npm run refresh:national` 會下載行政院主計總處的 115 年度縣市總預算彙編，驗證 22 縣市總額、政事別、經資門及收支平衡，再合併雙接口驗收結果產生 `pages-site/cities.json`。
 
 `npm run refresh:taipei` 會直接從臺北市資料大平臺重新下載官方 XML，產生 `sample-data/taipei-*.csv`。公開入口為 `/taipei`。
 

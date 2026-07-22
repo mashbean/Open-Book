@@ -12,6 +12,7 @@ const SOURCE_PAGE = "https://www.dgbas.gov.tw/News_Content.aspx?n=1525&s=236271"
 const projectRoot = path.resolve(import.meta.dirname, "..");
 const outputPath = path.join(projectRoot, "pages-site", "cities.json");
 const readinessPath = path.join(projectRoot, "data-sources", "city-readiness.json");
+const interfaceAuditPath = path.join(projectRoot, "data-sources", "ai-interface-audit.json");
 
 function getArgument(name) {
   const index = process.argv.indexOf(name);
@@ -57,7 +58,10 @@ function number(value) {
 const workbookPath = await resolveWorkbook();
 const workbook = XLSX.readFile(workbookPath);
 const readiness = JSON.parse(await fs.readFile(readinessPath, "utf8"));
+const interfaceAudit = JSON.parse(await fs.readFile(interfaceAuditPath, "utf8"));
+if (interfaceAudit.cities?.length !== 22) throw new Error("AI interface audit must contain all 22 local governments");
 const readinessByCity = new Map(readiness.cities.map((entry) => [entry.city, entry]));
+const interfaceByCity = new Map(interfaceAudit.cities.map((entry) => [entry.city, entry]));
 const cityData = new Map(readiness.cities.map(({ city }) => [city, { city }]));
 
 for (const row of rows(workbook, "融資總(明細)", "A5:J29")) {
@@ -69,6 +73,7 @@ for (const row of rows(workbook, "融資總(明細)", "A5:J29")) {
     prior_surplus_thousand_twd: number(row[5]),
     expenditure_thousand_twd: number(row[7]),
     debt_repayment_thousand_twd: number(row[8]),
+    budget_surplus_thousand_twd: number(row[9]),
   });
 }
 
@@ -115,6 +120,8 @@ for (const row of rows(workbook, "資本支出", "A7:L31")) {
 
 const cities = [...cityData.values()].map((city) => {
   const profile = readinessByCity.get(city.city);
+  const interfaceProfile = interfaceByCity.get(city.city);
+  if (!profile || !interfaceProfile) throw new Error(`Missing profile for ${city.city}`);
   if (!city.expenditure_thousand_twd || !city.revenue_thousand_twd) throw new Error(`Missing totals for ${city.city}`);
   const functionTotal = [
     city.general_government_thousand_twd,
@@ -130,7 +137,31 @@ const cities = [...cityData.values()].map((city) => {
   if (city.current_expenditure_thousand_twd + city.capital_expenditure_thousand_twd !== city.expenditure_thousand_twd) {
     throw new Error(`Current and capital total mismatch for ${city.city}`);
   }
-  return { ...profile, ...city };
+  const openfunComparable = interfaceProfile.openfun.status === "ok" && interfaceProfile.openfun.latest_year === 115;
+  const financingBalance = city.revenue_thousand_twd + city.borrowing_thousand_twd + city.prior_surplus_thousand_twd
+    - city.expenditure_thousand_twd - city.debt_repayment_thousand_twd;
+  if (financingBalance !== city.budget_surplus_thousand_twd) {
+    throw new Error(`Financing balance mismatch for ${city.city}: calculated ${financingBalance}, source ${city.budget_surplus_thousand_twd}`);
+  }
+  return {
+    ...profile,
+    ...city,
+    metrics: {
+      capital_share: city.capital_expenditure_thousand_twd / city.expenditure_thousand_twd,
+      borrowing_share: city.borrowing_thousand_twd / city.expenditure_thousand_twd,
+      debt_repayment_share: city.debt_repayment_thousand_twd / city.expenditure_thousand_twd,
+      financing_turnover_share: (city.borrowing_thousand_twd + city.debt_repayment_thousand_twd) / city.expenditure_thousand_twd,
+      prior_surplus_share: city.prior_surplus_thousand_twd / city.expenditure_thousand_twd,
+      budget_surplus_share: city.budget_surplus_thousand_twd / city.expenditure_thousand_twd,
+      education_share: city.education_science_culture_thousand_twd / city.expenditure_thousand_twd,
+      social_welfare_share: city.social_welfare_thousand_twd / city.expenditure_thousand_twd,
+      openfun_vs_official_difference_share: openfunComparable
+        ? (interfaceProfile.openfun.latest_total_thousand_twd - city.expenditure_thousand_twd) / city.expenditure_thousand_twd
+        : null,
+    },
+    openfun: interfaceProfile.openfun,
+    twinkle: interfaceProfile.twinkle,
+  };
 });
 
 const payload = {
@@ -144,6 +175,13 @@ const payload = {
     source_download: DGBAS_XLSX_URL,
     caveat: "金門縣在主計總處彙編中為總預算案，其餘依來源表註。",
     readiness: readiness.methodology,
+    interface_audit: {
+      generated_at: interfaceAudit.meta.generated_at,
+      methodology: interfaceAudit.meta.methodology,
+      boundary: interfaceAudit.meta.boundary,
+      summary: interfaceAudit.summary,
+      services: interfaceAudit.services,
+    },
   },
   cities,
 };

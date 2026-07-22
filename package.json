@@ -10,6 +10,7 @@
     "seed": "npx tsx prisma/seed.ts",
     "refresh:taipei": "node scripts/refresh-taipei-data.mjs",
     "refresh:national": "node scripts/build-national-data.mjs",
+    "refresh:interfaces": "node scripts/audit-ai-interfaces.mjs",
     "build:pages": "node scripts/build-pages-site.mjs",
     "postinstall": "prisma generate"
   },
