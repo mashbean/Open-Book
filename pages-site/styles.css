@@ -302,6 +302,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .page-heading h1 { font-size: clamp(2.3rem, 5vw, 4rem); }
 .page-heading > p:last-child { max-width: 700px; color: var(--ink-soft); }
 .section-stack { display: grid; gap: 1.5rem; padding-bottom: 5rem; }
+.section-stack > * { min-width: 0; }
 .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
 .stat-card { padding: 1.25rem; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; }
 .stat-card span, .stat-card small { color: var(--ink-soft); }
@@ -396,6 +397,30 @@ td small { color: var(--ink-soft); }
 .nationwide-methodology h2 { margin: .35rem 0 .7rem; }
 .nationwide-methodology p { color: var(--ink-soft); }
 .nationwide-methodology a { color: var(--green); font-weight: 800; }
+.interface-audit-panel, .watchpoints-panel, .interface-matrix-panel { padding: 2rem; }
+.interface-audit-panel { display: grid; grid-template-columns: minmax(260px,.7fr) minmax(0,1.3fr); gap: 2rem; align-items: start; }
+.interface-audit-stats { display: grid; grid-template-columns: repeat(2,1fr); gap: 1px; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: var(--line); }
+.interface-audit-stat { min-height: 150px; padding: 1.25rem; background: #f8faf7; }
+.interface-audit-stat span, .interface-audit-stat small { display: block; color: var(--ink-soft); }
+.interface-audit-stat strong { display: block; margin: .4rem 0; color: var(--forest); font-size: 2rem; }
+.interface-audit-stat small { font-size: .72rem; line-height: 1.55; }
+.national-watchpoints { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; margin-top: 1.5rem; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: var(--line); }
+.watchpoint-card { min-height: 240px; padding: 1.4rem; background: #fff; }
+.watchpoint-card .watchpoint-source { color: var(--green); font-size: .68rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+.watchpoint-card h3 { margin: .65rem 0; font-size: 1.08rem; line-height: 1.35; }
+.watchpoint-card p { color: var(--ink-soft); font-size: .78rem; line-height: 1.65; }
+.watchpoint-card b { display: block; margin-top: 1rem; color: var(--gold-dark); font-size: .72rem; }
+.city-service-status { display: flex; flex-wrap: wrap; gap: .4rem; margin: .9rem 0 0; }
+.service-pill { padding: .25rem .5rem; border-radius: 999px; color: #315147; background: #e9f0ec; font-size: .63rem; font-weight: 800; }
+.service-pill.warn { color: #7b4b18; background: #f7ead5; }
+.city-watchpoint { margin: .9rem 0 0; padding: .75rem; border-left: 3px solid var(--gold); color: var(--ink-soft); background: #fbf8f0; font-size: .68rem; line-height: 1.55; }
+.interface-matrix-panel .table-wrap { margin-top: 1.5rem; }
+.interface-matrix { min-width: 920px; }
+.interface-matrix td { vertical-align: top; }
+.interface-matrix td small { display: block; margin-top: .2rem; color: var(--ink-soft); line-height: 1.45; }
+.matrix-ok, .matrix-gap { font-weight: 900; }
+.matrix-ok { color: var(--green); }
+.matrix-gap { color: #9b5d1b; }
 
 .trust-strip { padding: 1.4rem 0; color: rgba(255,255,255,.72); background: #193329; border-bottom: 1px solid rgba(255,255,255,.08); }
 .trust-grid { display: grid; grid-template-columns: repeat(4,1fr); }
@@ -423,7 +448,9 @@ footer { padding: 4.5rem 0; color: #fff; background: #12251d; }
   .language-control { margin-left: 0; }
   .hero-grid { grid-template-columns: 1fr; min-height: auto; }
   .nationwide-heading-grid { grid-template-columns: 1fr; }
+  .interface-audit-panel { grid-template-columns: 1fr; }
   .city-budget-grid { grid-template-columns: repeat(2, 1fr); }
+  .national-watchpoints { grid-template-columns: repeat(2,1fr); }
   .national-ranking { grid-template-columns: 1fr; }
   .hero-copy-block { max-width: 720px; }
   .hero-glance { max-width: 720px; }
@@ -451,7 +478,7 @@ footer { padding: 4.5rem 0; color: #fff; background: #12251d; }
   .nationwide-heading { padding-block: 3.5rem 2.5rem; }
   .nationwide-heading h1 { font-size: clamp(3rem, 14vw, 5rem); }
   .nationwide-stats { grid-template-columns: 1fr 1fr; }
-  .nationwide-explainer, .city-budget-grid, .nationwide-methodology { grid-template-columns: 1fr; }
+  .nationwide-explainer, .city-budget-grid, .nationwide-methodology, .interface-audit-stats, .national-watchpoints { grid-template-columns: 1fr; }
   .nationwide-explainer > div, .nationwide-explainer > div:first-child { border-left: 0; border-top: 1px solid var(--line); }
   .nationwide-explainer > div:first-child { border-top: 0; }
   .national-ranking-row { grid-template-columns: 1.6rem 95px minmax(60px, 1fr) auto; }
