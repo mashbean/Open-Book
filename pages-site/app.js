@@ -4,8 +4,9 @@ const initialLanguage = new URLSearchParams(location.search).get("lang") === "en
 
 const state = {
   data: null,
+  cities: null,
   year: null,
-  view: "overview",
+  view: "nationwide",
   language: initialLanguage,
 };
 
@@ -40,6 +41,30 @@ function gregorianYear(rocYear) {
 
 function displayYear(rocYear = state.year) {
   return isEnglish() ? `FY${gregorianYear(rocYear)}` : `${rocYear} 年度`;
+}
+
+function displayCity(row) {
+  return isEnglish() ? row.city_en : row.city;
+}
+
+function displayRegion(region) {
+  if (!isEnglish()) return region;
+  return { 北部: "North", 中部: "Central", 南部: "South", 東部: "East", 外島: "Offshore islands" }[region] || region;
+}
+
+function displayMachineLevel(level) {
+  if (!isEnglish()) return level;
+  return { 完整: "Full structured", 部分: "Partial structured", 文件: "Documents" }[level] || level;
+}
+
+function displayUnitDetail(level) {
+  if (!isEnglish()) return level;
+  return { 官方完整: "Complete official detail", 民代協助: "Obtained with councilor support", 尚未取得: "Not yet available" }[level] || level;
+}
+
+function displayInterface(value) {
+  if (!isEnglish()) return value;
+  return { API: "API", 檔案: "Machine-readable files", 文件: "Document downloads" }[value] || value;
 }
 
 function toUsd(value) {
@@ -179,14 +204,72 @@ function applyStaticTranslations() {
     button.setAttribute("aria-pressed", String(active));
   });
 
-  const title = isEnglish() ? "Taipei City OpenBook" : "臺北市開放預算";
+  const title = isEnglish() ? "Taiwan Local Government OpenBook" : "臺灣地方政府 OpenBook";
   const description = isEnglish()
-    ? "Explore Taipei City's expenses, revenues, and capital budget using official open data, with USD estimates for international readers."
-    : "探索臺北市歲出、歲入與資本門預算，回到官方資料核對每個數字。";
+    ? "Compare FY2026 budgets across Taiwan's 22 local governments, then explore Taipei's detailed official open data with USD estimates."
+    : "比較 22 縣市預算規模、功能分類、資本支出與資料開放成熟度，再深入探索臺北市官方資料。";
   document.title = title;
   document.querySelector('meta[name="description"]').content = description;
   document.querySelector('meta[property="og:title"]').content = title;
   document.querySelector('meta[property="og:description"]').content = description;
+}
+
+function nationalAmount(thousandTwd) {
+  return formatCompact(thousandTwd * 1000);
+}
+
+function nationalCategoryRows(city) {
+  return [
+    [isEnglish() ? "Education, science & culture" : "教育科學文化", city.education_science_culture_thousand_twd],
+    [isEnglish() ? "Economic development" : "經濟發展", city.economic_development_thousand_twd],
+    [isEnglish() ? "Social welfare" : "社會福利", city.social_welfare_thousand_twd],
+    [isEnglish() ? "General government" : "一般政務", city.general_government_thousand_twd],
+    [isEnglish() ? "Community & environment" : "社區與環境", city.community_environment_thousand_twd],
+  ].sort((left, right) => right[1] - left[1]);
+}
+
+function renderNationwide() {
+  if (!state.cities) return;
+  const all = state.cities.cities;
+  const totalExpenses = all.reduce((total, row) => total + row.expenditure_thousand_twd, 0);
+  const totalCapital = all.reduce((total, row) => total + row.capital_expenditure_thousand_twd, 0);
+  const tierACount = all.filter((row) => row.tier === "A").length;
+  document.querySelector("#nationwide-stats").innerHTML = [
+    statCard(isEnglish() ? "Local governments" : "地方政府", isEnglish() ? "22" : "22 縣市", isEnglish() ? "One official national workbook" : "同一份官方彙編"),
+    statCard(isEnglish() ? "Combined expenses" : "歲出合計", nationalAmount(totalExpenses), isEnglish() ? "Budget scale, not consolidated government spending" : "預算規模，非政府合併支出"),
+    statCard(isEnglish() ? "Capital expenses" : "資本支出", nationalAmount(totalCapital), `${percentage(totalCapital, totalExpenses)} ${isEnglish() ? "of expenses" : "的歲出"}`),
+    statCard(isEnglish() ? "Tier A cities" : "A 級城市", isEnglish() ? `${tierACount} cities` : `${tierACount} 個`, isEnglish() ? "Broad structured local data and APIs" : "地方結構化資料與 API 較完整"),
+  ].join("");
+
+  const query = document.querySelector("#city-search")?.value.trim().toLowerCase() || "";
+  const region = document.querySelector("#region-filter")?.value || "";
+  const tier = document.querySelector("#tier-filter")?.value || "";
+  const filtered = all
+    .filter((row) => `${row.city} ${row.city_en}`.toLowerCase().includes(query))
+    .filter((row) => !region || row.region === region)
+    .filter((row) => !tier || row.tier === tier)
+    .sort((left, right) => right.expenditure_thousand_twd - left.expenditure_thousand_twd);
+
+  document.querySelector("#city-budget-grid").innerHTML = filtered.map((row) => {
+    const categories = nationalCategoryRows(row).slice(0, 3);
+    const openBudgetUrl = `https://budget.openfun.app/budget/show/${encodeURIComponent(row.city)}/115`;
+    return `<article class="city-budget-card">
+      <div class="city-card-heading"><div><span>${escapeHtml(displayRegion(row.region))}</span><h2>${escapeHtml(displayCity(row))}</h2></div><span class="tier-badge tier-${row.tier.toLowerCase()}">${row.tier}</span></div>
+      <div class="city-primary-number"><strong>${escapeHtml(nationalAmount(row.expenditure_thousand_twd))}</strong><span>${isEnglish() ? "FY2026 expense budget" : "115 年度歲出預算"}</span></div>
+      <div class="city-finance-grid"><span><small>${isEnglish() ? "Revenue" : "歲入"}</small><b>${escapeHtml(nationalAmount(row.revenue_thousand_twd))}</b></span><span><small>${isEnglish() ? "Capital" : "資本支出"}</small><b>${escapeHtml(nationalAmount(row.capital_expenditure_thousand_twd))}</b></span></div>
+      <div class="city-category-list">${categories.map(([label, amount]) => `<div><span>${escapeHtml(label)}</span><b>${percentage(amount, row.expenditure_thousand_twd)}</b><i><em style="width:${(amount / row.expenditure_thousand_twd) * 100}%"></em></i></div>`).join("")}</div>
+      <dl class="readiness-facts"><div><dt>${isEnglish() ? "Official machine data" : "官方機器資料"}</dt><dd>${escapeHtml(displayMachineLevel(row.official_machine))}</dd></div><div><dt>${isEnglish() ? "OpenFun history" : "OpenFun 歷年"}</dt><dd>${row.history_years} ${isEnglish() ? "years" : "年"}</dd></div><div><dt>${isEnglish() ? "Unit-budget detail" : "單位預算明細"}</dt><dd>${escapeHtml(displayUnitDetail(row.unit_detail))}</dd></div><div><dt>${isEnglish() ? "Interface" : "介面"}</dt><dd>${escapeHtml(displayInterface(row.interface))}</dd></div></dl>
+      <div class="city-card-links"><a href="${escapeHtml(row.source_url)}" target="_blank" rel="noopener noreferrer">${isEnglish() ? "Official source" : "官方來源"} ↗</a><a href="${openBudgetUrl}" target="_blank" rel="noopener noreferrer">OpenFun ↗</a>${row.city === "臺北市" ? `<button type="button" data-city-detail="taipei">${isEnglish() ? "Open Taipei detail" : "進入臺北深度頁"} →</button>` : ""}</div>
+    </article>`;
+  }).join("");
+  document.querySelector("#city-status").textContent = isEnglish()
+    ? `Showing ${filtered.length} of 22 local governments. Readiness scores describe maintenance effort for deep city pages.`
+    : `顯示 ${filtered.length}／22 縣市。成熟度評分描述維護深度城市頁所需的工程量。`;
+  document.querySelectorAll("[data-city-detail]").forEach((button) => button.addEventListener("click", () => showView("overview")));
+
+  const ranking = [...all].sort((left, right) => right.expenditure_thousand_twd - left.expenditure_thousand_twd);
+  const max = ranking[0].expenditure_thousand_twd;
+  document.querySelector("#national-ranking").innerHTML = ranking.map((row, index) => `<div class="national-ranking-row"><span>${String(index + 1).padStart(2, "0")}</span><strong>${escapeHtml(displayCity(row))}</strong><div><i style="width:${(row.expenditure_thousand_twd / max) * 100}%"></i></div><b>${escapeHtml(nationalAmount(row.expenditure_thousand_twd))}</b></div>`).join("");
 }
 
 function renderYearSelect() {
@@ -384,6 +467,7 @@ function renderGeneratedDate() {
 }
 
 function renderAll() {
+  renderNationwide();
   renderOverview();
   renderExpenseView();
   renderRevenueView();
@@ -394,7 +478,7 @@ function updateUrl(view = state.view) {
   const url = new URL(location.href);
   if (state.language === "en") url.searchParams.set("lang", "en");
   else url.searchParams.delete("lang");
-  url.hash = view === "overview" ? "" : view;
+  url.hash = view === "nationwide" ? "" : view;
   history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
 }
 
@@ -402,6 +486,7 @@ function showView(view, updateHistory = true) {
   const target = document.querySelector(`[data-view-panel="${view}"]`);
   if (!target) return;
   state.view = view;
+  document.body.classList.toggle("showing-nationwide", view === "nationwide");
   document.querySelectorAll("[data-view-panel]").forEach((panel) => {
     const active = panel === target;
     panel.hidden = !active;
@@ -455,6 +540,18 @@ function bindEvents() {
   document.querySelector("#expense-search").addEventListener("input", renderExpenseView);
   document.querySelector("#revenue-search").addEventListener("input", renderRevenueView);
   document.querySelector("#capital-search").addEventListener("input", renderCapitalView);
+  document.querySelector("#city-search").addEventListener("input", renderNationwide);
+  document.querySelector("#region-filter").addEventListener("change", renderNationwide);
+  document.querySelector("#tier-filter").addEventListener("change", renderNationwide);
+
+  document.querySelector("#download-cities").addEventListener("click", () => {
+    const rows = state.cities.cities;
+    if (isEnglish()) {
+      downloadCsv("taiwan-local-budgets-fy2026-usd.csv", ["Fiscal year", "Local government", "Region", "Readiness tier", "Expense budget (USD estimate)", "Revenue budget (USD estimate)", "Capital expenses (USD estimate)", "Official expense budget (TWD)", "TWD per USD", "Official source"], rows.map((row) => [2026, row.city_en, displayRegion(row.region), row.tier, (row.expenditure_thousand_twd * 1000 / FX.rate).toFixed(2), (row.revenue_thousand_twd * 1000 / FX.rate).toFixed(2), (row.capital_expenditure_thousand_twd * 1000 / FX.rate).toFixed(2), row.expenditure_thousand_twd * 1000, FX.rate, row.source_url]));
+    } else {
+      downloadCsv("taiwan-local-budgets-115.csv", ["年度", "縣市", "區域", "實作成熟度", "歲出預算（新臺幣元）", "歲入預算（新臺幣元）", "資本支出（新臺幣元）", "官方機器資料", "歷年覆蓋", "單位預算明細", "介面", "官方來源"], rows.map((row) => [115, row.city, row.region, row.tier, row.expenditure_thousand_twd * 1000, row.revenue_thousand_twd * 1000, row.capital_expenditure_thousand_twd * 1000, row.official_machine, row.history_years, row.unit_detail, row.interface, row.source_url]));
+    }
+  });
 
   document.querySelector("#download-expenses").addEventListener("click", () => {
     const rows = rowsFor("expenses");
@@ -485,9 +582,10 @@ function bindEvents() {
 async function init() {
   applyStaticTranslations();
   try {
-    const response = await fetch("./data.json");
-    if (!response.ok) throw new Error(`${isEnglish() ? "Data failed to load" : "資料載入失敗"} ${response.status}`);
+    const [response, citiesResponse] = await Promise.all([fetch("./data.json"), fetch("./cities.json")]);
+    if (!response.ok || !citiesResponse.ok) throw new Error(`${isEnglish() ? "Data failed to load" : "資料載入失敗"} ${response.status}/${citiesResponse.status}`);
     state.data = await response.json();
+    state.cities = await citiesResponse.json();
     state.year = state.data.meta.years.at(-1);
 
     renderYearSelect();
@@ -498,7 +596,7 @@ async function init() {
     bindEvents();
 
     const initialView = location.hash.slice(1);
-    showView(document.querySelector(`[data-view-panel="${initialView}"]`) ? initialView : "overview", false);
+    showView(document.querySelector(`[data-view-panel="${initialView}"]`) ? initialView : "nationwide", false);
     document.querySelector("#loading-screen").classList.add("done");
   } catch (error) {
     const loading = document.querySelector("#loading-screen");

@@ -1,0 +1,37 @@
+{
+  "methodology": {
+    "version": "2026-07-22",
+    "summary": "全臺總覽以行政院主計總處 115 年度直轄市及縣市總預算彙編為共同基準。地方深度評估另看官方機器格式、OpenFun 歷年覆蓋、完整單位預算明細與穩定介面。",
+    "score": {
+      "official_machine": "完整歲入與歲出 4 分，部分表格 2 分，文件下載 0 分",
+      "history": "8 年以上 2 分，4 至 7 年 1 分，3 年以下 0 分",
+      "unit_detail": "官方完整公布 2 分，民代協助取得 1 分，尚未取得 0 分",
+      "interface": "公開 API 2 分，穩定機器檔 1 分，文件頁 0 分"
+    },
+    "important_boundary": "評分衡量從原始官方來源持續更新深度城市頁的難度，不代表該縣市沒有依法公開預算，也不代表 OpenFun 目前沒有整理後資料。"
+  },
+  "cities": [
+    {"city":"臺北市","city_en":"Taipei City","region":"北部","score":9,"tier":"A","official_machine":"完整","history_years":10,"unit_detail":"民代協助","interface":"API","source_url":"https://data.taipei/dataset/detail?id=5d3c107e-4c8e-469c-a094-e4ebb9b0945a","source_label":"臺北市資料大平臺"},
+    {"city":"新北市","city_en":"New Taipei City","region":"北部","score":7,"tier":"A","official_machine":"完整","history_years":6,"unit_detail":"尚未取得","interface":"API","source_url":"https://data.ntpc.gov.tw/datasets/b9314de2-8aa0-4080-8f37-2df0fe193f3c","source_label":"新北市政府資料開放平臺"},
+    {"city":"桃園市","city_en":"Taoyuan City","region":"北部","score":7,"tier":"A","official_machine":"完整","history_years":6,"unit_detail":"尚未取得","interface":"API","source_url":"https://opendata.tycg.gov.tw/datalist/24226c05-cb79-4d5e-bfb6-0dd277d10e29","source_label":"桃園市政府資料開放平臺"},
+    {"city":"臺中市","city_en":"Taichung City","region":"中部","score":7,"tier":"A","official_machine":"完整","history_years":6,"unit_detail":"尚未取得","interface":"API","source_url":"https://opendata.taichung.gov.tw/search/3d98b185-d7c7-4281-8039-fca36b900f14","source_label":"臺中市政府資料開放平臺"},
+    {"city":"臺南市","city_en":"Tainan City","region":"南部","score":9,"tier":"A","official_machine":"完整","history_years":18,"unit_detail":"民代協助","interface":"API","source_url":"https://data.tainan.gov.tw/DataSet/Detail/e854692b-c087-4a63-b786-1d6335d9421f","source_label":"臺南市政府資料開放平臺"},
+    {"city":"高雄市","city_en":"Kaohsiung City","region":"南部","score":8,"tier":"A","official_machine":"完整","history_years":10,"unit_detail":"尚未取得","interface":"API","source_url":"https://data.kcg.gov.tw/","source_label":"高雄市政府資料開放平臺"},
+    {"city":"基隆市","city_en":"Keelung City","region":"北部","score":2,"tier":"B","official_machine":"文件","history_years":12,"unit_detail":"尚未取得","interface":"文件","source_url":"https://www.klcg.gov.tw/tw/accounting/2404-308335.html","source_label":"基隆市政府主計處"},
+    {"city":"新竹市","city_en":"Hsinchu City","region":"北部","score":6,"tier":"B","official_machine":"部分","history_years":9,"unit_detail":"民代協助","interface":"檔案","source_url":"https://dep-auditing.hccg.gov.tw/ch/home.jsp?id=10123&parentpath=0%2C3%2C19","source_label":"新竹市政府主計處"},
+    {"city":"新竹縣","city_en":"Hsinchu County","region":"北部","score":4,"tier":"B","official_machine":"部分","history_years":6,"unit_detail":"尚未取得","interface":"檔案","source_url":"https://www.hsinchu.gov.tw/OpenDataDetail.aspx?n=902&s=181","source_label":"新竹縣政府開放資料"},
+    {"city":"宜蘭縣","city_en":"Yilan County","region":"北部","score":4,"tier":"B","official_machine":"部分","history_years":3,"unit_detail":"尚未取得","interface":"API","source_url":"https://data.gov.tw/dataset/177126","source_label":"政府資料開放平臺"},
+    {"city":"苗栗縣","city_en":"Miaoli County","region":"中部","score":5,"tier":"B","official_machine":"部分","history_years":8,"unit_detail":"尚未取得","interface":"檔案","source_url":"https://opendata.miaoli.gov.tw/OpenDataDetail.aspx?n=9404&s=1745&sms=0","source_label":"苗栗縣政府資料開放平臺"},
+    {"city":"彰化縣","city_en":"Changhua County","region":"中部","score":3,"tier":"B","official_machine":"部分","history_years":3,"unit_detail":"尚未取得","interface":"檔案","source_url":"https://accounting.chcg.gov.tw/07budget/budget01_con.aspx?bull_id=418499","source_label":"彰化縣政府主計處"},
+    {"city":"南投縣","city_en":"Nantou County","region":"中部","score":4,"tier":"B","official_machine":"部分","history_years":7,"unit_detail":"尚未取得","interface":"檔案","source_url":"https://data.nantou.gov.tw/dataset/c250773a-0202-11ef-84d4-005056bfed9c","source_label":"南投縣政府資料開放平臺"},
+    {"city":"雲林縣","city_en":"Yunlin County","region":"中部","score":3,"tier":"B","official_machine":"文件","history_years":6,"unit_detail":"官方完整","interface":"文件","source_url":"https://accounting.yunlin.gov.tw/News_Content.aspx?n=1100&s=573114","source_label":"雲林縣政府主計處"},
+    {"city":"嘉義市","city_en":"Chiayi City","region":"南部","score":6,"tier":"B","official_machine":"完整","history_years":6,"unit_detail":"尚未取得","interface":"檔案","source_url":"https://data.chiayi.gov.tw/opendata/dataset/metadata?oid=d9303734-6e8f-4ff4-92bb-65e6caba2265","source_label":"嘉義市政府資料開放平臺"},
+    {"city":"嘉義縣","city_en":"Chiayi County","region":"南部","score":4,"tier":"B","official_machine":"部分","history_years":6,"unit_detail":"尚未取得","interface":"檔案","source_url":"https://accounting.cyhg.gov.tw/News3.aspx?n=289&sms=12452","source_label":"嘉義縣政府主計處"},
+    {"city":"屏東縣","city_en":"Pingtung County","region":"南部","score":4,"tier":"B","official_machine":"部分","history_years":7,"unit_detail":"尚未取得","interface":"檔案","source_url":"https://data.gov.tw/datasets/search?p=1&size=10&s=_score_desc&rft=%E5%B1%8F%E6%9D%B1%E7%B8%A3%E9%A0%90%E7%AE%97","source_label":"政府資料開放平臺"},
+    {"city":"澎湖縣","city_en":"Penghu County","region":"南部","score":0,"tier":"C","official_machine":"文件","history_years":3,"unit_detail":"尚未取得","interface":"文件","source_url":"https://www.penghu.gov.tw/accounting/home.jsp?id=196","source_label":"澎湖縣政府主計處"},
+    {"city":"花蓮縣","city_en":"Hualien County","region":"東部","score":4,"tier":"B","official_machine":"部分","history_years":6,"unit_detail":"尚未取得","interface":"檔案","source_url":"https://csa.hl.gov.tw/opendata/News_Content.aspx?n=27129&s=92599","source_label":"花蓮縣政府開放資料"},
+    {"city":"臺東縣","city_en":"Taitung County","region":"東部","score":2,"tier":"B","official_machine":"文件","history_years":8,"unit_detail":"尚未取得","interface":"文件","source_url":"https://www.taitung.gov.tw/","source_label":"臺東縣政府"},
+    {"city":"金門縣","city_en":"Kinmen County","region":"外島","score":4,"tier":"B","official_machine":"文件","history_years":8,"unit_detail":"官方完整","interface":"文件","source_url":"https://kmasd.kinmen.gov.tw/MetaData.aspx?n=2C0269A6ACC76F6D&s=AC0E93C47B7649EF&sms=A2C62D68901B977C","source_label":"金門縣政府主計處"},
+    {"city":"連江縣","city_en":"Lienchiang County","region":"外島","score":4,"tier":"B","official_machine":"文件","history_years":10,"unit_detail":"官方完整","interface":"文件","source_url":"https://eip.matsu.gov.tw/matsuopendata/chhtml/dataquery/4?tmpcode=07","source_label":"連江縣政府資料開放平臺"}
+  ]
+}

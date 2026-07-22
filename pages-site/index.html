@@ -4,11 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#176b5b" />
-    <meta name="description" content="把臺北市官方開放預算資料整理成居民看得懂、查得到的公共財政入口。" />
-    <meta property="og:title" content="臺北市開放預算" />
-    <meta property="og:description" content="探索臺北市歲出、歲入與資本門預算，回到官方資料核對每個數字。" />
+    <meta name="description" content="用主計總處官方資料比較全臺 22 縣市預算，再深入探索臺北市歲入、歲出與資本門。" />
+    <meta property="og:title" content="臺灣地方政府 OpenBook" />
+    <meta property="og:description" content="比較 22 縣市預算規模、功能分類、資本支出與資料開放成熟度。" />
     <meta property="og:type" content="website" />
-    <title>臺北市開放預算</title>
+    <title>臺灣地方政府 OpenBook</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
@@ -19,16 +19,17 @@
 
     <header class="site-header">
       <div class="header-inner">
-        <button class="brand nav-trigger" type="button" data-view="overview" aria-label="回到總覽" data-i18n-aria="homeLabel">
-          <span class="brand-mark" aria-hidden="true">北</span>
+        <button class="brand nav-trigger" type="button" data-view="nationwide" aria-label="回到全臺總覽" data-i18n-aria="homeLabel">
+          <span class="brand-mark" aria-hidden="true">臺</span>
           <span>
-            <strong data-i18n="city">臺北市</strong>
+            <strong data-i18n="siteName">全臺地方政府</strong>
             <small>OpenBook</small>
           </span>
         </button>
 
         <nav class="primary-nav" aria-label="主要導覽" data-i18n-aria="navLabel">
-          <button class="nav-trigger active" type="button" data-view="overview" data-i18n="overview">總覽</button>
+          <button class="nav-trigger active" type="button" data-view="nationwide" data-i18n="nationwide">全臺總覽</button>
+          <button class="nav-trigger" type="button" data-view="overview" data-i18n="overview">臺北總覽</button>
           <button class="nav-trigger" type="button" data-view="expenses" data-i18n="expenses">歲出</button>
           <button class="nav-trigger" type="button" data-view="revenues" data-i18n="revenues">歲入</button>
           <button class="nav-trigger" type="button" data-view="capital" data-i18n="capital">資本門</button>
@@ -48,7 +49,64 @@
     </header>
 
     <main id="main">
-      <section class="view active" id="view-overview" data-view-panel="overview">
+      <section class="view active nationwide-view" id="view-nationwide" data-view-panel="nationwide">
+        <div class="page-heading nationwide-heading">
+          <div class="shell nationwide-heading-grid">
+            <div>
+              <p class="eyebrow" data-i18n="nationwideEyebrow">115 年度地方政府共同基準</p>
+              <h1 data-i18n-html="nationwideTitle">一次看懂<br /><em>22 縣市預算</em></h1>
+              <p data-i18n="nationwideIntro">用行政院主計總處同一份彙編比較各縣市，再把地方資料能否持續更新、深入到單位計畫的差異攤開來看。</p>
+            </div>
+            <div id="nationwide-stats" class="stat-grid nationwide-stats"></div>
+          </div>
+        </div>
+        <div class="shell section-stack nationwide-content">
+          <article class="panel nationwide-explainer">
+            <div><span class="tier-badge tier-a">A</span><strong data-i18n="tierATitle">可直接擴充</strong><p data-i18n="tierACopy">地方平台已有完整機器格式與 API，適合下一批城市深度頁。</p></div>
+            <div><span class="tier-badge tier-b">B</span><strong data-i18n="tierBTitle">需要轉接器</strong><p data-i18n="tierBCopy">有穩定檔案、歷年資料或完整文件，仍需清理與年度更新流程。</p></div>
+            <div><span class="tier-badge tier-c">C</span><strong data-i18n="tierCTitle">文件抽取優先</strong><p data-i18n="tierCCopy">目前以文件下載或較舊資料為主，先建立可驗證的抽取流程。</p></div>
+          </article>
+
+          <article class="panel data-panel nationwide-panel">
+            <div class="table-toolbar nationwide-toolbar">
+              <label class="search-field"><span class="sr-only" data-i18n="citySearch">搜尋縣市</span><input id="city-search" type="search" placeholder="搜尋縣市" data-i18n-placeholder="citySearch" /></label>
+              <label><span data-i18n="region">區域</span><select id="region-filter"><option value="" data-i18n="allRegions">全部區域</option><option value="北部" data-i18n="north">北部</option><option value="中部" data-i18n="central">中部</option><option value="南部" data-i18n="south">南部</option><option value="東部" data-i18n="east">東部</option><option value="外島" data-i18n="islands">外島</option></select></label>
+              <label><span data-i18n="readiness">實作成熟度</span><select id="tier-filter"><option value="" data-i18n="allTiers">全部層級</option><option value="A">A</option><option value="B">B</option><option value="C">C</option></select></label>
+              <button class="button secondary" id="download-cities" type="button" data-i18n="downloadCsv">下載 CSV</button>
+            </div>
+            <div id="city-budget-grid" class="city-budget-grid"></div>
+            <p class="table-status" id="city-status"></p>
+          </article>
+
+          <article class="panel national-ranking-panel">
+            <div class="section-intro">
+              <p class="kicker" data-i18n="expenseScale">歲出規模</p>
+              <h2 data-i18n="compareCities">比較 22 縣市年度預算</h2>
+              <p data-i18n="compareCitiesCopy">金額來自主計總處 115 年度彙編，長條顯示相對規模，並非衡量政策好壞。</p>
+            </div>
+            <div id="national-ranking" class="national-ranking"></div>
+          </article>
+
+          <article class="panel nationwide-methodology">
+            <div>
+              <p class="kicker" data-i18n="commonBaseline">共同基準</p>
+              <h2 data-i18n="dgbasMethodTitle">先用官方彙編回答可比問題</h2>
+              <p data-i18n="dgbasMethodCopy">22 縣市的歲入、歲出、融資、政事別與資本支出都取自同一份 Excel。金門縣在來源中標示為總預算案，其他縣市依表註呈現。</p>
+              <a href="https://www.dgbas.gov.tw/News_Content.aspx?n=1525&s=236271" target="_blank" rel="noopener noreferrer" data-i18n="openDgbas">開啟主計總處原始資料 ↗</a>
+            </div>
+            <div>
+              <p class="kicker" data-i18n="depthLayer">深度資料層</p>
+              <h2 data-i18n="depthMethodTitle">地方資料成熟度另行評分</h2>
+              <p data-i18n="depthMethodCopy">分數綜合官方機器格式、歷年連續性、完整單位預算與介面穩定性。所有縣市都能做總覽，分數只表示維護深度城市頁所需的工程量。</p>
+              <a href="https://budget.openfun.app/" target="_blank" rel="noopener noreferrer" data-i18n="openOpenfun">查看 OpenFun 全臺預算查詢 ↗</a>
+            </div>
+          </article>
+
+          <div class="notice" role="note"><strong data-i18n="nationalBoundary">比較邊界</strong><span data-i18n="nationalBoundaryCopy">預算代表政府獲准或計畫使用的金額。採購決標、決算與逐筆付款屬於不同資料層，不能互相替代。</span></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-overview" data-view-panel="overview" hidden>
         <section class="hero" aria-label="首頁主視覺" data-i18n-aria="heroLabel">
           <div class="hero-grid shell">
             <div class="hero-copy-block">

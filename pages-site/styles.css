@@ -340,6 +340,63 @@ td small { color: var(--ink-soft); }
 .faq-list summary { padding: 1rem 1.2rem; font-weight: 800; cursor: pointer; }
 .faq-answer { padding: 0 1.2rem 1.2rem; color: var(--ink-soft); }
 
+.showing-nationwide .year-control { opacity: .45; pointer-events: none; }
+.nationwide-heading { padding-block: 5rem 3.5rem; color: #fff; background: linear-gradient(135deg, #153d31 0%, #21634e 60%, #9a7436 160%); }
+.nationwide-heading-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(460px, .95fr); align-items: end; gap: 3rem; }
+.nationwide-heading h1 { max-width: 760px; margin: .5rem 0 1.25rem; color: #fff; font-size: clamp(3rem, 6vw, 6.3rem); line-height: .98; letter-spacing: -.055em; }
+.nationwide-heading h1 em { color: var(--gold); font-style: normal; }
+.nationwide-heading p:last-child { max-width: 700px; color: rgba(255,255,255,.72); }
+.nationwide-stats { grid-template-columns: repeat(2, 1fr); }
+.nationwide-stats .stat-card { color: var(--ink); background: rgba(255,255,255,.96); box-shadow: 0 18px 50px rgba(5,25,18,.15); }
+.nationwide-content { padding-top: 2rem; }
+.nationwide-explainer { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; padding: 0; overflow: hidden; }
+.nationwide-explainer > div { padding: 1.5rem; border-left: 1px solid var(--line); }
+.nationwide-explainer > div:first-child { border-left: 0; }
+.nationwide-explainer strong { margin-left: .65rem; }
+.nationwide-explainer p { margin: .7rem 0 0; color: var(--ink-soft); font-size: .84rem; }
+.tier-badge { display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; font-weight: 900; }
+.tier-a { color: #0d5a40; background: #dcefe5; }
+.tier-b { color: #765719; background: #f5e9c9; }
+.tier-c { color: #8a3c32; background: #f4ded9; }
+.nationwide-toolbar { align-items: flex-end; }
+.nationwide-toolbar label:not(.search-field) { display: grid; gap: .35rem; min-width: 150px; color: var(--ink-soft); font-size: .72rem; font-weight: 800; }
+.nationwide-toolbar select { min-height: 44px; padding: .55rem 2rem .55rem .7rem; border: 1px solid #cfd5d0; border-radius: 8px; background: #fff; }
+.city-budget-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); }
+.city-budget-card { min-width: 0; padding: 1.35rem; background: #fff; }
+.city-card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.city-card-heading span:first-child { color: var(--ink-soft); font-size: .72rem; font-weight: 700; }
+.city-card-heading h2 { margin: .25rem 0 0; font-size: 1.35rem; }
+.city-primary-number { margin: 1.35rem 0 1rem; }
+.city-primary-number strong { display: block; color: var(--forest); font-size: 1.65rem; }
+.city-primary-number span { color: var(--ink-soft); font-size: .76rem; }
+.city-finance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+.city-finance-grid span { padding: .7rem; border-radius: 8px; background: #f5f7f3; }
+.city-finance-grid small, .city-finance-grid b { display: block; }
+.city-finance-grid small { color: var(--ink-soft); font-size: .67rem; }
+.city-finance-grid b { margin-top: .2rem; font-size: .83rem; }
+.city-category-list { display: grid; gap: .6rem; margin: 1.2rem 0; }
+.city-category-list div { display: grid; grid-template-columns: 1fr auto; gap: .35rem .7rem; color: var(--ink-soft); font-size: .72rem; }
+.city-category-list b { color: var(--ink); }
+.city-category-list i { grid-column: 1 / -1; height: 4px; overflow: hidden; border-radius: 4px; background: #edf0eb; }
+.city-category-list em { display: block; height: 100%; background: var(--gold); }
+.readiness-facts { display: grid; gap: .35rem; margin: 0; padding: 1rem 0; border-block: 1px solid var(--line); }
+.readiness-facts div { display: flex; justify-content: space-between; gap: 1rem; }
+.readiness-facts dt { color: var(--ink-soft); font-size: .7rem; }
+.readiness-facts dd { margin: 0; font-size: .7rem; font-weight: 800; text-align: right; }
+.city-card-links { display: flex; flex-wrap: wrap; gap: .7rem 1rem; padding-top: 1rem; }
+.city-card-links a, .city-card-links button { padding: 0; border: 0; color: var(--green); background: transparent; font-size: .72rem; font-weight: 800; text-decoration: none; cursor: pointer; }
+.national-ranking-panel { padding: 2rem; }
+.national-ranking { display: grid; grid-template-columns: repeat(2, 1fr); gap: .7rem 2rem; margin-top: 1.5rem; }
+.national-ranking-row { display: grid; grid-template-columns: 2rem minmax(90px, 145px) minmax(90px, 1fr) auto; align-items: center; gap: .65rem; font-size: .75rem; }
+.national-ranking-row > span { color: #a5aba6; font-variant-numeric: tabular-nums; }
+.national-ranking-row > div { height: 8px; overflow: hidden; border-radius: 8px; background: #edf0eb; }
+.national-ranking-row i { display: block; height: 100%; border-radius: 8px; background: linear-gradient(90deg, var(--green), var(--gold)); }
+.national-ranking-row b { min-width: 82px; text-align: right; }
+.nationwide-methodology { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; padding: 2rem; }
+.nationwide-methodology h2 { margin: .35rem 0 .7rem; }
+.nationwide-methodology p { color: var(--ink-soft); }
+.nationwide-methodology a { color: var(--green); font-weight: 800; }
+
 .trust-strip { padding: 1.4rem 0; color: rgba(255,255,255,.72); background: #193329; border-bottom: 1px solid rgba(255,255,255,.08); }
 .trust-grid { display: grid; grid-template-columns: repeat(4,1fr); }
 .trust-grid > span { display: flex; align-items: center; justify-content: center; gap: .65rem; min-height: 44px; border-left: 1px solid rgba(255,255,255,.13); font-size: .78rem; }
@@ -365,6 +422,9 @@ footer { padding: 4.5rem 0; color: #fff; background: #12251d; }
   .year-control { margin-left: auto; }
   .language-control { margin-left: 0; }
   .hero-grid { grid-template-columns: 1fr; min-height: auto; }
+  .nationwide-heading-grid { grid-template-columns: 1fr; }
+  .city-budget-grid { grid-template-columns: repeat(2, 1fr); }
+  .national-ranking { grid-template-columns: 1fr; }
   .hero-copy-block { max-width: 720px; }
   .hero-glance { max-width: 720px; }
   .journey-grid { grid-template-columns: repeat(2,1fr); }
@@ -388,6 +448,14 @@ footer { padding: 4.5rem 0; color: #fff; background: #12251d; }
   .hero-glance .stat-card strong { font-size: 1.15rem; }
   .journey-section, .documents-section, .investment-section, .balance-section, .capital-feature { padding: 4rem 0; }
   .journey-grid, .document-grid, .source-grid { grid-template-columns: 1fr; }
+  .nationwide-heading { padding-block: 3.5rem 2.5rem; }
+  .nationwide-heading h1 { font-size: clamp(3rem, 14vw, 5rem); }
+  .nationwide-stats { grid-template-columns: 1fr 1fr; }
+  .nationwide-explainer, .city-budget-grid, .nationwide-methodology { grid-template-columns: 1fr; }
+  .nationwide-explainer > div, .nationwide-explainer > div:first-child { border-left: 0; border-top: 1px solid var(--line); }
+  .nationwide-explainer > div:first-child { border-top: 0; }
+  .national-ranking-row { grid-template-columns: 1.6rem 95px minmax(60px, 1fr) auto; }
+  .national-ranking-row b { min-width: 68px; }
   .journey-card, .journey-card:first-child, .journey-card:nth-child(3), .journey-card:nth-child(4) { min-height: auto; border-left: 0; border-top: 1px solid #eceeea; }
   .journey-card:first-child { border-top: 0; }
   .journey-card p { min-height: 0; }
